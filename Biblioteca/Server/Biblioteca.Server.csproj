@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Biblioteca.BD\Biblioteca.BD.csproj" />
     <ProjectReference Include="..\Client\Biblioteca.Client.csproj" />
     <ProjectReference Include="..\Shared\Biblioteca.Shared.csproj" />
   </ItemGroup>
