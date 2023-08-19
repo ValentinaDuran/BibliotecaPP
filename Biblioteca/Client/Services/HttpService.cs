@@ -12,7 +12,7 @@ namespace Biblioteca.Client.Services
         {
             this.http = http;
         }
-        public async Task<HttpRespuesta<B>> Get<B>(string url)
+        public async Task<HttpRespuesta<B>>Get<B>(string url)
         {
             var response = await http.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -61,14 +61,23 @@ namespace Biblioteca.Client.Services
             var respuesta = await http.DeleteAsync(url);
             return new HttpRespuesta<object>(null, !respuesta.IsSuccessStatusCode, respuesta);
         }
-        private async Task<B> DeserealizarRespuesta<B>(HttpResponseMessage response)
+        private async Task<T> DeserealizarRespuesta<T>(HttpResponseMessage response)
         {
-            var respuestastring = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<B>(respuestastring, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-
-
+            var respuestaStr = await response.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonSerializer.Deserialize<T>(respuestaStr,
+                    new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            }
+            catch (JsonException jsonEx)
+            {
+                Console.WriteLine($"Error de deserialización: {jsonEx.Message}");
+                Console.WriteLine($"JSON: {respuestaStr}");
+                throw; // Lanza la excepción nuevamente para que cualquier llamador también pueda manejarla si es necesario.
+            }
         }
+
     }
-}
+    }
+
 

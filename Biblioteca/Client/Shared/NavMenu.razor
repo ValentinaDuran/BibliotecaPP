@@ -1,39 +1,30 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Biblioteca</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
+﻿<MudLayout>
+    <MudAppBar Elevation="1" Style="background-color:aqua;" >   
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Style="color:black" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <div class="contenido">
+        <h1 style="color:black">Colegio Superior Roque Saenz Peña</h1>
+        <MudSpacer />
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
+    </MudAppBar>
+    <MudDrawer @bind-Open="@open" Elevation="1" Style="background-color:aqua;" >
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h4">Biblioteca</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <div class="items">
+            <MudNavLink Match="NavLinkMatch.All" Href="#" >Inicio</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="/estado">Materiales en mal estado</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="/inventario-list">Inventario</MudNavLink>
+            </div>
+        </MudNavMenu>
+    </MudDrawer>
+    
+</MudLayout>
 @code {
-    private bool collapseNavMenu = true;
+    bool open = false;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    void ToggleDrawer()
     {
-        collapseNavMenu = !collapseNavMenu;
+        open = !open;
     }
 }

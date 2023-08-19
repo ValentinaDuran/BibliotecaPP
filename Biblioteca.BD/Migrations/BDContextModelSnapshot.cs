@@ -109,18 +109,20 @@ namespace Biblioteca.BD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Material")
-                        .HasColumnType("int");
-
                     b.Property<string>("Observacion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TituloNombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("InventarioId");
+
+                    b.HasIndex("TipoId");
 
                     b.ToTable("Inventarios");
                 });
@@ -268,6 +270,35 @@ namespace Biblioteca.BD.Migrations
                     b.HasKey("ReservaId");
 
                     b.ToTable("Reservas");
+                });
+
+            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Tipo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("TipoMat")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tipos");
+                });
+
+            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Inventario", b =>
+                {
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Tipo", "Tipo")
+                        .WithMany()
+                        .HasForeignKey("TipoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tipo");
                 });
 #pragma warning restore 612, 618
         }

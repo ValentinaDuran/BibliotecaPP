@@ -28,10 +28,6 @@ namespace Biblioteca.BD.Data.Entidades
             InstrumentoMusical
         }
 
-        [EnumDataType(typeof(TipoMaterial), ErrorMessage = "Campo obligatorio.")]
-        public TipoMaterial Material { get; set; }
-
-
         [Required(ErrorMessage = "Campo obligatorio.")]
         public string TituloNombre { get; set; }
 
@@ -41,6 +37,9 @@ namespace Biblioteca.BD.Data.Entidades
         [Required(ErrorMessage = "Campo obligatorio") ]
         public string Observacion { get; set; }
         #endregion
+
+        public int TipoId { get; set; }
+        public Tipo Tipo { get; set; }
 
 
         //Clave foranea:Id_Prestamo

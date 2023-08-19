@@ -1,13 +1,13 @@
 ﻿namespace Biblioteca.Client.Services
 {
-    public class HttpRespuesta <B>
+    public class HttpRespuesta <T>
 
     {
-        public B Respuesta { get; }
+        public T Respuesta { get; }
         public bool Error { get; }
         public HttpResponseMessage HttpResponseMessage { get; }
 
-        public HttpRespuesta(B respuesta, bool error, HttpResponseMessage httpResponseMessage)
+        public HttpRespuesta(T respuesta, bool error, HttpResponseMessage httpResponseMessage)
         {
             Respuesta = respuesta;
             Error = error;

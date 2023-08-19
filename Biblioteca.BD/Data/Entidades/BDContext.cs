@@ -17,9 +17,20 @@ namespace Biblioteca.BD.Data.Entidades
         public DbSet<Prestamo> Prestamos { get; set; }
         public DbSet<Prestatario> Prestatarios { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
+        public DbSet<Tipo> Tipos { get; set; }
 
         public BDContext(DbContextOptions options) : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Inventario>()
+                .HasOne(p => p.Tipo)
+                .WithMany() 
+                .HasForeignKey(p => p.TipoId);
+        }
     }
+
+
 }

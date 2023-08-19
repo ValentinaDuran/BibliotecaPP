@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.BD.Migrations
 {
     /// <inheritdoc />
-    public partial class tablasconatributos : Migration
+    public partial class Inicio : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,22 +48,6 @@ namespace Biblioteca.BD.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Deudores", x => x.DeudorId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Inventarios",
-                columns: table => new
-                {
-                    InventarioId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Material = table.Column<int>(type: "int", nullable: false),
-                    TituloNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AutorMarca = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Inventarios", x => x.InventarioId);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,6 +124,46 @@ namespace Biblioteca.BD.Migrations
                 {
                     table.PrimaryKey("PK_Reservas", x => x.ReservaId);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Tipos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TipoMat = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tipos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Inventarios",
+                columns: table => new
+                {
+                    InventarioId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TituloNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AutorMarca = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Inventarios", x => x.InventarioId);
+                    table.ForeignKey(
+                        name: "FK_Inventarios_Tipos_TipoId",
+                        column: x => x.TipoId,
+                        principalTable: "Tipos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inventarios_TipoId",
+                table: "Inventarios",
+                column: "TipoId");
         }
 
         /// <inheritdoc />
@@ -165,6 +189,9 @@ namespace Biblioteca.BD.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reservas");
+
+            migrationBuilder.DropTable(
+                name: "Tipos");
         }
     }
 }

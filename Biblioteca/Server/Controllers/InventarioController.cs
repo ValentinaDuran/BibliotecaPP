@@ -18,7 +18,11 @@ namespace Biblioteca.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Inventario>>> Get()
         {
-            return await context.Inventarios.ToListAsync();
+            return await context.Inventarios
+                      .Include(i => i.Tipo)
+                      .ToListAsync();
+
+
         }
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Inventario>> Get(int id)
@@ -58,10 +62,22 @@ namespace Biblioteca.Server.Controllers
                     return BadRequest(ModelState);
                 }
 
+                // 1. Recupera el tipo existente de la base de datos
+                var existingTipo = await context.Tipos.FindAsync(inventario.TipoId);
+
+                if (existingTipo == null)
+                {
+                    return NotFound($"El tipo con ID {inventario.TipoId} no fue encontrado.");
+                }
+
+                // 2. Establece el tipo recuperado en el objeto Inventario
+                inventario.Tipo = existingTipo;
+
+                // 3. Añade el objeto Inventario al contexto y guarda los cambios
                 context.Inventarios.Add(inventario);
                 await context.SaveChangesAsync();
-                return CreatedAtAction(nameof(Get), new { id = inventario.InventarioId }, inventario);
 
+                return CreatedAtAction(nameof(Get), new { id = inventario.InventarioId }, inventario);
             }
             catch (Exception ex)
             {
@@ -69,27 +85,27 @@ namespace Biblioteca.Server.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
-        {
-            var BibliotecaPractica = context.Inventarios.Where(x => x.InventarioId == id).FirstOrDefault();
-            if (BibliotecaPractica == null)
-            {
-                return NotFound($"El registro {id} no fue encontrado");
-            }
+        //[HttpDelete("{id:int}")]
+        //public ActionResult Delete(int id)
+        //{
+        //    var BibliotecaPractica = context.Inventarios.Where(x => x.InventarioId == id).FirstOrDefault();
+        //    if (BibliotecaPractica == null)
+        //    {
+        //        return NotFound($"El registro {id} no fue encontrado");
+        //    }
 
-            try
-            {
-                context.Inventarios.Remove(BibliotecaPractica);
-                context.SaveChanges();
-                return Ok($"El registro de {BibliotecaPractica.Material} ha sido eliminado");
-            }
-            catch (Exception o)
-            {
-                return BadRequest($"No se logro eliminar por:{o.Message}");
+        //    try
+        //    {
+        //        context.Inventarios.Remove(BibliotecaPractica);
+        //        context.SaveChanges();
+        //        return Ok($"El registro de {BibliotecaPractica.Material} ha sido eliminado");
+        //    }
+        //    catch (Exception o)
+        //    {
+        //        return BadRequest($"No se logro eliminar por:{o.Message}");
 
-            }
-        }
+        //    }
+        //}
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, Inventario inventario)
