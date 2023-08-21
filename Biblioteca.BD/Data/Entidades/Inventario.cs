@@ -16,17 +16,17 @@ namespace Biblioteca.BD.Data.Entidades
         #region Atributos
 
 
-        public enum TipoMaterial
-        {
-            Libro,
-            Mapa,
-            ÚtilGeometría,
-            Computadora,
-            Proyector,
-            Revista,
-            Ludoteca,
-            InstrumentoMusical
-        }
+        //public enum TipoMaterial
+        //{
+        //    Libro,
+        //    Mapa,
+        //    ÚtilGeometría,
+        //    Computadora,
+        //    Proyector,
+        //    Revista,
+        //    Ludoteca,
+        //    InstrumentoMusical
+        //}
 
         [Required(ErrorMessage = "Campo obligatorio.")]
         public string TituloNombre { get; set; }
@@ -39,7 +39,7 @@ namespace Biblioteca.BD.Data.Entidades
         #endregion
 
         public int TipoId { get; set; }
-        public Tipo Tipo { get; set; }
+        public Tipo? Tipo { get; set; }
 
 
         //Clave foranea:Id_Prestamo

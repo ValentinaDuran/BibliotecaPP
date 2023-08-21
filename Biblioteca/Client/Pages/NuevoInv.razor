@@ -3,34 +3,81 @@
 @using Biblioteca.BD.Data.Entidades
 @inject IHttpService http
 @using MudBlazor
+@inject IDialogService DialogService
 
 <NavMenu></NavMenu>
-<MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"400px":"")">
-    <HeaderContent>
-        <MudTh>Título/Nombre</MudTh>
-        <MudTh>Autor/Marca</MudTh>
-        <MudTh>Observación</MudTh>
-        <MudTh>Tipo</MudTh>
-         <MudTh></MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
-        <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
-        <MudTd DataLabel="Observación">@context.Observacion</MudTd>
-        <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
-        <MudIconButton Icon="@Icons.Material.Filled.Create" Title="editar"/>
-         <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="borrar"/>
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager PaWgeSizeOptions="new int[]{5, 10, 25}" />
-    </PagerContent>
-</MudTable>
+<div class="centered-content">
+    <MudCard  MaxWidth="800px">
+        <MudCardContent>
+              @if (inventarios == null)
+            {
+                <div>Cargando...</div>
+            }
+            else {
+                
+            
+             <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+   Agregar Producto
+</MudButton>
+
+            <MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"400px":"")">
+                <HeaderContent>
+                    <MudTh>Título/Nombre</MudTh>
+                    <MudTh>Autor/Marca</MudTh>
+                    <MudTh>Observación</MudTh>
+                    <MudTh>Tipo</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
+                    <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
+                    <MudTd DataLabel="Observación">@context.Observacion</MudTd>
+                    <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Create" Title="editar" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="borrar" OnClick="@(() => Borrar(context))" />
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{5, 10, 25}" />
+                </PagerContent>
+            </MudTable>
+            }
+        </MudCardContent>
+    </MudCard>
+</div>
+
+<style>
+.centered-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+</style>
+
+
+
+
+
+
+
 
 
 @code{
+    Inventario borrarinventario;
+    Inventario newInventario = new Inventario();
     List<Inventario> inventarios;
     bool fixed_header = true;
     bool fixed_footer = true;
+
+     bool isOpen = false;
+
+     void OpenDialog()
+    {
+         var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<InventarioFormDialog>("Agregar producto", options);
+
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,5 +92,15 @@
         {
             inventarios = respuesta.Respuesta;
         }
+    }
+
+     private async Task Borrar(Inventario inventarioborrar)
+    {
+        var respuesta = await http.Delete($"api/InventarioController/{inventarioborrar.InventarioId}");
+        if(respuesta.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
     }
 }

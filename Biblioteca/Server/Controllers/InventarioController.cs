@@ -62,18 +62,15 @@ namespace Biblioteca.Server.Controllers
                     return BadRequest(ModelState);
                 }
 
-                // 1. Recupera el tipo existente de la base de datos
-                var existingTipo = await context.Tipos.FindAsync(inventario.TipoId);
-
-                if (existingTipo == null)
+                // No es necesario recuperar y establecer la propiedad Tipo. Simplemente confía en TipoId.
+                // Solo verifica si el TipoId proporcionado realmente existe en la base de datos.
+                var exists = await context.Tipos.AnyAsync(t => t.Id == inventario.TipoId);
+                if (!exists)
                 {
                     return NotFound($"El tipo con ID {inventario.TipoId} no fue encontrado.");
                 }
 
-                // 2. Establece el tipo recuperado en el objeto Inventario
-                inventario.Tipo = existingTipo;
-
-                // 3. Añade el objeto Inventario al contexto y guarda los cambios
+                // Añade el objeto Inventario al contexto y guarda los cambios
                 context.Inventarios.Add(inventario);
                 await context.SaveChangesAsync();
 
@@ -85,27 +82,27 @@ namespace Biblioteca.Server.Controllers
             }
         }
 
-        //[HttpDelete("{id:int}")]
-        //public ActionResult Delete(int id)
-        //{
-        //    var BibliotecaPractica = context.Inventarios.Where(x => x.InventarioId == id).FirstOrDefault();
-        //    if (BibliotecaPractica == null)
-        //    {
-        //        return NotFound($"El registro {id} no fue encontrado");
-        //    }
+        [HttpDelete("{id:int}")]
+        public ActionResult Delete(int id)
+        {
+            var BibliotecaPractica = context.Inventarios.Where(x => x.InventarioId == id).FirstOrDefault();
+            if (BibliotecaPractica == null)
+            {
+                return NotFound($"El registro {id} no fue encontrado");
+            }
 
-        //    try
-        //    {
-        //        context.Inventarios.Remove(BibliotecaPractica);
-        //        context.SaveChanges();
-        //        return Ok($"El registro de {BibliotecaPractica.Material} ha sido eliminado");
-        //    }
-        //    catch (Exception o)
-        //    {
-        //        return BadRequest($"No se logro eliminar por:{o.Message}");
+            try
+            {
+                context.Inventarios.Remove(BibliotecaPractica);
+                context.SaveChanges();
+                return Ok($"El registro de {BibliotecaPractica.Tipo} ha sido eliminado");
+            }
+            catch (Exception o)
+            {
+                return BadRequest($"No se logro eliminar por:{o.Message}");
 
-        //    }
-        //}
+            }
+        }
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult> Put(int id, Inventario inventario)

@@ -18,6 +18,5 @@ namespace Biblioteca.BD.Data.Entidades
         [StringLength(255)]
         public string TipoMat { get; set; }
 
-
     }
 }
