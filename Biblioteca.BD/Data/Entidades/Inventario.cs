@@ -11,8 +11,11 @@ namespace Biblioteca.BD.Data.Entidades
     {
         //Clave primaria
         [Key]
-        public int InventarioId { get; set; } 
+        public int InventarioId { get; set; }
 
+        public string Codigo { get; set; }
+
+        public bool IsAvailable { get; set; }//si el material esta disponible o no, necesario para prestamo
         #region Atributos
 
 

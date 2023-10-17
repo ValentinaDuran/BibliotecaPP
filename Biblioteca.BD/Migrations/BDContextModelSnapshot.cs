@@ -62,9 +62,6 @@ namespace Biblioteca.BD.Migrations
                     b.Property<bool>("Devuelto")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Estado")
-                        .HasColumnType("bit");
-
                     b.Property<int>("FechaDevolucion")
                         .HasColumnType("int");
 
@@ -108,6 +105,13 @@ namespace Biblioteca.BD.Migrations
                     b.Property<string>("AutorMarca")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Observacion")
                         .IsRequired()
@@ -173,9 +177,6 @@ namespace Biblioteca.BD.Migrations
                     b.Property<bool>("Devuelto")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Estado")
-                        .HasColumnType("int");
-
                     b.Property<int>("FechaDevolucion")
                         .HasColumnType("int");
 
@@ -187,6 +188,9 @@ namespace Biblioteca.BD.Migrations
 
                     b.Property<DateTime>("HoraEntrega")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("InventarioId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Material")
                         .IsRequired()
@@ -201,6 +205,8 @@ namespace Biblioteca.BD.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PrestamoId");
+
+                    b.HasIndex("InventarioId");
 
                     b.ToTable("Prestamos");
                 });
@@ -299,6 +305,17 @@ namespace Biblioteca.BD.Migrations
                         .IsRequired();
 
                     b.Navigation("Tipo");
+                });
+
+            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Prestamo", b =>
+                {
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Inventario", "Inventario")
+                        .WithMany()
+                        .HasForeignKey("InventarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inventario");
                 });
 #pragma warning restore 612, 618
         }

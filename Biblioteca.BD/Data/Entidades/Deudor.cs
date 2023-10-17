@@ -38,9 +38,6 @@ namespace Biblioteca.BD.Data.Entidades
         public int HoraDevolucion { get; set; }
 
        
-        public bool Estado { get; set; }
-
-        
         public bool Devuelto { get; set; }
         public string Observacion { get; set; }
         #endregion

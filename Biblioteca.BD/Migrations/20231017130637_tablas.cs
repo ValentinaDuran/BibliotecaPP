@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.BD.Migrations
 {
     /// <inheritdoc />
-    public partial class inicio : Migration
+    public partial class tablas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,7 +41,6 @@ namespace Biblioteca.BD.Migrations
                     HoraEntrega = table.Column<int>(type: "int", nullable: false),
                     FechaDevolucion = table.Column<int>(type: "int", nullable: false),
                     HoraDevolucion = table.Column<int>(type: "int", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false),
                     Devuelto = table.Column<bool>(type: "bit", nullable: false),
                     Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -65,28 +64,6 @@ namespace Biblioteca.BD.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MaterialesMalEstado", x => x.MaterialMalEstadoId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Prestamos",
-                columns: table => new
-                {
-                    PrestamoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Prestatario = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Material = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Curso = table.Column<int>(type: "int", nullable: false),
-                    FechaEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaDevolucion = table.Column<int>(type: "int", nullable: false),
-                    HoraEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HoraDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<int>(type: "int", nullable: false),
-                    Devuelto = table.Column<bool>(type: "bit", nullable: false),
-                    Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Prestamos", x => x.PrestamoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,6 +121,8 @@ namespace Biblioteca.BD.Migrations
                 {
                     InventarioId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     TituloNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AutorMarca = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -160,10 +139,43 @@ namespace Biblioteca.BD.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Prestamos",
+                columns: table => new
+                {
+                    PrestamoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Prestatario = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Material = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Curso = table.Column<int>(type: "int", nullable: false),
+                    FechaEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaDevolucion = table.Column<int>(type: "int", nullable: false),
+                    HoraEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HoraDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Devuelto = table.Column<bool>(type: "bit", nullable: false),
+                    Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InventarioId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prestamos", x => x.PrestamoId);
+                    table.ForeignKey(
+                        name: "FK_Prestamos_Inventarios_InventarioId",
+                        column: x => x.InventarioId,
+                        principalTable: "Inventarios",
+                        principalColumn: "InventarioId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Inventarios_TipoId",
                 table: "Inventarios",
                 column: "TipoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prestamos_InventarioId",
+                table: "Prestamos",
+                column: "InventarioId");
         }
 
         /// <inheritdoc />
@@ -176,9 +188,6 @@ namespace Biblioteca.BD.Migrations
                 name: "Deudores");
 
             migrationBuilder.DropTable(
-                name: "Inventarios");
-
-            migrationBuilder.DropTable(
                 name: "MaterialesMalEstado");
 
             migrationBuilder.DropTable(
@@ -189,6 +198,9 @@ namespace Biblioteca.BD.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reservas");
+
+            migrationBuilder.DropTable(
+                name: "Inventarios");
 
             migrationBuilder.DropTable(
                 name: "Tipos");

@@ -43,17 +43,17 @@ namespace Biblioteca.BD.Data.Entidades
         public DateTime HoraDevolucion { get; set; }
 
         
-        public enum EstadoOptions
-        {
-            [Display(Name = "Alta")]
-            Alta,
+        //public enum EstadoOptions
+        //{
+          //  [Display(Name = "Alta")]
+          //  Alta,
 
-            [Display(Name = "Baja")]
-            Baja
+          //  [Display(Name = "Baja")]
+          //  Baja
 
-        }
+        //}
 
-        public EstadoOptions Estado { get; set; }
+        //public EstadoOptions Estado { get; set; }
         public bool Devuelto { get; set; }
 
         public string Observacion { get; set; }
@@ -61,5 +61,7 @@ namespace Biblioteca.BD.Data.Entidades
 
         //Clave foranea-Realaciones
         //public string Id_Inventario { get; set; }
+        public int InventarioId { get; set; }
+        public Inventario Inventario { get; set; }
     }
 }
