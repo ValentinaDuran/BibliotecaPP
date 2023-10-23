@@ -3,7 +3,7 @@
 @inject IHttpService http
 @inject NavigationManager NavManager
 @using MudBlazor
-<MudDialog>
+<MudDialog isOpen="isOpen">
     <DialogContent>
         <MudForm>
             <MudGrid>
@@ -33,6 +33,7 @@
     </DialogActions>
 </MudDialog>
 @code {
+      private bool isOpen = false;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     private Inventario newInventario = new Inventario();
      static List<Tipo> tipos = new List<Tipo>
@@ -65,5 +66,11 @@
     }
     }
 
+
     void Cancel() => MudDialog.Cancel();
+
+      void OpenDialog()
+    {
+        isOpen = true;
+    }
 }
