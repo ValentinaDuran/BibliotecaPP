@@ -1,0 +1,130 @@
+﻿@page "/editar-inventario/{inventarioId:int}"
+@using Biblioteca.BD.Data.Entidades
+@using MudBlazor
+@inject NavigationManager NavManager
+@using Biblioteca.Client.Services
+@inject IHttpService http
+@inject IJSRuntime JSRuntime
+<MudDialog Open="isOpen">
+    <DialogContent>
+        <MudTextField @bind-Value="inventarioSeleccionado.Codigo" Label="Codigo" />
+        <MudTextField @bind-Value="inventarioSeleccionado.TituloNombre" Label="Título/Nombre" />
+        <MudTextField @bind-Value="inventarioSeleccionado.AutorMarca" Label="Autor/Marca" />
+        <MudTextField @bind-Value="inventarioSeleccionado.Observacion" Label="Observación" />
+      <MudSelect T="string" @bind-Value="selectedTipo" Label="Tipo">
+    @foreach (var tipo in tipos)
+    {
+        <MudSelectItem Value="@tipo.TipoMat">@tipo.TipoMat</MudSelectItem>
+    }
+</MudSelect>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GuardarCambios">Guardar Cambios</MudButton>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private List<Inventario> inventarios;
+    private string selectedTipo;
+    private Inventario inventarioSeleccionado = new Inventario();
+    private bool isOpen = true;
+    [Parameter] public Inventario InventarioSeleccionado { get; set; }
+    private Timer dataRefreshTimer;
+
+
+    // Esta lista de tipos es un ejemplo; asegúrate de que coincida con tu lógica
+    static List<Tipo> tipos = new List<Tipo>
+    {
+        new Tipo{ Id= 1,TipoMat= "Libro"},
+        new Tipo{ Id= 2,TipoMat= "Mapa"},
+        new Tipo{ Id= 3,TipoMat= "ÚtilGeometria"},
+        new Tipo{ Id= 4,TipoMat= "Computadora"},
+        new Tipo{ Id= 5,TipoMat= "Proyector"},
+        new Tipo{ Id= 6,TipoMat= "Revista"},
+        new Tipo{ Id= 7,TipoMat= "Ludoteca"},
+        new Tipo{ Id= 8,TipoMat= "InstrumentoMusical"},
+   
+    };
+    [Parameter] public int InventarioSeleccionadoId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+         await ObtenerInventarioPorId(InventarioSeleccionadoId);
+          await CargarInventarios(); // Carga los datos inicialmente
+    dataRefreshTimer = new Timer(RecargarDatos, null, 0, 300000); // Recarga cada 5 minutos
+    }
+
+ private async Task CargarInventarios()
+{
+    // Accede a la propiedad inventarios de la clase
+    var respuesta = await http.Get<List<Inventario>>("api/InventarioController");
+    if (!respuesta.Error)
+    {
+        inventarios = respuesta.Respuesta;
+    }
+}
+
+     private void GuardarCambios()
+    {
+        // Actualiza las propiedades del inventarioSeleccionado con los datos del formulario
+         inventarioSeleccionado.Tipo = tipos.FirstOrDefault(t => t.TipoMat == selectedTipo);
+        NavManager.NavigateTo("/inventario-list");
+        // Realiza una solicitud PUT para actualizar el inventario
+        ActualizarInventario();
+       NavManager.NavigateTo(NavManager.Uri, forceLoad: true);
+        // Puedes agregar código adicional, como manejar errores o redirigir, según tus necesidades
+    }
+
+    private async void RecargarDatos(object state)
+{
+    await CargarInventarios();
+    StateHasChanged(); // Notifica a Blazor que los datos han cambiado y se deben volver a renderizar
+}
+
+    private async void ActualizarInventario()
+{
+    var respuesta = await http.Put($"api/InventarioController/{InventarioSeleccionadoId}", inventarioSeleccionado);
+    
+    if (respuesta.Error)
+    {
+        // Maneja el error en caso de que la solicitud no sea exitosa
+        // Puedes mostrar un mensaje de error o realizar otras acciones necesarias
+    }
+    else
+    {
+        // Vuelve a cargar los datos de la lista de inventarios
+        await CargarInventarios();
+        
+        // Redirige a la página de lista de inventarios después de guardar los cambios
+        NavManager.NavigateTo("/inventario-list");
+    }
+}
+
+
+
+    private async Task ObtenerInventarioPorId(int inventarioId)
+{
+    var respuesta = await http.Get<Inventario>($"api/InventarioController/{inventarioId}");
+    if (respuesta.Error)
+    {
+       
+    }
+    else
+    {
+        inventarioSeleccionado = respuesta.Respuesta;
+         selectedTipo = inventarioSeleccionado.Tipo?.TipoMat;
+        
+    }
+}
+
+
+    private void Cancelar()
+    {
+        // Implementa aquí la lógica para cancelar la edición y cerrar el diálogo
+        isOpen = false;
+    }
+
+    // Método de ejemplo para cargar el inventario por ID; debes implementar tu propia lógica
+   
+}

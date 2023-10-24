@@ -7,62 +7,43 @@
 
 <NavMenu></NavMenu>
 <div class="centered-content">
-    <MudCard  MaxWidth="800px">
+    <MudCard MaxWidth="800px">
         <MudCardContent>
-              @if (inventarios == null)
+            @if (inventarios == null)
             {
                 <div>Cargando...</div>
             }
-            else {
-                
-            
-             <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-   Agregar Producto
-</MudButton>
+            else
+            {
+                <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                    Agregar Producto
+                </MudButton>
 
-            <MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ?"400px":"")">
-                <HeaderContent>
-                    <MudTh>Título/Nombre</MudTh>
-                    <MudTh>Autor/Marca</MudTh>
-                    <MudTh>Observación</MudTh>
-                    <MudTh>Tipo</MudTh>
-                    <MudTh></MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
-                    <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
-                    <MudTd DataLabel="Observación">@context.Observacion</MudTd>
-                    <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
-                    <MudIconButton Icon="@Icons.Material.Filled.Create" Title="editar" OnClick="ActualizarInventario" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="borrar"  />
-                </RowTemplate>
-                <PagerContent>
-                    <MudTablePager PageSizeOptions="new int[]{5, 10, 25}" />
-                </PagerContent>
-            </MudTable>
+                <MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                    <HeaderContent>
+                        <MudTh>Codigo</MudTh>
+                        <MudTh>Título/Nombre</MudTh>
+                        <MudTh>Autor/Marca</MudTh>
+                        <MudTh>Observación</MudTh>
+                        <MudTh>Tipo</MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Codigo">@context.Codigo</MudTd>
+                        <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
+                        <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
+                        <MudTd DataLabel="Observación">@context.Observacion</MudTd>
+                        <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="()=>Borrar(context)" />
+                    </RowTemplate>
+                </MudTable>
             }
         </MudCardContent>
     </MudCard>
 </div>
 
-<style>
-.centered-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-</style>
-
-
-
-
-
-
-
-
-
-@code{
+@code {
     Inventario borrarinventario;
     Inventario newInventario = new Inventario();
     List<Inventario> inventarios;
@@ -70,21 +51,33 @@
     bool fixed_header = true;
     bool fixed_footer = true;
 
-     bool isOpen = false;
+    bool isOpen = false;
 
-     void OpenDialog()
+    void OpenDialog()
     {
-         var options = new DialogOptions { CloseOnEscapeKey = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<InventarioFormDialog>("Agregar producto", options);
-
     }
 
+    private Inventario inventarioSeleccionado;
+
+  void EditarInventario(Inventario inventario)
+    {
+        // Abre el diálogo de edición y pasa el InventarioId como parámetro
+        var parameters = new DialogParameters();
+        parameters.Add("InventarioSeleccionadoId", inventario.InventarioId);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<InventarioEditarDialog>("Editar Inventario", parameters, options);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();
         await Leer();
     }
+
+
 
     private async Task Leer()
     {
@@ -95,16 +88,13 @@
         }
     }
 
-     private async Task Borrar(Inventario inventarioborrar)
+    private async Task Borrar(Inventario inventarioborrar)
     {
         var respuesta = await http.Delete($"api/InventarioController/{inventarioborrar.InventarioId}");
-        if(respuesta.Error)
+        if (respuesta.Error)
         {
             var body = "Error";
         }
         await Leer();
     }
-
-
-
 }

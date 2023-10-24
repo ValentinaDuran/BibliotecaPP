@@ -27,7 +27,10 @@ namespace Biblioteca.Server.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Inventario>> Get(int id)
         {
-            var inventario = await context.Inventarios.Where(o => o.InventarioId == id).FirstOrDefaultAsync();
+            var inventario = await context.Inventarios
+                .Include(i => i.Tipo)
+                .Where(o => o.InventarioId == id)
+                .FirstOrDefaultAsync();
             if (inventario == null)
             {
                 return NotFound($"No existe ese material en el inventario de Id={id}");
@@ -105,28 +108,39 @@ namespace Biblioteca.Server.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, Inventario inventario)
+        public ActionResult Put(int id, [FromBody] Inventario inventario)
         {
             if (id != inventario.InventarioId)
             {
                 return BadRequest("IDs no coinciden");
             }
 
+            var inventarioExistente = context.Inventarios.Where(e => e.InventarioId == id).FirstOrDefault();
+
+            if (inventarioExistente == null)
+            {
+                return NotFound("No existe el inventario");
+            }
+            inventarioExistente.Codigo = inventario.Codigo;
+            inventarioExistente.TituloNombre = inventario.TituloNombre;
+            inventarioExistente.AutorMarca = inventario.AutorMarca;
+            inventarioExistente.Observacion = inventario.Observacion;
+            inventarioExistente.TipoId = inventario.TipoId;
+            inventarioExistente.Tipo = inventario.Tipo;
+            
+            // Actualiza otras propiedades según sea necesario
+
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                context.Entry(inventario).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-                return NoContent();
+                context.Inventarios.Update(inventarioExistente);
+                context.SaveChanges();
+                return Ok();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
             }
         }
+
     }
 }

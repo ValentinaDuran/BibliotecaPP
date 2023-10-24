@@ -1,20 +1,20 @@
 ﻿<MudLayout>
-    <MudAppBar Elevation="1" Style="background-color:aqua;" >   
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Style="color:black" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+    <MudAppBar Elevation="1" Style="background-color:#1565C0;" >   
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Style="color:white" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <div class="contenido">
-        <h1 style="color:black">Colegio Superior Roque Saenz Peña</h1>
+        <h1 style="color:white">Colegio Superior Roque Saenz Peña</h1>
         <MudSpacer />
         </div>
     </MudAppBar>
-    <MudDrawer @bind-Open="@open" Elevation="1" Style="background-color:aqua;" >
+    <MudDrawer @bind-Open="@open" Elevation="1" Style="background-color:#1565C0;" >
         <MudDrawerHeader>
-            <MudText Typo="Typo.h4">Biblioteca</MudText>
+            <MudText Typo="Typo.h4" Style="color:white">Biblioteca</MudText>
         </MudDrawerHeader>
         <MudNavMenu>
             <div class="items">
-            <MudNavLink Match="NavLinkMatch.All" Href="#" >Inicio</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All" Href="/estado">Materiales en mal estado</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All" Href="/inventario-list">Inventario</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="#" Style="color:white">Inicio</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="/estado" Style="color:white">Materiales en mal estado</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="/inventario-list" Style="color:white">Inventario</MudNavLink>
             </div>
         </MudNavMenu>
     </MudDrawer>

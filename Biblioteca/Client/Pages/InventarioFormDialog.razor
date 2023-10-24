@@ -3,7 +3,7 @@
 @inject IHttpService http
 @inject NavigationManager NavManager
 @using MudBlazor
-<MudDialog isOpen="isOpen">
+<MudDialog iOpen="isOpen">
     <DialogContent>
         <MudForm>
             <MudGrid>
@@ -24,6 +24,9 @@
                             }
                         </MudSelect>
                     </MudItem>
+                     <MudItem xs="6">
+                        <MudTextField @bind-Value="newInventario.Codigo" Label="Codigo" />
+                    </MudItem>
             </MudGrid>
         </MudForm>
     </DialogContent>
@@ -34,6 +37,30 @@
 </MudDialog>
 @code {
       private bool isOpen = false;
+
+
+      private Inventario editedInventario = new Inventario(); // Datos del inventario a editar
+  
+
+    // Evento personalizado del componente de la tabla
+    [Parameter] public Action<Inventario> OnEditarInventario { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Suscribirse al evento personalizado del componente de la tabla
+        OnEditarInventario += EditarInventario;
+    }
+
+    // Método para recibir la notificación del evento y abrir el diálogo
+    private void EditarInventario(Inventario inventario)
+    {
+        // Abrir el diálogo y llenar los campos con los datos de la fila seleccionada
+        editedInventario = inventario;
+        isOpen = true;
+    }
+
+   
+
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     private Inventario newInventario = new Inventario();
      static List<Tipo> tipos = new List<Tipo>
@@ -48,6 +75,7 @@
         new Tipo{ Id= 8,TipoMat= "InstrumentoMusical"},
    
     };
+
 
 
     private async void Submit(){
