@@ -171,14 +171,17 @@ namespace Biblioteca.BD.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
 
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
                     b.Property<int>("Curso")
                         .HasColumnType("int");
 
                     b.Property<bool>("Devuelto")
                         .HasColumnType("bit");
 
-                    b.Property<int>("FechaDevolucion")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("FechaDevolucion")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaEntrega")
                         .HasColumnType("datetime2");

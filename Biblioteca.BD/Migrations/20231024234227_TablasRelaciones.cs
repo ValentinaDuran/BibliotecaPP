@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.BD.Migrations
 {
     /// <inheritdoc />
-    public partial class tablas : Migration
+    public partial class TablasRelaciones : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -147,9 +147,10 @@ namespace Biblioteca.BD.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Prestatario = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Material = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
                     Curso = table.Column<int>(type: "int", nullable: false),
                     FechaEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaDevolucion = table.Column<int>(type: "int", nullable: false),
+                    FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HoraEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HoraDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Devuelto = table.Column<bool>(type: "bit", nullable: false),

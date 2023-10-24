@@ -20,6 +20,8 @@ namespace Biblioteca.BD.Data.Entidades
         [Required]
         public  string Material { get; set; }//
         [Required]
+        public int Cantidad { get; set; }//
+        [Required]
         public int Curso { get; set; }//
 
         [DataType(DataType.Date)]
@@ -30,7 +32,7 @@ namespace Biblioteca.BD.Data.Entidades
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha de Devolución")]
-        public int FechaDevolucion { get; set; }
+        public DateTime FechaDevolucion { get; set; }
 
         [DataType(DataType.Time)]
         [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
