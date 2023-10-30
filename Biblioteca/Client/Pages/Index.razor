@@ -1,4 +1,60 @@
 ﻿@page "/"
-
+@using Biblioteca.BD.Data.Entidades
+@using Biblioteca.Client.Services
+@inject IHttpService http
+@using MudBlazor
+@inject IDialogService DialogService
 <NavMenu></NavMenu>
+<div class="centered-content">
+    <MudCard MaxWidth="800px">
+        <MudCardContent>
+        
+                <MudButton  Variant="Variant.Filled" Color="Color.Primary">
+                    Agregar Producto
+                </MudButton>
 
+                <MudTable Items="@prestamos" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                    <HeaderContent>
+                        <MudTh>Prestatario</MudTh>
+                        <MudTh>Material</MudTh>
+                        <MudTh>Curso</MudTh>
+                        <MudTh>Fecha de entrega</MudTh>
+                        <MudTh>Hora de entrega</MudTh>
+                        <MudTh>Observacion</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Prestatario">@context.Prestatario</MudTd>
+                        <MudTd DataLabel="Material">@context.Material</MudTd>
+                        <MudTd DataLabel="Curso">@context.Curso</MudTd>
+                        <MudTd DataLabel="Fecha de entrega">@context.FechaEntrega</MudTd>
+                        <MudTd DataLabel="Hora de entrega">@context.HoraEntrega</MudTd>
+                        <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
+                    </RowTemplate>
+               </MudTable>
+            
+        </MudCardContent>
+    </MudCard>
+</div>
+
+@code {
+     List<Prestamo> prestamos;
+     bool fixed_header = true;
+     bool fixed_footer = true;
+
+        protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        await Leer();
+    }
+
+
+
+    private async Task Leer()
+    {
+        var respuesta = await http.Get<List<Prestamo>>("api/PrestamoController");
+        if (!respuesta.Error)
+        {
+            prestamos = respuesta.Respuesta;
+        }
+    }
+}

@@ -21,7 +21,7 @@ namespace Biblioteca.Server.Controllers
         public async Task<ActionResult<List<Prestamo>>> Get()
         {
             return await context.Prestamos
-                      .Include(i => i.PrestamoId)
+                      .Include(i => i.Inventario)
                       .ToListAsync();
 
 
