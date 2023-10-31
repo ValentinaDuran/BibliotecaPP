@@ -37,7 +37,7 @@ namespace Biblioteca.BD.Data.Entidades
         [Required(ErrorMessage = "Campo obligatorio.")]
         public string AutorMarca { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio") ]
+        
         public string Observacion { get; set; }
         #endregion
 

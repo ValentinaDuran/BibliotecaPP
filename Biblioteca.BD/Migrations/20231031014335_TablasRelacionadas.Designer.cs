@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.BD.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20231030175703_tablas")]
-    partial class tablas
+    [Migration("20231031014335_TablasRelacionadas")]
+    partial class TablasRelacionadas
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -174,10 +174,13 @@ namespace Biblioteca.BD.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
-                    b.Property<int>("Curso")
+                    b.Property<int>("CursoId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Devuelto")
@@ -187,13 +190,13 @@ namespace Biblioteca.BD.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaEntrega")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("HoraDevolucion")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraDevolucion")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("HoraEntrega")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraEntrega")
+                        .HasColumnType("time");
 
                     b.Property<int>("InventarioId")
                         .HasColumnType("int");
@@ -206,24 +209,32 @@ namespace Biblioteca.BD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Prestatario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PrestatarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TipoId")
+                        .HasColumnType("int");
 
                     b.HasKey("PrestamoId");
 
+                    b.HasIndex("CursoId");
+
                     b.HasIndex("InventarioId");
+
+                    b.HasIndex("PrestatarioId");
+
+                    b.HasIndex("TipoId");
 
                     b.ToTable("Prestamos");
                 });
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Prestatario", b =>
                 {
-                    b.Property<string>("PrestatarioId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Curso")
+                    b.Property<int>("PrestatarioId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestatarioId"));
 
                     b.Property<string>("NombreApellido")
                         .IsRequired()
@@ -315,13 +326,35 @@ namespace Biblioteca.BD.Migrations
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Prestamo", b =>
                 {
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Curso", "Curso")
+                        .WithMany()
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Biblioteca.BD.Data.Entidades.Inventario", "Inventario")
                         .WithMany()
                         .HasForeignKey("InventarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Prestatario", "Prestatario")
+                        .WithMany()
+                        .HasForeignKey("PrestatarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Tipo", "Tipo")
+                        .WithMany()
+                        .HasForeignKey("TipoId");
+
+                    b.Navigation("Curso");
+
                     b.Navigation("Inventario");
+
+                    b.Navigation("Prestatario");
+
+                    b.Navigation("Tipo");
                 });
 #pragma warning restore 612, 618
         }

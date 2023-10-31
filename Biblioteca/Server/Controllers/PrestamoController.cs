@@ -22,6 +22,7 @@ namespace Biblioteca.Server.Controllers
         {
             return await context.Prestamos
                       .Include(i => i.Inventario)
+                      .Where(a=> a.Activo==true)
                       .ToListAsync();
 
 
