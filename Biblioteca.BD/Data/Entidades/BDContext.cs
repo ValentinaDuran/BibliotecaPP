@@ -22,16 +22,37 @@ namespace Biblioteca.BD.Data.Entidades
         public BDContext(DbContextOptions options) : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Prestamo>()
                 .Property(p => p.FechaEntrega)
                 .HasColumnType("date");
-        }
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.FechaDevolucion)
+                .HasColumnType("date");
+
         
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.HoraEntrega)
+                .HasColumnType("time");
+
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.HoraDevolucion)
+                .HasColumnType("time");
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.DevolucionReal)
+                .HasColumnType("datetime");
+
+            modelBuilder.Entity<Prestamo>()
+                .HasOne(p => p.Tipo)
+                .WithMany()  
+                .HasForeignKey(p => p.TipoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+        }
 
 
     }
-
-
+    
 }

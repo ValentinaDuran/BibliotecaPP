@@ -66,18 +66,17 @@ namespace Biblioteca.Client.Services
             var respuestaStr = await response.Content.ReadAsStringAsync();
             try
             {
-                return JsonSerializer.Deserialize<T>(respuestaStr,
-                    new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                return JsonSerializer.Deserialize<T>(respuestaStr, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
             }
             catch (JsonException jsonEx)
             {
                 Console.WriteLine($"Error de deserialización: {jsonEx.Message}");
                 Console.WriteLine($"JSON: {respuestaStr}");
-                throw; // Lanza la excepción nuevamente para que cualquier llamador también pueda manejarla si es necesario.
+                throw; //Lanza excepción nuevamente para que cualquier llamador también pueda manejar
             }
         }
 
     }
-    }
+}
 
 

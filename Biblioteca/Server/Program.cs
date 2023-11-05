@@ -23,6 +23,11 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 var conn = builder.Configuration.GetConnectionString("conn");
 builder.Services.AddDbContext<BDContext>(opciones => opciones.UseSqlServer(conn));
+
+
+
+
+
 //inicio webapi swagger
 builder.Services.AddSwaggerGen(c =>
 {
@@ -34,7 +39,7 @@ var app = builder.Build();
 //webapi 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
-    "Obra Social v1"));
+    "Biblioteca/PracticaProfesional"));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

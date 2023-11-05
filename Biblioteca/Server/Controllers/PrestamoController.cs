@@ -20,17 +20,28 @@ namespace Biblioteca.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Prestamo>>> Get()
         {
-            return await context.Prestamos
-                      .Include(i => i.Inventario)
-                      .Where(a=> a.Activo==true)
-                      .ToListAsync();
-
-
+            var prestamos = await context.Prestamos
+                .Include(i => i.Inventario)
+                .ThenInclude(t =>t.Tipo)
+                .Include(i => i.Prestatario)
+                .Include(i => i.Curso)
+                .Where(a => a.Activo == true)
+                .ToListAsync();
+            return prestamos;
         }
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Prestamo>> Get(int id)
         {
-            var BibliotecaVerPrestamo = await context.Prestamos.Where(o => o.PrestamoId == id).FirstOrDefaultAsync();
+            var BibliotecaVerPrestamo = await context.Prestamos
+               
+                .Include(i => i.Inventario)
+                .ThenInclude(i => i.Tipo)
+                .Include(i => i.Prestatario)
+                .Include(i => i.Curso)
+                .Where(o => o.PrestamoId == id)
+                .FirstOrDefaultAsync();
+
+            //var BibliotecaVerPrestamo = await context.Prestamos.Where(o => o.PrestamoId == id).FirstOrDefaultAsync();
             if (BibliotecaVerPrestamo == null)
             {
                 return NotFound($"No existe ese material en el inventario de Id={id}");
@@ -38,23 +49,6 @@ namespace Biblioteca.Server.Controllers
             return BibliotecaVerPrestamo;
         }
 
-
-        /*[HttpPost]
-        public async Task<ActionResult<int>> Post(Inventario inventario)
-        {
-            try
-            {
-                context.Inventarios.Add(inventario);
-                await context.SaveChangesAsync();
-                return inventario.InventarioId;
-
-            }
-            catch (Exception o)
-            {
-
-                return BadRequest(o.Message);
-            }
-        }*/
 
         [HttpPost]
         public async Task<ActionResult<int>> Post(Prestamo prestamo)
@@ -66,18 +60,11 @@ namespace Biblioteca.Server.Controllers
                     return BadRequest(ModelState);
                 }
                 // Validar que la FechaEntrega sea mayor o igual que la fecha actual
-                if (prestamo.FechaEntrega < DateTime.Now)
+                if (prestamo.FechaEntrega > DateTime.Now)
                 {
                     return BadRequest("La fecha de entrega debe ser igual o posterior a la fecha actual.");
                 }
 
-                // No es necesario recuperar y establecer la propiedad Tipo. Simplemente confía en TipoId.
-
-                var exists = await context.Prestamos.AnyAsync(t => t.PrestamoId == prestamo.PrestamoId);
-                if (!exists)
-                {
-                    return NotFound($"El prestamo con ID {prestamo.PrestamoId} no fue encontrado.");
-                }
 
                 // Añade el objeto Inventario al contexto y guarda los cambios
                 context.Prestamos.Add(prestamo);
@@ -94,49 +81,58 @@ namespace Biblioteca.Server.Controllers
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
-            var BibliotecaBorrarPrestamo = context.Prestamos.Where(x => x.PrestamoId == id).FirstOrDefault();
-            if (BibliotecaBorrarPrestamo == null)
-            {
-                return NotFound($"El registro {id} no fue encontrado");
-            }
+            var prestamo = context.Prestamos.Where(x => x.PrestamoId == id).FirstOrDefault();
 
-            try
+            if (prestamo == null)
             {
-                context.Prestamos.Remove(BibliotecaBorrarPrestamo);
+                return NotFound($"El Tipo Documento {id} no fue encontrado");
+            }
+            if (prestamo != null)
+            {
+                prestamo.Activo = false;
                 context.SaveChanges();
-                return Ok($"El registro de {BibliotecaBorrarPrestamo.PrestamoId} ha sido eliminado");
-            }
-            catch (Exception o)
-            {
-                return BadRequest($"No se logro eliminar por:{o.Message}");
 
             }
+            return Ok();
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put(int id, Prestamo prestamo)
+        public ActionResult Put(int id, [FromBody] Prestamo prestamo)
         {
             if (id != prestamo.PrestamoId)
             {
                 return BadRequest("IDs no coinciden");
             }
+            var prestamoExistente = context.Prestamos.SingleOrDefault(o => o.PrestamoId == id);
+            //var prestamoExistente = context.Prestamos.Where(o => o.PrestamoId == id).FirstOrDefault();
+
+            if (prestamoExistente == null)
+            {
+                return NotFound("No existe el inventario");
+            }
+
+
+            prestamoExistente.CursoId = prestamo.CursoId;
+            prestamoExistente.PrestatarioId = prestamo.PrestatarioId;
+            prestamoExistente.InventarioId = prestamo.InventarioId;
+            prestamoExistente.TipoId = prestamo.TipoId;
+
+
+
+            // Actualiza otras propiedades según sea necesario
 
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                context.Entry(prestamo).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-                return NoContent();
+                context.Prestamos.Update(prestamoExistente);
+                context.SaveChanges();
+                return Ok();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
             }
         }
+       
 
     }
 }
