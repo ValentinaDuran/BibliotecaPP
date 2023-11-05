@@ -35,7 +35,7 @@ namespace Biblioteca.BD.Data.Entidades
         public DateTime FechaDevolucion { get; set; }
 
         [DataType(DataType.Time)]
-        [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
+        
         [Display(Name = "Hora de Entrega")]
         public DateTime HoraEntrega { get; set; }
 
