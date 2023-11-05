@@ -23,7 +23,7 @@ namespace Biblioteca.BD.Data.Entidades
         }
 
         [EnumDataType(typeof(TipoNivel), ErrorMessage = "Campo obligatorio.")]
-        public TipoNivel Nivel { get; set; }
+        public string Nivel { get; set; }
 
         public enum TipoAño
         {
@@ -42,10 +42,7 @@ namespace Biblioteca.BD.Data.Entidades
 
         }
 
-        [EnumDataType(typeof(TipoAño), ErrorMessage = "Campo obligatorio")]
-        public TipoAño Año { get; set; }
-
-
+        public string Año { get; set; }
 
         public enum TipoTurno
         {
@@ -55,8 +52,7 @@ namespace Biblioteca.BD.Data.Entidades
 
         }
 
-        [EnumDataType(typeof(TipoTurno), ErrorMessage = "Campo obligatorio.")]
-        public TipoTurno Turno { get; set; }
+        public string Turno { get; set; }
         //public string Turno { get; set; } //manana, tarde y noche
 
         public enum TipoDivision
@@ -67,15 +63,8 @@ namespace Biblioteca.BD.Data.Entidades
 
         }
 
-        [EnumDataType(typeof(TipoDivision), ErrorMessage = "Campo obligatorio.")]
-        public TipoDivision Division { get; set; }
-        //public string Division { get; set; }
+        public string Division { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio")]
-
-        public  string Prestatario { get; set; }
         #endregion
-        //Clave foranea: id_prestatario
-
     }
 }

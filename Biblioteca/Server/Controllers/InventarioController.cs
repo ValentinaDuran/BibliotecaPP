@@ -20,10 +20,13 @@ namespace Biblioteca.Server.Controllers
         {
             return await context.Inventarios
                       .Include(i => i.Tipo)
+                      .Where(i =>i.Activo == true)
                       .ToListAsync();
 
 
         }
+
+        
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Inventario>> Get(int id)
         {
@@ -38,23 +41,8 @@ namespace Biblioteca.Server.Controllers
             return inventario;
         }
 
-        /*[HttpPost]
-        public async Task<ActionResult<int>> Post(Inventario inventario)
-        {
-            try
-            {
-                context.Inventarios.Add(inventario);
-                await context.SaveChangesAsync();
-                return inventario.InventarioId;
 
-            }
-            catch (Exception o)
-            {
-
-                return BadRequest(o.Message);
-            }
-        }*/
-
+        //AGREGA UN NUEVO MATERIAL A INVENTARIO
         [HttpPost]
         public async Task<ActionResult<int>> Post(Inventario inventario)
         {
@@ -65,9 +53,18 @@ namespace Biblioteca.Server.Controllers
                     return BadRequest(ModelState);
                 }
 
+                // Verifica si ya existe un elemento con el mismo código
+                var codigoExists = await context.Inventarios.AnyAsync(i => i.Codigo == inventario.Codigo);
+
+                if (codigoExists)
+                {
+                    ModelState.AddModelError("Codigo", "El código ya existe. Debe ser único.");
+                    return BadRequest(ModelState);
+                }
+
                 // No es necesario recuperar y establecer la propiedad Tipo. Simplemente confía en TipoId.
                 // Solo verifica si el TipoId proporcionado realmente existe en la base de datos.
-                var exists = await context.Tipos.AnyAsync(t => t.Id == inventario.TipoId);
+                var exists = await context.Tipos.AnyAsync(t => t.TipoId == inventario.TipoId);
                 if (!exists)
                 {
                     return NotFound($"El tipo con ID {inventario.TipoId} no fue encontrado.");
@@ -88,25 +85,21 @@ namespace Biblioteca.Server.Controllers
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
-            var BibliotecaPractica = context.Inventarios.Where(x => x.InventarioId == id).FirstOrDefault();
-            if (BibliotecaPractica == null)
-            {
-                return NotFound($"El registro {id} no fue encontrado");
-            }
+            var inventario = context.Inventarios.Where(x => x.InventarioId == id).FirstOrDefault();
 
-            try
+            if (inventario == null)
             {
-                context.Inventarios.Remove(BibliotecaPractica);
+                return NotFound($"El Tipo Documento {id} no fue encontrado");
+            }
+            if (inventario != null)
+            {
+                inventario.Activo = false;
                 context.SaveChanges();
-                return Ok($"El registro de {BibliotecaPractica.Tipo} ha sido eliminado");
-            }
-            catch (Exception o)
-            {
-                return BadRequest($"No se logro eliminar por:{o.Message}");
 
             }
+            return Ok();
         }
-
+        //ACTUALIZACION DE INVENTARIO
         [HttpPut("{id:int}")]
         public ActionResult Put(int id, [FromBody] Inventario inventario)
         {
@@ -115,19 +108,29 @@ namespace Biblioteca.Server.Controllers
                 return BadRequest("IDs no coinciden");
             }
 
-            var inventarioExistente = context.Inventarios.Where(e => e.InventarioId == id).FirstOrDefault();
+            var inventarioExistente = context.Inventarios.SingleOrDefault(e => e.InventarioId == id);
 
             if (inventarioExistente == null)
             {
                 return NotFound("No existe el inventario");
             }
+
+            // Verifica si ya existe un inventario con el mismo código
+            var codigoExists = context.Inventarios.Any(i => i.Codigo == inventario.Codigo && i.InventarioId != id);
+
+            if (codigoExists)
+            {
+                ModelState.AddModelError("Codigo", "El código de inventario ya existe. Debe ser único.");
+                return BadRequest(ModelState);
+            }
+
             inventarioExistente.Codigo = inventario.Codigo;
             inventarioExistente.TituloNombre = inventario.TituloNombre;
             inventarioExistente.AutorMarca = inventario.AutorMarca;
             inventarioExistente.Observacion = inventario.Observacion;
             inventarioExistente.TipoId = inventario.TipoId;
             inventarioExistente.Tipo = inventario.Tipo;
-            
+
             // Actualiza otras propiedades según sea necesario
 
             try

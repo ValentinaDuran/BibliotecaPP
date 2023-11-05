@@ -12,7 +12,7 @@ namespace Biblioteca.BD.Data.Entidades
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int TipoId { get; set; }
 
         [Required]
         [StringLength(255)]

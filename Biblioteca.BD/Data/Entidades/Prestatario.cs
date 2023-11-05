@@ -11,14 +11,15 @@ namespace Biblioteca.BD.Data.Entidades
     {
         //Clave primaria
         [Key]
-        public string PrestatarioId { get; set; }
+        public int PrestatarioId { get; set; }
 
         //Atributos
         #region Atributos
         public string NombreApellido { get; set; }
-        public int Curso { get; set; } //tengo un problma con curso, se pone anio y division ? entonces como quedaria los atributos de la tabla cursos?
+
+
         #endregion 
 
-        //Clave foranea:id-curso
+        
     }
 }

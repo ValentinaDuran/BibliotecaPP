@@ -23,78 +23,36 @@ namespace Biblioteca.BD.Data.Entidades
         {
         }
 
-//        protected override void OnModelCreating(ModelBuilder modelBuilder)
-//        {
-//            modelBuilder.Entity<Inventario>()
-//                .HasOne(p => p.Tipo)
-//                .WithMany() 
-//                .HasForeignKey(p => p.TipoId);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.FechaEntrega)
+                .HasColumnType("date");
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.FechaDevolucion)
+                .HasColumnType("date");
 
-////            modelBuilder.Entity<Tipo>().HasData(
+        
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.HoraEntrega)
+                .HasColumnType("time");
 
-////new Tipo
-////{
-////    Id = 1,
-////    TipoMat = "Libro",
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.HoraDevolucion)
+                .HasColumnType("time");
+            modelBuilder.Entity<Prestamo>()
+                .Property(p => p.DevolucionReal)
+                .HasColumnType("datetime");
 
-////},
+            modelBuilder.Entity<Prestamo>()
+                .HasOne(p => p.Tipo)
+                .WithMany()  
+                .HasForeignKey(p => p.TipoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-////new Tipo
-////{
-////    Id = 2,
-////    TipoMat = "Mapa",
-
-////},
-
-////new Tipo
-////{
-////    Id = 3,
-////    TipoMat = "UtilGeometría",
-
-////},
-
-////new Tipo
-////{
-////    Id = 4,
-////    TipoMat = "Computadora",
-
-////},
-
-////new Tipo
-////{
-////    Id = 5,
-////    TipoMat = "Proyector",
-
-////},
-
-////new Tipo
-////{
-////    Id = 6,
-////    TipoMat = "Revista",
-
-////},
-
-////new Tipo
-////{
-////    Id = 7,
-////    TipoMat = "Ludoteca",
-
-////},
-
-////new Tipo
-////{
-////    Id = 8,
-////    TipoMat = "InstrumentoMusical"
-
-////}
+        }
 
 
-
-////               );
-//       }
-
-
-   }
-
-
+    }
+    
 }

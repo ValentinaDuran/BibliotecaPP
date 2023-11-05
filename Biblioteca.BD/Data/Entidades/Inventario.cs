@@ -13,39 +13,21 @@ namespace Biblioteca.BD.Data.Entidades
         [Key]
         public int InventarioId { get; set; }
 
-        public string Codigo { get; set; }
-
-        public bool IsAvailable { get; set; }//si el material esta disponible o no, necesario para prestamo
         #region Atributos
-
-
-        //public enum TipoMaterial
-        //{
-        //    Libro,
-        //    Mapa,
-        //    ÚtilGeometría,
-        //    Computadora,
-        //    Proyector,
-        //    Revista,
-        //    Ludoteca,
-        //    InstrumentoMusical
-        //}
-
+        public string Codigo { get; set; }
+        public bool Activo { get; set; } = true;//mostrar y ocultar visualmente 
         [Required(ErrorMessage = "Campo obligatorio.")]
         public string TituloNombre { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio.")]
         public string AutorMarca { get; set; }
-
-        [Required(ErrorMessage = "Campo obligatorio") ]
         public string Observacion { get; set; }
         #endregion
 
+        #region Claves
         public int TipoId { get; set; }
         public Tipo? Tipo { get; set; }
-
-
-        //Clave foranea:Id_Prestamo
+        #endregion
 
     }
 }

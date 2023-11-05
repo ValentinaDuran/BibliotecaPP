@@ -30,21 +30,21 @@ namespace Biblioteca.BD.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CursoId"));
 
-                    b.Property<int>("Año")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Division")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Nivel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Prestatario")
+                    b.Property<string>("Año")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Turno")
-                        .HasColumnType("int");
+                    b.Property<string>("Division")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nivel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Turno")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CursoId");
 
@@ -102,6 +102,9 @@ namespace Biblioteca.BD.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InventarioId"));
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("AutorMarca")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -109,9 +112,6 @@ namespace Biblioteca.BD.Migrations
                     b.Property<string>("Codigo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Observacion")
                         .IsRequired()
@@ -171,26 +171,29 @@ namespace Biblioteca.BD.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
-                    b.Property<int>("Curso")
+                    b.Property<int>("CursoId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Devuelto")
-                        .HasColumnType("bit");
+                    b.Property<DateTime>("DevolucionReal")
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime>("FechaDevolucion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("FechaEntrega")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("HoraDevolucion")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraDevolucion")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("HoraEntrega")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("HoraEntrega")
+                        .HasColumnType("time");
 
                     b.Property<int>("InventarioId")
                         .HasColumnType("int");
@@ -203,24 +206,32 @@ namespace Biblioteca.BD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Prestatario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PrestatarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipoId")
+                        .HasColumnType("int");
 
                     b.HasKey("PrestamoId");
 
+                    b.HasIndex("CursoId");
+
                     b.HasIndex("InventarioId");
+
+                    b.HasIndex("PrestatarioId");
+
+                    b.HasIndex("TipoId");
 
                     b.ToTable("Prestamos");
                 });
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Prestatario", b =>
                 {
-                    b.Property<string>("PrestatarioId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Curso")
+                    b.Property<int>("PrestatarioId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestatarioId"));
 
                     b.Property<string>("NombreApellido")
                         .IsRequired()
@@ -283,18 +294,18 @@ namespace Biblioteca.BD.Migrations
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Tipo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TipoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TipoId"));
 
                     b.Property<string>("TipoMat")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.HasKey("Id");
+                    b.HasKey("TipoId");
 
                     b.ToTable("Tipos");
                 });
@@ -312,13 +323,37 @@ namespace Biblioteca.BD.Migrations
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Prestamo", b =>
                 {
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Curso", "Curso")
+                        .WithMany()
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Biblioteca.BD.Data.Entidades.Inventario", "Inventario")
                         .WithMany()
                         .HasForeignKey("InventarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Prestatario", "Prestatario")
+                        .WithMany()
+                        .HasForeignKey("PrestatarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Tipo", "Tipo")
+                        .WithMany()
+                        .HasForeignKey("TipoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Curso");
+
                     b.Navigation("Inventario");
+
+                    b.Navigation("Prestatario");
+
+                    b.Navigation("Tipo");
                 });
 #pragma warning restore 612, 618
         }
