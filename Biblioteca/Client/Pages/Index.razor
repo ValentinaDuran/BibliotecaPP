@@ -4,33 +4,56 @@
 @inject IHttpService http
 @using MudBlazor
 @inject IDialogService DialogService
+
+<style>
+
+</style>
+
 <NavMenu></NavMenu>
-<div class="centered-content">
-    <MudCard MaxWidth="800px">
+<div class="centered-content " >
+    <MudCard MaxWidth="2500px" class="mx-auto my-auto">
         <MudCardContent>
         
                 <MudButton  Variant="Variant.Filled" Color="Color.Primary">
-                    Agregar Producto
+                    Agregar Prestamo
                 </MudButton>
 
-                <MudTable Items="@prestamos" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                <MudTable  Items="@prestamos" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
                     <HeaderContent>
-                        <MudTh>Prestatario</MudTh>
-                        <MudTh>Material</MudTh>
-                        <MudTh>Curso</MudTh>
-                        <MudTh>Fecha de entrega</MudTh>
-                        <MudTh>Hora de entrega</MudTh>
-                        <MudTh>Observacion</MudTh>
-                        <MudTh>Fecha devolucion</MudTh>
+                        <MudTh style="white-space: nowrap;">Prestatario</MudTh>
+                        <MudTh style="white-space: nowrap;">Material</MudTh>
+                        <MudTh style="white-space: nowrap;">Curso</MudTh>
+                        <MudTh style="white-space: nowrap;">Fecha de entrega</MudTh>
+                        <MudTh style="white-space: nowrap;">Hora de entrega</MudTh>
+                        <MudTh>Fecha de devolucion</MudTh>
+                        <MudTh>Hora de devolucion</MudTh>
+                           <MudTh>Observacion</MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd DataLabel="Prestatario">@context.Prestatario</MudTd>
-                        <MudTd DataLabel="Material">@context.Material</MudTd>
-                        <MudTd DataLabel="Curso">@context.Curso</MudTd>
-                        <MudTd DataLabel="Fecha de entrega">@context.FechaEntrega</MudTd>
-                        <MudTd DataLabel="Hora de entrega">@context.HoraEntrega</MudTd>
-                        <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
-                        <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion</MudTd>
+                        <MudTd DataLabel="Prestatario" class="ampliar-columna">@context.Prestatario.NombreApellido</MudTd>
+                        <MudTd DataLabel="material" Style="font-size:13px">
+                        <b>Codigo:</b>@context.Inventario.Codigo
+                        <b>Tipo:</b> @context.Tipo.TipoMat<br />
+                        <b>Material:</b> @context.Inventario.TituloNombre 
+                        <b>Autor/Marca:</b> @context.Inventario.AutorMarca
+                       
+                        </MudTd>
+                        <MudTd DataLabel="Curso" Style="font-size:13px">
+                            <b>Año:</b>
+                            @context.Curso.Año
+                            <b>Division:</b>
+                            @context.Curso.Division <br />
+                           <b>Nivel:</b> @context.Curso.Nivel 
+                            <b>Turno:</b> @context.Curso.Turno
+                            
+                        </MudTd>
+                        
+                        <MudTd DataLabel="Fecha de entrega">@context.FechaEntrega.ToString("d")</MudTd>
+                        <MudTd DataLabel="Hora de entrega">@context.HoraEntrega.ToString(@"hh\:mm")</MudTd>                       
+                        <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion.ToString("d")</MudTd>
+                        <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
+                        <MudTd DataLabel="Observacion">@context.Inventario.Observacion</MudTd>
+
                     </RowTemplate>
                </MudTable>
             
