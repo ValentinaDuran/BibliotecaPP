@@ -21,7 +21,7 @@
             else
             {
                 <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-                    Agregar Producto
+                    Agregar Material
                 </MudButton>
 
                 <MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
@@ -65,7 +65,7 @@
     void OpenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<InventarioFormDialog>("Agregar producto", options);
+        DialogService.Show<InventarioFormDialog>("Agregar material", options);
     }
 
     private Inventario inventarioSeleccionado;
