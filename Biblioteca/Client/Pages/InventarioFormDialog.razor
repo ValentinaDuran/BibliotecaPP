@@ -8,24 +8,25 @@
         <MudForm>
             <MudGrid>
                     <MudItem xs="6">
-                        <MudTextField @bind-Value="newInventario.TituloNombre" Label="Título/Nombre" />
+                    <MudTextField @bind-Value="newInventario.TituloNombre" For="@(() => newInventario.TituloNombre)" Label="Título/Nombre" />
                     </MudItem>
                     <MudItem xs="6">
-                        <MudTextField @bind-Value="newInventario.AutorMarca" Label="Autor/marca" />
+                    <MudTextField @bind-Value="newInventario.AutorMarca" Label="Autor/marca" For="@(() => newInventario.AutorMarca)" />
                     </MudItem>
                     <MudItem xs="6">
                         <MudTextField @bind-Value="newInventario.Observacion" Label="Observación" />
                     </MudItem>
                     <MudItem xs="6">
-                        <MudSelect T="int" @bind-Value="newInventario.TipoId" Label="Tipo">
+                    <MudSelect T="int" @bind-Value="newInventario.TipoId" Label="Tipo" For="@(() => newInventario.TipoId)">
                             @foreach (var tipo in tipos)
                             {
                                 <MudSelectItem Value="@tipo.TipoId">@tipo.TipoMat</MudSelectItem>
                             }
                         </MudSelect>
                     </MudItem>
+
                      <MudItem xs="6">
-                        <MudTextField @bind-Value="newInventario.Codigo" Label="Codigo" />
+                        <MudTextField @bind-Value="newInventario.Codigo" Label="Codigo" For="@(() => newInventario.Codigo)" />
                     </MudItem>
             </MudGrid>
         </MudForm>
@@ -37,7 +38,7 @@
 </MudDialog>
 @code {
       private bool isOpen = false;
-
+    private Inventario model = new Inventario();
 
       private Inventario editedInventario = new Inventario(); // Datos del inventario a editar
   

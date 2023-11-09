@@ -42,6 +42,7 @@ namespace Biblioteca.BD.Data.Entidades
 
         }
 
+        [Required(ErrorMessage = "Campo obligatorio.")]
         public string Año { get; set; }
 
         public enum TipoTurno
@@ -51,10 +52,10 @@ namespace Biblioteca.BD.Data.Entidades
             Noche
 
         }
-
+        [Required(ErrorMessage = "Campo obligatorio.")]
         public string Turno { get; set; }
         //public string Turno { get; set; } //manana, tarde y noche
-
+        
         public enum TipoDivision
         {
             A,
@@ -62,7 +63,7 @@ namespace Biblioteca.BD.Data.Entidades
             C
 
         }
-
+        [Required(ErrorMessage = "Campo obligatorio.")]
         public string Division { get; set; }
 
         #endregion

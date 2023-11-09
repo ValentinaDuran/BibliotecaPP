@@ -14,7 +14,7 @@ namespace Biblioteca.BD.Data.Entidades
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TipoId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo obligatorio.")]
         [StringLength(255)]
         public string TipoMat { get; set; }
 

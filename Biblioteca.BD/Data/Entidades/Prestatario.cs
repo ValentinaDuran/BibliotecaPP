@@ -15,6 +15,7 @@ namespace Biblioteca.BD.Data.Entidades
 
         //Atributos
         #region Atributos
+        [Required(ErrorMessage = "Campo obligatorio.")]
         public string NombreApellido { get; set; }
 
 

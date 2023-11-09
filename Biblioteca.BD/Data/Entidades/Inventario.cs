@@ -14,6 +14,7 @@ namespace Biblioteca.BD.Data.Entidades
         public int InventarioId { get; set; }
 
         #region Atributos
+        [Required(ErrorMessage = "Campo obligatorio.")]
         public string Codigo { get; set; }
         public bool Activo { get; set; } = true;//mostrar y ocultar visualmente 
         [Required(ErrorMessage = "Campo obligatorio.")]
@@ -25,6 +26,7 @@ namespace Biblioteca.BD.Data.Entidades
         #endregion
 
         #region Claves
+        [Required(ErrorMessage = "Campo obligatorio.")]
         public int TipoId { get; set; }
         public Tipo? Tipo { get; set; }
         #endregion

@@ -180,8 +180,11 @@ namespace Biblioteca.BD.Migrations
                     b.Property<int>("CursoId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DevolucionReal")
+                    b.Property<DateTime?>("DevolucionReal")
                         .HasColumnType("datetime");
+
+                    b.Property<bool>("Devuelto")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaDevolucion")
                         .HasColumnType("date");
@@ -197,10 +200,6 @@ namespace Biblioteca.BD.Migrations
 
                     b.Property<int>("InventarioId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Observacion")
                         .IsRequired()

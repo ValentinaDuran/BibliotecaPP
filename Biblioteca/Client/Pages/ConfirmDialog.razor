@@ -1,0 +1,22 @@
+﻿@page "/confirm-dialog"
+
+<MudDialog>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Confirm">Confirm</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public EventCallback<bool> ConfirmationChanged { get; set; }
+
+    private void Confirm()
+    {
+        ConfirmationChanged.InvokeAsync(true);
+    }
+
+    private void Cancel()
+    {
+        ConfirmationChanged.InvokeAsync(false);
+    }
+}

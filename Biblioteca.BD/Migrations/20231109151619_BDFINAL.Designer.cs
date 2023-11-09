@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.BD.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20231104142141_TablasRelacionadas")]
-    partial class TablasRelacionadas
+    [Migration("20231109151619_BDFINAL")]
+    partial class BDFINAL
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,8 +183,11 @@ namespace Biblioteca.BD.Migrations
                     b.Property<int>("CursoId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DevolucionReal")
+                    b.Property<DateTime?>("DevolucionReal")
                         .HasColumnType("datetime");
+
+                    b.Property<bool>("Devuelto")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaDevolucion")
                         .HasColumnType("date");
@@ -200,10 +203,6 @@ namespace Biblioteca.BD.Migrations
 
                     b.Property<int>("InventarioId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Observacion")
                         .IsRequired()

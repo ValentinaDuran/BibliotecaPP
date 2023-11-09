@@ -14,6 +14,7 @@ namespace Biblioteca.BD.Data.Entidades
         public int ReservaId { get; set; }
 
         #region Atributos
+
         public string InventarioId { get; set; }//
         public string PrestatarioId { get; set; }//
         public string MaterialId { get; set; }//

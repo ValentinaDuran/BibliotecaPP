@@ -9,6 +9,11 @@
 <div class="centered-content">
     <MudCard MaxWidth="800px" class="mx-auto my-auto">
         <MudCardContent>
+ 
+            <div style="display: flex;
+    justify-content: center;">
+                <MudText Typo="Typo.h3" class="centered-content"> <b>Inventario</b></MudText>
+            </div>
             @if (inventarios == null)
             {
                 <div>Cargando...</div>
@@ -38,6 +43,10 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="()=>Borrar(context)" />
                     </RowTemplate>
                 </MudTable>
+                <div style="text-align: center;" >
+                    <br>
+                    <MudPagination Variant="Variant.Outlined" Count="4" />
+                </div>
             }
         </MudCardContent>
     </MudCard>
