@@ -1,0 +1,165 @@
+﻿
+@page "/tupaginadestino"
+
+@using Biblioteca.BD.Data.Entidades
+@using Biblioteca.Client.Services
+@inject IHttpService http
+@inject NavigationManager NavManager
+
+<MudDialog iOpen="isOpen">
+    <DialogContent>
+        <MudForm>
+            <MudGrid>
+
+  <MudItem xs= "4">
+        <MudTextField py-8 T="string" Label="Prestatario" />
+        </MudItem>
+ <MudItem xs="4">  
+<MudAutocomplete @bind-Value="selectedInventarios"
+                 Data="@inventarios"
+                 TItem="Inventario"
+                 TextField="MostrarInventario"
+                 SearchFunc="@SearchInventario"
+                 Placeholder="Inventario">
+    <ItemTemplate>
+        @{
+            var inventario = context as Inventario;
+            <div>
+                @($"{inventario.Codigo} - {inventario.TituloNombre ?? string.Empty} - {inventario.AutorMarca ?? string.Empty}")
+            </div>
+        }
+    </ItemTemplate>
+</MudAutocomplete>
+</MudItem>
+
+        <MudItem xs= "4">
+<MudAutocomplete @bind-Value="selectedCursos"
+                 Data="@cursos"
+                 TItem="Curso"
+                 TextField="MostrarCurso"
+                 SearchFunc="@SearchCurso"
+                 Placeholder="Curso">
+    <ItemTemplate>
+        @{
+            var curso = context as Curso;
+            <div>
+                @($"{curso.Año} - {curso.Division ?? string.Empty} - {curso.Turno ?? string.Empty}- {curso.Nivel ?? string.Empty}")
+            </div>
+        }
+    </ItemTemplate>
+</MudAutocomplete>
+        
+        
+        </MudItem>
+
+         <MudItem xs="4">        
+        <MudDatePicker Label="Fecha entrega" />
+        </MudItem>
+        <MudItem xs= "4">
+         <MudTimePicker Label="Hora entrega" />
+        </MudItem>
+          <MudItem xs="4">        
+        <MudDatePicker Label="Fecha Devolucion" />
+        </MudItem>
+        <MudItem xs= "4">
+         <MudTimePicker Label="Hora Devolucion" />
+        </MudItem>
+        <MudItem xs= "4">
+        <MudTextField py-8 T="string" Label="Observacion" />
+        </MudItem>
+
+
+
+</MudGrid>
+</MudForm>
+</DialogContent>
+ <DialogActions>
+        
+        <MudButton Color="Color.Primary">Agregar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    private List<Curso> cursos;
+    private List<Inventario> inventarios;
+    private Inventario selectedInventarios;
+    private Curso selectedCursos;
+    private Prestamo newPrestamo = new Prestamo();
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarInventarios();
+        await CargarCursos();
+    }
+
+    private async Task CargarInventarios()
+    {
+        var respuesta = await http.Get<List<Inventario>>("api/InventarioController");
+        if (!respuesta.Error)
+        {
+            inventarios = respuesta.Respuesta;
+        }
+        else
+        {
+            Console.WriteLine($"Error al cargar inventarios: {respuesta.Error}");
+        }
+    }
+
+       private async Task CargarCursos()
+    {
+        var respuesta = await http.Get<List<Curso>>("api/CursoController");
+        if (!respuesta.Error)
+        {
+            cursos = respuesta.Respuesta;
+        }
+        else
+        {
+            Console.WriteLine($"Error al cargar inventarios: {respuesta.Error}");
+        }
+    }
+private string MostrarCurso(Curso curso)
+{
+    return curso != null
+        ? $"{curso.Año} - {curso.Division ?? string.Empty} - {curso.Turno ?? string.Empty}- {curso.Nivel ?? string.Empty}"
+        : string.Empty;
+}
+
+    private string MostrarInventario(Inventario inventario)
+    {
+        return inventario != null
+            ? $"{inventario.Codigo} - {inventario.TituloNombre ?? string.Empty} - {inventario.AutorMarca ?? string.Empty}"
+            : string.Empty;
+    }
+
+private async Task<IEnumerable<Inventario>> SearchInventario(string value)
+{
+    await Task.Delay(300);
+
+    if (value != null && inventarios != null)
+    {
+        return inventarios
+            .Where(i => MostrarInventario(i).Contains(value, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    return new List<Inventario>();
+}
+
+
+    private async Task<IEnumerable<Curso>> SearchCurso(string value)
+{
+    await Task.Delay(300);
+
+    if (cursos != null && value != null)
+    {
+        return cursos
+            .Where(i => MostrarCurso(i).Contains(value, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    return new List<Curso>();
+}
+    
+   
+    
+}

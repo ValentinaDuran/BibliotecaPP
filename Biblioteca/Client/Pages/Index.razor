@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Biblioteca.BD.Data.Entidades
+@using Biblioteca.Client.Pages.Prestamo
 @using Biblioteca.Client.Services
 @inject IHttpService http
 @using MudBlazor
@@ -16,10 +17,10 @@
         <MudCardContent>
             <div style="display: flex;
     justify-content: center;">
-                <MudText Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
+                <MudText  Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
             </div>
             
-                <MudButton  Variant="Variant.Filled" Color="Color.Primary">
+                <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
                     Agregar Prestamo
                 </MudButton>
 
@@ -67,7 +68,7 @@
 </div>
 
 @code {
-     List<Prestamo> prestamos;
+     List<Biblioteca.BD.Data.Entidades.Prestamo> prestamos;
      bool fixed_header = true;
      bool fixed_footer = true;
 
@@ -76,12 +77,17 @@
         base.OnInitializedAsync();
         await Leer();
     }
-
+    bool isOpen = false;
+       void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<PrestamoFormDialog>("Agregar Prestamo", options);
+    }
 
 
     private async Task Leer()
     {
-        var respuesta = await http.Get<List<Prestamo>>("api/PrestamoController");
+        var respuesta = await http.Get<List<Biblioteca.BD.Data.Entidades.Prestamo>>("api/PrestamoController");
         if (!respuesta.Error)
         {
             prestamos = respuesta.Respuesta;

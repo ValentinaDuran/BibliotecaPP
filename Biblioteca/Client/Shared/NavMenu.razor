@@ -2,26 +2,33 @@
     <MudAppBar Elevation="1" Style="background-color:#1565C0;" >   
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Style="color:white" Edge="Edge.Start"  OnClick="@ToggleDrawer" />
         <div class="contenido">
-        <h1 style="color:white">Colegio Superior Roque Saenz Peña</h1>
+        <h1 style="color:white"> <a href="/" style="color:white">Colegio Superior Roque Saenz Peña</a></h1>
         <MudSpacer />
         </div>
     </MudAppBar>
-    <MudDrawer @bind-Open="@open" Elevation="1" Style="background-color:#1565C0;" >
-        <MudDrawerHeader >
-            <MudText Typo="Typo.h4" Style="color:white">Biblioteca</MudText>
+    <MudDrawer @bind-Open="@open" Breakpoint="@breakpoint" Elevation="1" Variant="@DrawerVariant.Responsive" PreserveOpenState="@preserveOpenState">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">My App</MudText>
         </MudDrawerHeader>
-        <MudNavMenu >
-            <div class="items">
-            <MudNavLink Match="NavLinkMatch.All" Href="#" Style="color:white" >Inicio</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All" Href="/inventario-list" Style="color:white">Inventario</MudNavLink>
-            </div>
+        <MudNavMenu>
+            <MudNavLink Match="NavLinkMatch.All" Href="/">Prestamo</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="/inventario-list">Inventario</MudNavLink>
+            
         </MudNavMenu>
     </MudDrawer>
     
 </MudLayout>
+
+<style>
+    .custom-nav-menu {
+        color: white !important; 
+    }
+</style>
 @code {
     bool open = false;
-
+  
+     bool preserveOpenState = false;
+    Breakpoint breakpoint = Breakpoint.Lg;
     void ToggleDrawer()
     {
         open = !open;

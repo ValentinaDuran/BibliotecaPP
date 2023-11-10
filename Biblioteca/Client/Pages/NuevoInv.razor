@@ -40,13 +40,10 @@
                         <MudTd DataLabel="Observación">@context.Observacion</MudTd>
                         <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
                         <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="()=>Borrar(context)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)"/>
                     </RowTemplate>
                 </MudTable>
-                <div style="text-align: center;" >
-                    <br>
-                    <MudPagination Variant="Variant.Outlined" Count="4" />
-                </div>
+           
             }
         </MudCardContent>
     </MudCard>
@@ -106,4 +103,23 @@
         }
         await Leer();
     }
+
+    private async Task MostrarDialogBorrar(Inventario inventario)
+    {
+       var parameters = new DialogParameters();
+parameters.Add("Inventario", inventario);
+
+var options = new DialogOptions { CloseOnEscapeKey = true };
+var result = await DialogService.Show<ConfirmDialog>("Confirmar Borrado", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await Borrar(inventario);
+        }
+    }
+
 }

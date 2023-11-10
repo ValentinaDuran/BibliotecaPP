@@ -1,22 +1,25 @@
 ﻿@page "/confirm-dialog"
-
+@using Biblioteca.BD.Data.Entidades
 <MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6">¿Está seguro de que desea borrar?</MudText>
+    </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Confirm">Confirm</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+        <MudButton OnClick="Cancelar">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Confirmar">Aceptar</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [Parameter] public EventCallback<bool> ConfirmationChanged { get; set; }
-
-    private void Confirm()
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+     [Parameter] public Inventario Inventario { get; set; }
+    private void Cancelar()
     {
-        ConfirmationChanged.InvokeAsync(true);
+        MudDialog.Cancel();
     }
 
-    private void Cancel()
+    private void Confirmar()
     {
-        ConfirmationChanged.InvokeAsync(false);
+        MudDialog.Close(DialogResult.Ok(true));
     }
 }
