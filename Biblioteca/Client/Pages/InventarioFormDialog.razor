@@ -3,68 +3,67 @@
 @inject IHttpService http
 @inject NavigationManager NavManager
 @using MudBlazor
+@inject ISnackbar SnackbarService
 <MudDialog iOpen="isOpen">
     <DialogContent>
         <MudForm>
             <MudGrid>
-                    <MudItem xs="6">
-                    <MudTextField @bind-Value="newInventario.TituloNombre" For="@(() => newInventario.TituloNombre)" Label="Título/Nombre" />
-                    </MudItem>
-                    <MudItem xs="6">
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="newInventario.TituloNombre" Label="Título/Nombre" For="@(() => newInventario.TituloNombre)" />
+                </MudItem>
+                <MudItem xs="6">
                     <MudTextField @bind-Value="newInventario.AutorMarca" Label="Autor/marca" For="@(() => newInventario.AutorMarca)" />
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudTextField @bind-Value="newInventario.Observacion" Label="Observación" />
-                    </MudItem>
-                    <MudItem xs="6">
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="newInventario.Observacion" Label="Observación" />
+                </MudItem>
+                <MudItem xs="6">
                     <MudSelect T="int" @bind-Value="newInventario.TipoId" Label="Tipo" For="@(() => newInventario.TipoId)">
-                            @foreach (var tipo in tipos)
-                            {
-                                <MudSelectItem Value="@tipo.TipoId">@tipo.TipoMat</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-
-                     <MudItem xs="6">
-                        <MudTextField @bind-Value="newInventario.Codigo" Label="Codigo" For="@(() => newInventario.Codigo)" />
-                    </MudItem>
+                        @foreach (var tipo in tipos)
+                        {
+                            <MudSelectItem Value="@tipo.TipoId">@tipo.TipoMat</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="newInventario.Codigo" Label="Codigo" For="@(() => newInventario.Codigo)" />
+                </MudItem>
             </MudGrid>
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancelar</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
     </DialogActions>
 </MudDialog>
+
 @code {
-      private bool isOpen = false;
+    private bool isOpen = false;
     private Inventario model = new Inventario();
+    private List<Inventario> inventarios;
 
-      private Inventario editedInventario = new Inventario(); // Datos del inventario a editar
-  
 
-    // Evento personalizado del componente de la tabla
-    [Parameter] public Action<Inventario> OnEditarInventario { get; set; }
 
     protected override void OnInitialized()
     {
-        // Suscribirse al evento personalizado del componente de la tabla
-        OnEditarInventario += EditarInventario;
+
+ 
     }
 
-    // Método para recibir la notificación del evento y abrir el diálogo
+
     private void EditarInventario(Inventario inventario)
     {
-        // Abrir el diálogo y llenar los campos con los datos de la fila seleccionada
-        editedInventario = inventario;
+        
         isOpen = true;
     }
 
-   
-
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    private Inventario newInventario = new Inventario();
-     static List<Tipo> tipos = new List<Tipo>
+
+     private Inventario newInventario = new Inventario
+    {
+        Observacion = "Sin observación"
+    };
+    static List<Tipo> tipos = new List<Tipo>
     {
         new Tipo{ TipoId= 1,TipoMat= "Libro"},
         new Tipo{ TipoId= 2,TipoMat= "Mapa"},
@@ -74,27 +73,50 @@
         new Tipo{ TipoId= 6,TipoMat= "Revista"},
         new Tipo{ TipoId= 7,TipoMat= "Ludoteca"},
         new Tipo{ TipoId= 8,TipoMat= "InstrumentoMusical"},
-   
     };
 
-
-
-    private async void Submit(){
-
-         var httpRespuesta = await http.Post<Inventario>("api/InventarioController", newInventario);
-    if (!httpRespuesta.Error)
+    private async void Submit()
     {
-   
-        MudDialog.Close();
-        NavManager.NavigateTo("/inventario-list", forceLoad: true);
-    }
-    else
-    {
-     
-        var body = httpRespuesta.HttpResponseMessage;
-    }
-    }
 
+        var respuesta = await http.Get<List<Inventario>>("api/InventarioController");
+        if (!respuesta.Error)
+        {
+            inventarios = respuesta.Respuesta;
+        }
+
+      
+          if (inventarios != null && inventarios.Any(i => string.Equals(i.Codigo, newInventario.Codigo, StringComparison.OrdinalIgnoreCase)))
+        {
+            SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+            SnackbarService.Add("El código ya existe en la tabla.", Severity.Error);
+            return;
+        }
+
+
+        if (string.IsNullOrWhiteSpace(newInventario.TituloNombre)
+        || string.IsNullOrWhiteSpace(newInventario.AutorMarca)
+        || string.IsNullOrWhiteSpace(newInventario.Observacion)
+        || string.IsNullOrWhiteSpace(newInventario.Codigo)
+        || newInventario.TipoId == 0)
+        {
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Por favor, completa todos los campos.", Severity.Error);
+        return;
+      
+        }
+
+        var httpRespuesta = await http.Post<Inventario>("api/InventarioController", newInventario);
+        if (!httpRespuesta.Error)
+        {
+            
+            MudDialog.Close();
+            NavManager.NavigateTo("/inventario-list", forceLoad: true);
+        }
+        else
+        {
+            var body = httpRespuesta.HttpResponseMessage;
+        }
+    }
 
     void Cancel() => MudDialog.Cancel();
 

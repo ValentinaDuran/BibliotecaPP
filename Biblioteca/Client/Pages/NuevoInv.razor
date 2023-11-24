@@ -5,15 +5,18 @@
 @using MudBlazor
 @inject IDialogService DialogService
 
-<NavMenu></NavMenu>
 <div class="centered-content">
+    <NavMenu></NavMenu>
     <MudCard MaxWidth="800px" class="mx-auto my-auto">
         <MudCardContent>
- 
-            <div style="display: flex;
-    justify-content: center;">
-                <MudText Typo="Typo.h3" class="centered-content"> <b>Inventario</b></MudText>
+            <div style="display: flex; justify-content: center;">
+                <MudText Typo="Typo.h3" class="centered-content"><b>Inventario</b></MudText>
             </div>
+
+            <div style="margin-bottom: 16px;">
+                <MudTextField Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+            </div>
+
             @if (inventarios == null)
             {
                 <div>Cargando...</div>
@@ -34,16 +37,18 @@
                         <MudTh></MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd DataLabel="Codigo">@context.Codigo</MudTd>
-                        <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
-                        <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
-                        <MudTd DataLabel="Observación">@context.Observacion</MudTd>
-                        <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)"/>
+                        @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
+                        {
+                            <MudTd DataLabel="Codigo">@context.Codigo</MudTd>
+                            <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
+                            <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
+                            <MudTd DataLabel="Observación">@context.Observacion</MudTd>
+                            <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
+                            <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                        }
                     </RowTemplate>
                 </MudTable>
-           
             }
         </MudCardContent>
     </MudCard>
@@ -58,6 +63,7 @@
     bool fixed_footer = true;
 
     bool isOpen = false;
+    string buscarTermino = "";
 
     void OpenDialog()
     {
@@ -67,9 +73,8 @@
 
     private Inventario inventarioSeleccionado;
 
-  void EditarInventario(Inventario inventario)
+    void EditarInventario(Inventario inventario)
     {
-        // Abre el diálogo de edición y pasa el InventarioId como parámetro
         var parameters = new DialogParameters();
         parameters.Add("InventarioSeleccionadoId", inventario.InventarioId);
 
@@ -82,8 +87,6 @@
         base.OnInitializedAsync();
         await Leer();
     }
-
-
 
     private async Task Leer()
     {
@@ -106,11 +109,11 @@
 
     private async Task MostrarDialogBorrar(Inventario inventario)
     {
-       var parameters = new DialogParameters();
-parameters.Add("Inventario", inventario);
+        var parameters = new DialogParameters();
+        parameters.Add("Inventario", inventario);
 
-var options = new DialogOptions { CloseOnEscapeKey = true };
-var result = await DialogService.Show<ConfirmDialog>("Confirmar Borrado", parameters, options).Result;
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmDialog>("Confirmar Borrado", parameters, options).Result;
 
         if (result.Cancelled)
         {
@@ -122,4 +125,17 @@ var result = await DialogService.Show<ConfirmDialog>("Confirmar Borrado", parame
         }
     }
 
+    bool MatchesSearchTerm(Inventario inventario)
+    {
+        if (string.IsNullOrWhiteSpace(buscarTermino))
+        {
+            return true;
+        }
+
+        return inventario.Codigo.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.TituloNombre.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.AutorMarca.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.Observacion.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.Tipo.TipoMat.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
+    }
 }
