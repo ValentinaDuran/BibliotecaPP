@@ -75,10 +75,9 @@ namespace Biblioteca.BD.Data.Entidades
 
         //Relacion con Tipo de material
 
-        [ForeignKey(nameof(TipoId))]
-        [Required(ErrorMessage = "Campo obligatorio.")]
-        public Tipo? Tipo { get; set; }
-        public int TipoId { get; set; }
+        //[ForeignKey(nameof(TipoId))]
+        //public Tipo? Tipo { get; set; }
+        //public int TipoId { get; set; }
         #endregion
 
     }

@@ -45,11 +45,11 @@ namespace Biblioteca.BD.Data.Entidades
                 .Property(p => p.DevolucionReal)
                 .HasColumnType("datetime");
 
-            modelBuilder.Entity<Prestamo>()
-                .HasOne(p => p.Tipo)
-                .WithMany()
-                .HasForeignKey(p => p.TipoId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Prestamo>()
+            //    .HasOne(p => p.Tipo)
+            //    .WithMany()
+            //    .HasForeignKey(p => p.TipoId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             //Model de reservas
             modelBuilder.Entity<Reserva>()
@@ -71,11 +71,11 @@ namespace Biblioteca.BD.Data.Entidades
                 .Property(p => p.DevolucionReal)
                 .HasColumnType("datetime");
 
-            modelBuilder.Entity<Reserva>()
-                .HasOne(p => p.Tipo)
-                .WithMany()
-                .HasForeignKey(p => p.TipoId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Reserva>()
+            //    .HasOne(p => p.Tipo)
+            //    .WithMany()
+            //    .HasForeignKey(p => p.TipoId)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             //Model de deudor
             modelBuilder.Entity<Deudor>()

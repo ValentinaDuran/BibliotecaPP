@@ -178,9 +178,6 @@ namespace Biblioteca.BD.Migrations
                     b.Property<int>("PrestatarioId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TipoId")
-                        .HasColumnType("int");
-
                     b.HasKey("PrestamoId");
 
                     b.HasIndex("CursoId");
@@ -188,8 +185,6 @@ namespace Biblioteca.BD.Migrations
                     b.HasIndex("InventarioId");
 
                     b.HasIndex("PrestatarioId");
-
-                    b.HasIndex("TipoId");
 
                     b.ToTable("Prestamos");
                 });
@@ -255,9 +250,6 @@ namespace Biblioteca.BD.Migrations
                     b.Property<int>("PrestatarioId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TipoId")
-                        .HasColumnType("int");
-
                     b.HasKey("ReservaId");
 
                     b.HasIndex("CursoId");
@@ -265,8 +257,6 @@ namespace Biblioteca.BD.Migrations
                     b.HasIndex("InventarioId");
 
                     b.HasIndex("PrestatarioId");
-
-                    b.HasIndex("TipoId");
 
                     b.ToTable("Reservas");
                 });
@@ -339,19 +329,11 @@ namespace Biblioteca.BD.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biblioteca.BD.Data.Entidades.Tipo", "Tipo")
-                        .WithMany()
-                        .HasForeignKey("TipoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Curso");
 
                     b.Navigation("Inventario");
 
                     b.Navigation("Prestatario");
-
-                    b.Navigation("Tipo");
                 });
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Reserva", b =>
@@ -374,19 +356,11 @@ namespace Biblioteca.BD.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biblioteca.BD.Data.Entidades.Tipo", "Tipo")
-                        .WithMany()
-                        .HasForeignKey("TipoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Curso");
 
                     b.Navigation("Inventario");
 
                     b.Navigation("Prestatario");
-
-                    b.Navigation("Tipo");
                 });
 #pragma warning restore 612, 618
         }

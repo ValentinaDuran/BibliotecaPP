@@ -11,61 +11,59 @@
         <MudForm>
             <MudGrid>
 
-  <MudItem xs= "4">
-        <MudTextField py-8 T="string" Label="Prestatario" />
-        </MudItem>
- <MudItem xs="4">  
-<MudAutocomplete @bind-Value="selectedInventarios"
-                 Data="@inventarios"
-                 TItem="Inventario"
-                 TextField="MostrarInventario"
-                 SearchFunc="@SearchInventario"
-                 Placeholder="Inventario">
-    <ItemTemplate>
-        @{
-            var inventario = context as Inventario;
-            <div>
-                @($"{inventario.Codigo} - {inventario.TituloNombre ?? string.Empty} - {inventario.AutorMarca ?? string.Empty}")
-            </div>
+    <MudItem xs="12">
+<MudSelect T="int" @bind-Value="newPrestamo.PrestatarioId" For="@(() => newPrestamo.PrestatarioId)">
+                        @foreach (var prestatario in prestatarios)
+                        {
+                            <MudSelectItem Value="@prestatario.PrestatarioId">@prestatario.NombreApellido</MudSelectItem>
+                        }
+                    </MudSelect>    
+                </MudItem>
+    <MudItem xs="12"> 
+<MudSelect @bind-Value="newPrestamo.InventarioId" Label="Seleccionar Inventario" Placeholder="Seleccione un Inventario">
+    @if (inventarios != null)
+    {
+        @foreach (var inventario in inventarios)
+        {
+            <MudSelectItem Value="@inventario.InventarioId">
+                @MostrarInventario(inventario)
+            </MudSelectItem>
         }
-    </ItemTemplate>
-</MudAutocomplete>
-</MudItem>
+    }
+</MudSelect>
 
-        <MudItem xs= "4">
-<MudAutocomplete @bind-Value="selectedCursos"
-                 Data="@cursos"
-                 TItem="Curso"
-                 TextField="MostrarCurso"
-                 SearchFunc="@SearchCurso"
-                 Placeholder="Curso">
-    <ItemTemplate>
-        @{
-            var curso = context as Curso;
-            <div>
-                @($"{curso.Año} - {curso.Division ?? string.Empty} - {curso.Turno ?? string.Empty}- {curso.Nivel ?? string.Empty}")
-            </div>
-        }
-    </ItemTemplate>
-</MudAutocomplete>
-        
-        
         </MudItem>
 
-         <MudItem xs="4">        
-        <MudDatePicker Label="Fecha entrega" />
+                <MudItem xs="12">
+           
+
+   <MudSelect @bind-Value="newPrestamo.CursoId"  Label="Seleccione un Curso">
+    @if (cursos != null)
+    {
+        @foreach (var curso in cursos)
+        {
+            <MudSelectItem Value="@curso.CursoId">
+                @MostrarCurso(curso)
+            </MudSelectItem>
+        }
+    }
+</MudSelect>
+
         </MudItem>
+        <MudItem xs="4" >      
+            <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Label="Fecha de entrega" ErrorText="Formato incorrecto">Elegir fecha de entrega</MudTextField>
+           </MudItem>
+        <MudItem xs="4" >      
+            <MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraEntrega" Format="hh\:mm" Label="Hora de entrega">Elegir hora de entrega</MudTextField>
+           </MudItem>
+        <MudItem xs="4" >      
+            <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion" Label="Fecha devolucion" >Elegir fecha de devolucion</MudTextField>
+           </MudItem>
+        <MudItem xs="4" >      
+            <MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Format="hh\:mm" Placeholder="hh/mm">Elegir hora de devolucion</MudTextField>
+           </MudItem>
         <MudItem xs= "4">
-         <MudTimePicker Label="Hora entrega" />
-        </MudItem>
-          <MudItem xs="4">        
-        <MudDatePicker Label="Fecha Devolucion" />
-        </MudItem>
-        <MudItem xs= "4">
-         <MudTimePicker Label="Hora Devolucion" />
-        </MudItem>
-        <MudItem xs= "4">
-        <MudTextField py-8 T="string" Label="Observacion" />
+        <MudTextField py-8  Label="Observacion" @bind-Value="newPrestamo.Observacion" />
         </MudItem>
 
 
@@ -75,14 +73,25 @@
 </DialogContent>
  <DialogActions>
         
-        <MudButton Color="Color.Primary">Agregar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
+
+     static List<Prestatario> prestatarios = new List<Prestatario>
+    {
+        new Prestatario{ PrestatarioId= 1,NombreApellido= "Micaela Fumero"},
+        new Prestatario{ PrestatarioId= 2,NombreApellido= "Ariel Romero"},
+        new Prestatario{ PrestatarioId= 3,NombreApellido= "Marcelo Dip"},
+       
+    };
+
+    private bool isOpen = false;
     private List<Curso> cursos;
     private List<Inventario> inventarios;
+    private List<Prestamo> prestamos;
     private Inventario selectedInventarios;
     private Curso selectedCursos;
     private Prestamo newPrestamo = new Prestamo();
@@ -104,6 +113,23 @@
             Console.WriteLine($"Error al cargar inventarios: {respuesta.Error}");
         }
     }
+     private async void Submit()
+    {
+
+        var httpRespuesta = await http.Post<Prestamo>("api/PrestamoController", newPrestamo);
+        if (!httpRespuesta.Error)
+        {
+
+            isOpen = false;
+            NavManager.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            var body = httpRespuesta.HttpResponseMessage;
+        }
+    }
+
+
 
        private async Task CargarCursos()
     {
@@ -117,6 +143,19 @@
             Console.WriteLine($"Error al cargar inventarios: {respuesta.Error}");
         }
     }
+
+        private async Task CargarPrestamos()
+    {
+        var respuesta = await http.Get<List<Prestamo>>("api/PrestamoController");
+        if (!respuesta.Error)
+        {
+            prestamos = respuesta.Respuesta;
+        }
+        else
+        {
+            Console.WriteLine($"Error al cargar prestamos: {respuesta.Error}");
+        }
+    }
 private string MostrarCurso(Curso curso)
 {
     return curso != null
@@ -124,41 +163,14 @@ private string MostrarCurso(Curso curso)
         : string.Empty;
 }
 
-    private string MostrarInventario(Inventario inventario)
-    {
-        return inventario != null
-            ? $"{inventario.Codigo} - {inventario.TituloNombre ?? string.Empty} - {inventario.AutorMarca ?? string.Empty}"
-            : string.Empty;
-    }
-
-private async Task<IEnumerable<Inventario>> SearchInventario(string value)
+private string MostrarInventario(Inventario inventario)
 {
-    await Task.Delay(300);
+    if (inventario == null)
+        return string.Empty;
 
-    if (value != null && inventarios != null)
-    {
-        return inventarios
-            .Where(i => MostrarInventario(i).Contains(value, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-    }
-
-    return new List<Inventario>();
+    return $"{inventario.Tipo?.TipoMat} - {inventario.Codigo} - {inventario.TituloNombre} - {inventario.AutorMarca}";
 }
 
-
-    private async Task<IEnumerable<Curso>> SearchCurso(string value)
-{
-    await Task.Delay(300);
-
-    if (cursos != null && value != null)
-    {
-        return cursos
-            .Where(i => MostrarCurso(i).Contains(value, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-    }
-
-    return new List<Curso>();
-}
     
    
     

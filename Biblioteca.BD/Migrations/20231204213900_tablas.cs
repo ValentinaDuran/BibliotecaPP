@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.BD.Migrations
 {
     /// <inheritdoc />
-    public partial class TodasTablasRelacionadas : Migration
+    public partial class tablas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -109,8 +109,7 @@ namespace Biblioteca.BD.Migrations
                     Observacion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InventarioId = table.Column<int>(type: "int", nullable: false),
                     PrestatarioId = table.Column<int>(type: "int", nullable: false),
-                    CursoId = table.Column<int>(type: "int", nullable: false),
-                    TipoId = table.Column<int>(type: "int", nullable: false)
+                    CursoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,12 +132,6 @@ namespace Biblioteca.BD.Migrations
                         principalTable: "Prestatarios",
                         principalColumn: "PrestatarioId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Prestamos_Tipos_TipoId",
-                        column: x => x.TipoId,
-                        principalTable: "Tipos",
-                        principalColumn: "TipoId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,8 +151,7 @@ namespace Biblioteca.BD.Migrations
                     Observacion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InventarioId = table.Column<int>(type: "int", nullable: false),
                     PrestatarioId = table.Column<int>(type: "int", nullable: false),
-                    CursoId = table.Column<int>(type: "int", nullable: false),
-                    TipoId = table.Column<int>(type: "int", nullable: false)
+                    CursoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -182,12 +174,6 @@ namespace Biblioteca.BD.Migrations
                         principalTable: "Prestatarios",
                         principalColumn: "PrestatarioId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reservas_Tipos_TipoId",
-                        column: x => x.TipoId,
-                        principalTable: "Tipos",
-                        principalColumn: "TipoId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -246,11 +232,6 @@ namespace Biblioteca.BD.Migrations
                 column: "PrestatarioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prestamos_TipoId",
-                table: "Prestamos",
-                column: "TipoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservas_CursoId",
                 table: "Reservas",
                 column: "CursoId");
@@ -264,11 +245,6 @@ namespace Biblioteca.BD.Migrations
                 name: "IX_Reservas_PrestatarioId",
                 table: "Reservas",
                 column: "PrestatarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservas_TipoId",
-                table: "Reservas",
-                column: "TipoId");
         }
 
         /// <inheritdoc />
