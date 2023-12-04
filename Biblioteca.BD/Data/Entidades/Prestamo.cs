@@ -22,10 +22,7 @@ namespace Biblioteca.BD.Data.Entidades
         #region Atributos
 
 
-        [Required(ErrorMessage = "Campo obligatorio.")]
-        public int Cantidad { get; set; }
-
-        public bool Activo { get; set; } = true;//mostrar y ocultar visualmente 
+        public bool Activo { get; set; } = true;// marca si es devuelto ocultar visualmente
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
@@ -37,7 +34,6 @@ namespace Biblioteca.BD.Data.Entidades
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha y Hora de Devolución")]
         public DateTime? DevolucionReal { get; set; }
-        public bool Devuelto { get; set; }//habilitar el campo DevoluciónReal
 
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Date)]
@@ -57,7 +53,7 @@ namespace Biblioteca.BD.Data.Entidades
         public TimeSpan HoraDevolucion { get; set; }
 
         
-        public string Observacion { get; set; }
+        public string? Observacion { get; set; }
         #endregion
 
         #region Claves Foraneas
@@ -71,16 +67,18 @@ namespace Biblioteca.BD.Data.Entidades
         [Required(ErrorMessage = "Campo obligatorio.")]
         public int PrestatarioId { get; set; }
         public Prestatario? Prestatario { get; set; }
-        //Relacion con Tipo
-        [ForeignKey(nameof(TipoId))]
-        [Required(ErrorMessage = "Campo obligatorio.")]
-        public Tipo? Tipo { get; set; }
-        public int TipoId { get; set; }
 
         //Relacion con Curso
         [Required(ErrorMessage = "Campo obligatorio.")]
         public int CursoId { get; set; }
         public Curso? Curso { get; set; }
+
+        //Relacion con Tipo de material
+
+        [ForeignKey(nameof(TipoId))]
+        [Required(ErrorMessage = "Campo obligatorio.")]
+        public Tipo? Tipo { get; set; }
+        public int TipoId { get; set; }
 
         #endregion
 

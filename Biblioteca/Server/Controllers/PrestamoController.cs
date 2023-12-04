@@ -35,7 +35,7 @@ namespace Biblioteca.Server.Controllers
             var BibliotecaVerPrestamo = await context.Prestamos
                
                 .Include(i => i.Inventario)
-                .ThenInclude(i => i.Tipo)
+                .ThenInclude(t => t.Tipo)
                 .Include(i => i.Prestatario)
                 .Include(i => i.Curso)
                 .Where(o => o.PrestamoId == id)
@@ -115,7 +115,7 @@ namespace Biblioteca.Server.Controllers
             prestamoExistente.CursoId = prestamo.CursoId;
             prestamoExistente.PrestatarioId = prestamo.PrestatarioId;
             prestamoExistente.InventarioId = prestamo.InventarioId;
-            prestamoExistente.TipoId = prestamo.TipoId;
+
 
 
 
