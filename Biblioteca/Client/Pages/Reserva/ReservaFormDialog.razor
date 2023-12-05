@@ -1,5 +1,5 @@
 ﻿
-@page "/nuevoprestamo"
+@page "/nurevareserva"
 
 @using Biblioteca.BD.Data.Entidades
 @using Biblioteca.Client.Services
@@ -12,7 +12,7 @@
             <MudGrid>
 
     <MudItem xs="12">
-<MudSelect T="int" @bind-Value="newPrestamo.PrestatarioId" For="@(() => newPrestamo.PrestatarioId)">
+<MudSelect T="int" @bind-Value="newReserva.PrestatarioId" For="@(() => newReserva.PrestatarioId)">
     @if (prestatarios != null)
     {
                         @foreach (var prestatario in prestatarios)
@@ -27,7 +27,7 @@
 
 
     <MudItem xs="12"> 
-<MudSelect @bind-Value="newPrestamo.InventarioId" Label="Seleccionar Inventario" Placeholder="Seleccione un Inventario">
+<MudSelect @bind-Value="newReserva.InventarioId" Label="Seleccionar Inventario" Placeholder="Seleccione un Inventario">
     @if (inventarios != null)
     {
         @foreach (var inventario in inventarios)
@@ -44,7 +44,7 @@
                 <MudItem xs="12">
            
 
-   <MudSelect @bind-Value="newPrestamo.CursoId"  Label="Seleccione un Curso">
+   <MudSelect @bind-Value="newReserva.CursoId"  Label="Seleccione un Curso">
     @if (cursos != null)
     {
         @foreach (var curso in cursos)
@@ -58,19 +58,19 @@
 
         </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Label="Fecha de entrega" ErrorText="Formato incorrecto">Elegir fecha de entrega</MudTextField>
+            <MudTextField T="DateTime" @bind-Value="@newReserva.FechaEntrega" Label="Fecha de entrega" ErrorText="Formato incorrecto">Elegir fecha de entrega</MudTextField>
            </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraEntrega" Format="hh\:mm" Label="Hora de entrega">Elegir hora de entrega</MudTextField>
+            <MudTextField T="TimeSpan" @bind-Value="@newReserva.HoraEntrega" Format="hh\:mm" Label="Hora de entrega">Elegir hora de entrega</MudTextField>
            </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion" Label="Fecha devolucion" >Elegir fecha de devolucion</MudTextField>
+            <MudTextField T="DateTime" @bind-Value="@newReserva.FechaDevolucion" Label="Fecha devolucion" >Elegir fecha de devolucion</MudTextField>
            </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Format="hh\:mm" Placeholder="hh/mm">Elegir hora de devolucion</MudTextField>
+            <MudTextField T="TimeSpan" @bind-Value="@newReserva.HoraDevolucion" Format="hh\:mm" Placeholder="hh/mm">Elegir hora de devolucion</MudTextField>
            </MudItem>
         <MudItem xs= "4">
-        <MudTextField py-8  Label="Observacion" @bind-Value="newPrestamo.Observacion" />
+        <MudTextField py-8  Label="Observacion" @bind-Value="newReserva.Observacion" />
         </MudItem>
 
 
@@ -94,7 +94,7 @@
     private List<Prestamo> prestamos;
     private Inventario selectedInventarios;
     private Curso selectedCursos;
-    private Prestamo newPrestamo = new Prestamo();
+    private Reserva newReserva = new Reserva();
     protected override async Task OnInitializedAsync()
     {
         await CargarInventarios();
@@ -117,12 +117,12 @@
      private async void Submit()
     {
 
-        var httpRespuesta = await http.Post<Prestamo>("api/PrestamoController", newPrestamo);
+        var httpRespuesta = await http.Post<Reserva>("api/ReservaController", newReserva);
         if (!httpRespuesta.Error)
         {
 
             isOpen = false;
-            NavManager.NavigateTo("/", forceLoad: true);
+            NavManager.NavigateTo("/reserva-list", forceLoad: true);
         }
         else
         {

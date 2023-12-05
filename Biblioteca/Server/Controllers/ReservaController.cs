@@ -91,6 +91,7 @@ namespace Biblioteca.Server.Controllers
             ReservaExistente.CursoId = reserva.CursoId;
             ReservaExistente.PrestatarioId = reserva.PrestatarioId;
             ReservaExistente.InventarioId = reserva.InventarioId;
+            ReservaExistente.Pasar = reserva.Pasar;
 
             // Actualiza otras propiedades según sea necesario
             try

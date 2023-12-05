@@ -19,8 +19,6 @@ namespace Biblioteca.Server.Controllers
         {
             return await context.Prestatarios
                       .ToListAsync();
-
-
         }
     }
 }

@@ -28,6 +28,8 @@ namespace Biblioteca.Server.Controllers
                 .Where(a => a.Activo == true)
                 .ToListAsync();
             return prestamos;
+
+
         }
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Prestamo>> Get(int id)

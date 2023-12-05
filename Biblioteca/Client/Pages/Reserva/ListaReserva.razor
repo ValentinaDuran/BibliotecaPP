@@ -1,15 +1,10 @@
-﻿@page "/"
-@using Biblioteca.BD.Data.Entidades
-@using Biblioteca.Client.Pages.Prestamo
+﻿@page "/reserva-list"
+
 @using Biblioteca.Client.Services
+@using Biblioteca.BD.Data.Entidades
 @inject IHttpService http
 @using MudBlazor
 @inject IDialogService DialogService
-
-<style>
-
-</style>
-
 <NavMenu></NavMenu>
 <div class="centered-content " >
     <MudCard MaxWidth="2500px" class="mx-auto my-auto">
@@ -17,23 +12,24 @@
         <MudCardContent>
             <div style="display: flex;
     justify-content: center;">
-                <MudText  Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
+                <MudText  Typo="Typo.h3" class="centered-content"> <b>Reservas</b></MudText>
             </div>
             
                 <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-                    Agregar Prestamo
+                    Agregar Reserva
                 </MudButton>
 
-                <MudTable  Items="@prestamos" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
+                <MudTable  Items="@reservas" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
                     <HeaderContent>
                         <MudTh style="white-space: nowrap;">Prestatario</MudTh>
                         <MudTh style="white-space: nowrap;">Material</MudTh>
                         <MudTh style="white-space: nowrap;">Curso</MudTh>
-                        <MudTh style="white-space: nowrap;">Fecha de entrega</MudTh>
-                        <MudTh style="white-space: nowrap;">Hora de entrega</MudTh>
+                        <MudTh style="white-space: nowrap;">Fecha de Reserva</MudTh>
+                        <MudTh style="white-space: nowrap;">Hora de Reserva</MudTh>
                         <MudTh>Fecha de devolucion</MudTh>
                         <MudTh>Hora de devolucion</MudTh>
                            <MudTh>Observacion</MudTh>
+                           <MudTh></MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Prestatario" class="ampliar-columna">@context.Prestatario.NombreApellido</MudTd>
@@ -53,64 +49,59 @@
                             
                         </MudTd>
                         
-                        <MudTd DataLabel="Fecha de entrega">@context.FechaEntrega.ToString("d")</MudTd>
+                        <MudTd DataLabel="Fecha de entrega">@context.FechaEntrega.ToString("d")</MudTd  >
                         <MudTd DataLabel="Hora de entrega">@context.HoraEntrega.ToString(@"hh\:mm")</MudTd>                       
                         <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion.ToString("d")</MudTd>
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => MarcarPrestamo(context)" />
 
                     </RowTemplate>
                </MudTable>
             
         </MudCardContent>
     </MudCard>
+
 </div>
 
 @code {
-     List<Biblioteca.BD.Data.Entidades.Prestamo> prestamos;
-     bool fixed_header = true;
-     bool fixed_footer = true;
+    List<Reserva> reservas;
+    bool fixed_header = true;
+    bool fixed_footer = true;
 
-        protected override async Task OnInitializedAsync()
+    bool isOpen = false;
+
+
+
+    void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<ReservaFormDialog>("Agregar Reserva", options);
+
+    }
+
+private async Task MarcarPrestamo(Reserva context)
+{
+    // Cambiar el valor de Pasar
+    context.Pasar = true;
+
+    // Realizar la solicitud PUT para actualizar el valor en el servidor
+    var respuesta = await http.Put($"api/ReservaController/{context.ReservaId}", context);
+
+    
+}
+     protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();
         await Leer();
     }
-    bool isOpen = false;
-       void OpenDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<PrestamoFormDialog>("Agregar Prestamo", options);
-    }
 
-
-    private async Task Leer()
+       private async Task Leer()
     {
-        var respuesta = await http.Get<List<Biblioteca.BD.Data.Entidades.Prestamo>>("api/PrestamoController");
-        var respuestaReservas = await http.Get<List<Biblioteca.BD.Data.Entidades.Reserva>>("api/ReservaController");
-       if (!respuesta.Error)
-    {
-        prestamos = respuesta.Respuesta;
-
-        if (!respuestaReservas.Error && respuestaReservas.Respuesta.Any(r => r.Pasar))
+        var respuesta = await http.Get<List<Reserva>>("api/ReservaController");
+        if (!respuesta.Error)
         {
-            var reservasParaAgregar = respuestaReservas.Respuesta
-                .Where(r => r.Pasar)
-                .Select(r => new Biblioteca.BD.Data.Entidades.Prestamo
-                {
-                    // Mapear las propiedades necesarias de Reserva a Prestamo
-                    Prestatario = r.Prestatario,
-                    Inventario = r.Inventario,
-                    Curso = r.Curso,
-                    FechaEntrega = r.FechaEntrega,
-                    HoraEntrega = r.HoraEntrega,
-                    FechaDevolucion = r.FechaDevolucion,
-                    HoraDevolucion = r.HoraDevolucion,
-                    // ... mapear otras propiedades según sea necesario
-                });
-
-            prestamos.AddRange(reservasParaAgregar);
+            reservas = respuesta.Respuesta;
         }
-    }
     }
 }
