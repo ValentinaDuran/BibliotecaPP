@@ -56,7 +56,7 @@ namespace Biblioteca.Server.Controllers
                     return BadRequest(ModelState);
                 }
                 // Validar que la FechaEntrega sea mayor o igual que la fecha actual
-                if (reserva.FechaEntrega > DateTime.Now)
+                if (reserva.FechaEntrega < DateTime.Now)
                 {
                     return BadRequest("La fecha de entrega debe ser igual o posterior a la fecha actual.");
                 }
