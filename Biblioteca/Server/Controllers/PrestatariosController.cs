@@ -17,8 +17,7 @@ namespace Biblioteca.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Prestatario>>> Get()
         {
-            return await context.Prestatarios
-                      .ToListAsync();
+            return await context.Prestatarios.ToListAsync();
 
 
         }

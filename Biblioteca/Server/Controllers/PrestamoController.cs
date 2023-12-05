@@ -47,6 +47,8 @@ namespace Biblioteca.Server.Controllers
                 return NotFound($"No existe ese material en el inventario de Id={id}");
             }
             return BibliotecaVerPrestamo;
+            
+
         }
 
 
@@ -60,7 +62,7 @@ namespace Biblioteca.Server.Controllers
                     return BadRequest(ModelState);
                 }
                 // Validar que la FechaEntrega sea mayor o igual que la fecha actual
-                if (prestamo.FechaEntrega > DateTime.Now)
+                if (prestamo.FechaEntrega < DateTime.Now)
                 {
                     return BadRequest("La fecha de entrega debe ser igual o posterior a la fecha actual.");
                 }
