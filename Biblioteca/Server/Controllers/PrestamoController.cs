@@ -119,7 +119,7 @@ namespace Biblioteca.Server.Controllers
             prestamoExistente.CursoId = prestamo.CursoId;
             prestamoExistente.PrestatarioId = prestamo.PrestatarioId;
             prestamoExistente.InventarioId = prestamo.InventarioId;
-
+            prestamoExistente.Activo = prestamo.Activo;
 
 
 
@@ -136,7 +136,31 @@ namespace Biblioteca.Server.Controllers
                 return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
             }
         }
-       
+        //[HttpGet("VerificarPrestamosVencidosYConvertirEnDeudores")]
+        //public async Task<ActionResult> VerificarPrestamosVencidosYConvertirEnDeudores()
+        //{
+        //    try
+        //    {
+        //        var prestamosVencidos = await context.Prestamos
+        //            .Where(p => p.FechaDevolucion < DateTime.Now && p.Activo)
+        //            .ToListAsync();
+
+        //        //foreach (var prestamo in prestamosVencidos)
+        //        //{
+        //        //    prestamo.Activo = Deudor.DeudorId;
+        //        //    context.Prestamos.Update(prestamo);
+        //        //}
+
+        //        await context.SaveChangesAsync();
+
+        //        return Ok("Se han actualizado los préstamos vencidos a estado de deudor correctamente.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest($"Error al verificar y actualizar préstamos vencidos: {ex.Message}");
+        //    }
+        //}
+
 
     }
 }
