@@ -114,6 +114,21 @@
     }
      private async void Submit()
     {
+         if (newPrestamo.InventarioId == null
+        || newPrestamo.PrestatarioId == null
+        || newPrestamo.CursoId == null
+        || newPrestamo.FechaEntrega == default(DateTime)
+        || newPrestamo.FechaDevolucion == default(DateTime)
+         || newPrestamo.HoraEntrega == default(TimeSpan)
+         || newPrestamo.HoraDevolucion == default(TimeSpan)
+         )
+        {
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Por favor, completa todos los campos.", Severity.Error);
+        return;
+      
+        }
+
          SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
         SnackbarService.Add("Prestamo registrado", Severity.Success);
         // Cambiar el valor de Pasar

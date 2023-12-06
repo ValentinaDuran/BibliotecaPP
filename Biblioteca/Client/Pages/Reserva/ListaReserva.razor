@@ -16,6 +16,9 @@
     justify-content: center;">
                 <MudText  Typo="Typo.h3" class="centered-content"> <b>Reservas</b></MudText>
             </div>
+             <div style="margin-bottom: 16px;">
+                <MudTextField Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+            </div>
             
                 <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
                     Agregar Reserva
@@ -77,7 +80,8 @@
     bool fixed_footer = true;
 
     bool isOpen = false;
-     bool filter = true;
+    bool filter = true;
+    string buscarTermino = "";
 
 
     void OpenDialog()
@@ -87,31 +91,50 @@
 
     }
 
-private async Task MarcarPrestamo(Reserva context)
-{
-    // Cambiar el valor de Pasar
-       SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+    private async Task MarcarPrestamo(Reserva context)
+    {
+        // Cambiar el valor de Pasar
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
         SnackbarService.Add("Prestamo registrado", Severity.Success);
         // Cambiar el valor de Pasar
         context.Pasar = true;
         await Task.Delay(1700);
         // Realizar la solicitud PUT para actualizar el valor en el servidor
-    var respuesta = await http.Put($"api/ReservaController/{context.ReservaId}", context);
-    NavManager.NavigateTo("/reserva-list", forceLoad: true);
-    
-}
-     protected override async Task OnInitializedAsync()
+        var respuesta = await http.Put($"api/ReservaController/{context.ReservaId}", context);
+        NavManager.NavigateTo("/reserva-list", forceLoad: true);
+
+    }
+    protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();
         await Leer();
     }
 
-       private async Task Leer()
+    private async Task Leer()
     {
-           var respuesta = await http.Get<List<Reserva>>("api/ReservaController");
-    if (!respuesta.Error)
-    {
-        reservas = respuesta.Respuesta.Where(r => !r.Pasar).ToList();
+        var respuesta = await http.Get<List<Reserva>>("api/ReservaController");
+        if (!respuesta.Error)
+        {
+            reservas = respuesta.Respuesta.Where(r => !r.Pasar).ToList();
+        }
     }
+
+    bool MatchesSearchTerm(Prestamo prestamo)
+    {
+        if (string.IsNullOrWhiteSpace(buscarTermino))
+        {
+            return true;
+        }
+
+        return prestamo.Inventario.TituloNombre.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Inventario.AutorMarca.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Inventario.Tipo.TipoMat.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Inventario.Codigo.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Prestatario.NombreApellido.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Prestatario.NombreApellido.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Año.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Division.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Nivel.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Turno.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
     }
 }

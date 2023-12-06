@@ -57,18 +57,15 @@
 </MudSelect>
 
         </MudItem>
-        <MudItem xs="4" >      
-            <MudTextField T="DateTime" @bind-Value="@newReserva.FechaEntrega" Label="Fecha de entrega" ErrorText="Formato incorrecto">Elegir fecha de entrega</MudTextField>
+             <MudItem xs="4" >      
+           <MudTextField T="DateTime" @bind-Value="@newReserva.FechaEntrega" Format="yyyy-MM-dd" Label="Date"   InputType="InputType.Date" />
            </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="TimeSpan" @bind-Value="@newReserva.HoraEntrega" Format="hh\:mm" Label="Hora de entrega">Elegir hora de entrega</MudTextField>
-           </MudItem>
+<MudTextField T="TimeSpan"  @bind-Value="@newReserva.HoraEntrega" Label="Time" InputType="InputType.Time"/>           </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="DateTime" @bind-Value="@newReserva.FechaDevolucion" Label="Fecha devolucion" >Elegir fecha de devolucion</MudTextField>
-           </MudItem>
+<MudTextField T="DateTime" @bind-Value="@newReserva.FechaDevolucion"  Format="yyyy-MM-dd" Label="Date"  InputType="InputType.Date"/>           </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="TimeSpan" @bind-Value="@newReserva.HoraDevolucion" Format="hh\:mm" Placeholder="hh/mm">Elegir hora de devolucion</MudTextField>
-           </MudItem>
+<MudTextField T="TimeSpan" @bind-Value="@newReserva.HoraDevolucion" Label="Time" InputType="InputType.Time"/>           </MudItem>
         <MudItem xs= "4">
         <MudTextField py-8  Label="Observacion" @bind-Value="newReserva.Observacion" />
         </MudItem>
