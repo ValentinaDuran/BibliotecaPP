@@ -13,7 +13,7 @@
             <MudGrid>
 
     <MudItem xs="12">
-<MudSelect T="int" @bind-Value="newPrestamo.PrestatarioId" For="@(() => newPrestamo.PrestatarioId)">
+<MudSelect T="int" @bind-Value="newPrestamo.PrestatarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" For="@(() => newPrestamo.PrestatarioId)">
     @if (prestatarios != null)
     {
                         @foreach (var prestatario in prestatarios)
@@ -28,7 +28,7 @@
 
 
     <MudItem xs="12"> 
-<MudSelect @bind-Value="newPrestamo.InventarioId" Label="Seleccionar Inventario" Placeholder="Seleccione un Inventario">
+<MudSelect @bind-Value="newPrestamo.InventarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ViewCompact" Label="Seleccionar Material" Placeholder="Seleccione un Inventario">
     @if (inventarios != null)
     {
         @foreach (var inventario in inventarios)
@@ -45,7 +45,7 @@
                 <MudItem xs="12">
            
 
-   <MudSelect @bind-Value="newPrestamo.CursoId"  Label="Seleccione un Curso">
+   <MudSelect @bind-Value="newPrestamo.CursoId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Cases"   Label="Seleccione un Curso">
     @if (cursos != null)
     {
         @foreach (var curso in cursos)
@@ -58,17 +58,17 @@
 </MudSelect>
 
         </MudItem>
-        <MudItem xs="4" >      
-           <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Format="yyyy-MM-dd" Label="Date"  InputType="InputType.Date"/>
+        <MudItem xs="6" >      
+           <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de entrega"  InputType="InputType.Date"/>
            </MudItem>
-        <MudItem xs="4" >      
-<MudTextField T="TimeSpan"  @bind-Value="@newPrestamo.HoraEntrega" Label="Time" InputType="InputType.Time"/>           </MudItem>
-        <MudItem xs="4" >      
-<MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion"  Format="yyyy-MM-dd" Label="Date"  InputType="InputType.Date"/>           </MudItem>
-        <MudItem xs="4" >      
-<MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Label="Time" InputType="InputType.Time"/>           </MudItem>
-        <MudItem xs= "4">
-        <MudTextField py-8  Label="Observacion" @bind-Value="newPrestamo.Observacion" />
+        <MudItem xs="6" >      
+<MudTextField T="TimeSpan"  @bind-Value="@newPrestamo.HoraEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de entrega" InputType="InputType.Time"/>           </MudItem>
+        <MudItem xs="6" >      
+<MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de devolucion"  InputType="InputType.Date"/>           </MudItem>
+        <MudItem xs="6" >      
+<MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de devolucion" InputType="InputType.Time"/>           </MudItem>
+        <MudItem xs= "12">
+        <MudTextField py-8  Label="Observacion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.EditNote" @bind-Value="newPrestamo.Observacion" />
         </MudItem>
 
 

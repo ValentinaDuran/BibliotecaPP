@@ -1,6 +1,6 @@
 ﻿
 @page "/nurevareserva"
-
+@inject ISnackbar SnackbarService
 @using Biblioteca.BD.Data.Entidades
 @using Biblioteca.Client.Services
 @inject IHttpService http
@@ -10,9 +10,8 @@
     <DialogContent>
         <MudForm>
             <MudGrid>
-
-    <MudItem xs="12">
-<MudSelect T="int" @bind-Value="newReserva.PrestatarioId" For="@(() => newReserva.PrestatarioId)">
+   <MudItem xs="12">
+<MudSelect T="int" @bind-Value="newReserva.PrestatarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" For="@(() => newReserva.PrestatarioId)">
     @if (prestatarios != null)
     {
                         @foreach (var prestatario in prestatarios)
@@ -27,7 +26,7 @@
 
 
     <MudItem xs="12"> 
-<MudSelect @bind-Value="newReserva.InventarioId" Label="Seleccionar Inventario" Placeholder="Seleccione un Inventario">
+<MudSelect @bind-Value="newReserva.InventarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ViewCompact" Label="Seleccionar Material" Placeholder="Seleccione un Inventario">
     @if (inventarios != null)
     {
         @foreach (var inventario in inventarios)
@@ -44,7 +43,7 @@
                 <MudItem xs="12">
            
 
-   <MudSelect @bind-Value="newReserva.CursoId"  Label="Seleccione un Curso">
+   <MudSelect @bind-Value="newReserva.CursoId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Cases"   Label="Seleccione un Curso">
     @if (cursos != null)
     {
         @foreach (var curso in cursos)
@@ -57,17 +56,17 @@
 </MudSelect>
 
         </MudItem>
-             <MudItem xs="4" >      
-           <MudTextField T="DateTime" @bind-Value="@newReserva.FechaEntrega" Format="yyyy-MM-dd" Label="Date"   InputType="InputType.Date" />
+        <MudItem xs="6" >      
+           <MudTextField T="DateTime" @bind-Value="@newReserva.FechaEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de entrega"  InputType="InputType.Date"/>
            </MudItem>
-        <MudItem xs="4" >      
-<MudTextField T="TimeSpan"  @bind-Value="@newReserva.HoraEntrega" Label="Time" InputType="InputType.Time"/>           </MudItem>
-        <MudItem xs="4" >      
-<MudTextField T="DateTime" @bind-Value="@newReserva.FechaDevolucion"  Format="yyyy-MM-dd" Label="Date"  InputType="InputType.Date"/>           </MudItem>
-        <MudItem xs="4" >      
-<MudTextField T="TimeSpan" @bind-Value="@newReserva.HoraDevolucion" Label="Time" InputType="InputType.Time"/>           </MudItem>
-        <MudItem xs= "4">
-        <MudTextField py-8  Label="Observacion" @bind-Value="newReserva.Observacion" />
+        <MudItem xs="6" >      
+<MudTextField T="TimeSpan"  @bind-Value="@newReserva.HoraEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de entrega" InputType="InputType.Time"/>           </MudItem>
+        <MudItem xs="6" >      
+<MudTextField T="DateTime" @bind-Value="@newReserva.FechaDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de devolucion"  InputType="InputType.Date"/>           </MudItem>
+        <MudItem xs="6" >      
+<MudTextField T="TimeSpan" @bind-Value="@newReserva.HoraDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de devolucion" InputType="InputType.Time"/>           </MudItem>
+        <MudItem xs= "12">
+        <MudTextField py-8  Label="Observacion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.EditNote" @bind-Value="newReserva.Observacion" />
         </MudItem>
 
 
@@ -113,6 +112,25 @@
     }
      private async void Submit()
     {
+         if (newReserva.InventarioId == null
+        || newReserva.PrestatarioId == null
+        || newReserva.CursoId == null
+        || newReserva.FechaEntrega == default(DateTime)
+        || newReserva.FechaDevolucion == default(DateTime)
+         || newReserva.HoraEntrega == default(TimeSpan)
+         || newReserva.HoraDevolucion == default(TimeSpan)
+         )
+        {
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Por favor, completa todos los campos.", Severity.Error);
+        return;
+      
+        }
+
+         SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Prestamo registrado", Severity.Success);
+        // Cambiar el valor de Pasar
+        await Task.Delay(1700);
 
         var httpRespuesta = await http.Post<Reserva>("api/ReservaController", newReserva);
         if (!httpRespuesta.Error)

@@ -14,7 +14,7 @@
             </div>
 
             <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
             @if (inventarios == null)
@@ -23,7 +23,7 @@
             }
             else
             {
-                <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" >
                     Agregar Material
                 </MudButton>
 

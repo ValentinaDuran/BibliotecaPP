@@ -20,10 +20,10 @@
                 <MudText  Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
             </div>
              <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search"  Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
             
-                <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
                     Agregar Prestamo
                 </MudButton>
 
@@ -37,6 +37,7 @@
                         <MudTh>Fecha de devolucion</MudTh>
                         <MudTh>Hora de devolucion</MudTh>
                            <MudTh>Observacion</MudTh>
+                            <MudTh>Acciones</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                           @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
@@ -63,6 +64,7 @@
                         <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion.ToString("d")</MudTd>
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
+                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
                         }
                     </RowTemplate>
                </MudTable>
