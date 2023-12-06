@@ -5,6 +5,8 @@
 @inject IHttpService http
 @using MudBlazor
 @inject IDialogService DialogService
+@inject ISnackbar SnackbarService
+@inject NavigationManager NavManager
 <NavMenu></NavMenu>
 <div class="centered-content " >
     <MudCard MaxWidth="2500px" class="mx-auto my-auto">
@@ -29,7 +31,7 @@
                         <MudTh>Fecha de devolucion</MudTh>
                         <MudTh>Hora de devolucion</MudTh>
                            <MudTh>Observacion</MudTh>
-                           <MudTh></MudTh>
+                           <MudTh>Acciones</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Prestatario" class="ampliar-columna">@context.Prestatario.NombreApellido</MudTd>
@@ -54,7 +56,12 @@
                         <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion.ToString("d")</MudTd>
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => MarcarPrestamo(context)" />
+                        <MudTd DataLabel="Acciones">
+                        <MudChipSet MultiSelection="true" Filter="filter">
+                            <MudChip Text="green" Variant="Variant.Filled" Color="Color.Success" @onclick="() => MarcarPrestamo(context)">Prestado</MudChip>
+                            </MudChipSet>
+                            </MudTd>
+                        
 
                     </RowTemplate>
                </MudTable>
@@ -70,7 +77,7 @@
     bool fixed_footer = true;
 
     bool isOpen = false;
-
+     bool filter = true;
 
 
     void OpenDialog()
@@ -83,11 +90,14 @@
 private async Task MarcarPrestamo(Reserva context)
 {
     // Cambiar el valor de Pasar
-    context.Pasar = true;
-
-    // Realizar la solicitud PUT para actualizar el valor en el servidor
+       SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Prestamo registrado", Severity.Success);
+        // Cambiar el valor de Pasar
+        context.Pasar = true;
+        await Task.Delay(1700);
+        // Realizar la solicitud PUT para actualizar el valor en el servidor
     var respuesta = await http.Put($"api/ReservaController/{context.ReservaId}", context);
-
+    NavManager.NavigateTo("/reserva-list", forceLoad: true);
     
 }
      protected override async Task OnInitializedAsync()
@@ -98,10 +108,10 @@ private async Task MarcarPrestamo(Reserva context)
 
        private async Task Leer()
     {
-        var respuesta = await http.Get<List<Reserva>>("api/ReservaController");
-        if (!respuesta.Error)
-        {
-            reservas = respuesta.Respuesta;
-        }
+           var respuesta = await http.Get<List<Reserva>>("api/ReservaController");
+    if (!respuesta.Error)
+    {
+        reservas = respuesta.Respuesta.Where(r => !r.Pasar).ToList();
+    }
     }
 }
