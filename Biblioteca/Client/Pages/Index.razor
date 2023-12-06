@@ -19,6 +19,9 @@
     justify-content: center;">
                 <MudText  Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
             </div>
+             <div style="margin-bottom: 16px;">
+                <MudTextField Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+            </div>
             
                 <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
                     Agregar Prestamo
@@ -36,29 +39,31 @@
                            <MudTh>Observacion</MudTh>
                     </HeaderContent>
                     <RowTemplate>
+                          @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
+                        {
                         <MudTd DataLabel="Prestatario" class="ampliar-columna">@context.Prestatario.NombreApellido</MudTd>
                         <MudTd DataLabel="material" Style="font-size:13px">
-                        <b>Codigo:</b>@context.Inventario.Codigo
-                        <b>Material:</b> @context.Inventario.TituloNombre 
-                        <b>Autor/Marca:</b> @context.Inventario.AutorMarca
-                       
+                            <b>Codigo:</b>@context.Inventario.Codigo
+                            <b>Material:</b> @context.Inventario.TituloNombre 
+                            <b>Autor/Marca:</b> @context.Inventario.AutorMarca
+
                         </MudTd>
                         <MudTd DataLabel="Curso" Style="font-size:13px">
                             <b>Año:</b>
                             @context.Curso.Año
                             <b>Division:</b>
                             @context.Curso.Division <br />
-                           <b>Nivel:</b> @context.Curso.Nivel 
+                            <b>Nivel:</b> @context.Curso.Nivel 
                             <b>Turno:</b> @context.Curso.Turno
-                            
+
                         </MudTd>
-                        
+
                         <MudTd DataLabel="Fecha de entrega">@context.FechaEntrega.ToString("d")</MudTd>
                         <MudTd DataLabel="Hora de entrega">@context.HoraEntrega.ToString(@"hh\:mm")</MudTd>                       
                         <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion.ToString("d")</MudTd>
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
-
+                        }
                     </RowTemplate>
                </MudTable>
             
@@ -70,6 +75,7 @@
      List<Biblioteca.BD.Data.Entidades.Prestamo> prestamos;
      bool fixed_header = true;
      bool fixed_footer = true;
+     string buscarTermino = "";
 
         protected override async Task OnInitializedAsync()
     {
@@ -112,5 +118,24 @@
             prestamos.AddRange(reservasParaAgregar);
         }
     }
+    }
+
+    bool MatchesSearchTerm(Biblioteca.BD.Data.Entidades.Prestamo prestamo)
+    {
+        if (string.IsNullOrWhiteSpace(buscarTermino))
+        {
+            return true;
+        }
+
+        return prestamo.Inventario.TituloNombre.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Inventario.AutorMarca.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Inventario.Tipo.TipoMat.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Inventario.Codigo.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Prestatario.NombreApellido.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Prestatario.NombreApellido.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Año.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Division.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Nivel.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+           prestamo.Curso.Turno.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
     }
 }

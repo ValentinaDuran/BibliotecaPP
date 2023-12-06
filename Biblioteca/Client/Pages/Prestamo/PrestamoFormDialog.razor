@@ -1,6 +1,7 @@
 ﻿
 @page "/nuevoprestamo"
-
+@inject IDialogService DialogService
+@inject ISnackbar SnackbarService
 @using Biblioteca.BD.Data.Entidades
 @using Biblioteca.Client.Services
 @inject IHttpService http
@@ -58,17 +59,14 @@
 
         </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Label="Fecha de entrega" ErrorText="Formato incorrecto">Elegir fecha de entrega</MudTextField>
+           <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Format="yyyy-MM-dd" Label="Date"  InputType="InputType.Date"/>
            </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraEntrega" Format="hh\:mm" Label="Hora de entrega">Elegir hora de entrega</MudTextField>
-           </MudItem>
+<MudTextField T="TimeSpan"  @bind-Value="@newPrestamo.HoraEntrega" Label="Time" InputType="InputType.Time"/>           </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion" Label="Fecha devolucion" >Elegir fecha de devolucion</MudTextField>
-           </MudItem>
+<MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion"  Format="yyyy-MM-dd" Label="Date"  InputType="InputType.Date"/>           </MudItem>
         <MudItem xs="4" >      
-            <MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Format="hh\:mm" Placeholder="hh/mm">Elegir hora de devolucion</MudTextField>
-           </MudItem>
+<MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Label="Time" InputType="InputType.Time"/>           </MudItem>
         <MudItem xs= "4">
         <MudTextField py-8  Label="Observacion" @bind-Value="newPrestamo.Observacion" />
         </MudItem>
@@ -116,6 +114,25 @@
     }
      private async void Submit()
     {
+         if (newPrestamo.InventarioId == null
+        || newPrestamo.PrestatarioId == null
+        || newPrestamo.CursoId == null
+        || newPrestamo.FechaEntrega == default(DateTime)
+        || newPrestamo.FechaDevolucion == default(DateTime)
+         || newPrestamo.HoraEntrega == default(TimeSpan)
+         || newPrestamo.HoraDevolucion == default(TimeSpan)
+         )
+        {
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Por favor, completa todos los campos.", Severity.Error);
+        return;
+      
+        }
+
+         SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Prestamo registrado", Severity.Success);
+        // Cambiar el valor de Pasar
+        await Task.Delay(1700);
 
         var httpRespuesta = await http.Post<Prestamo>("api/PrestamoController", newPrestamo);
         if (!httpRespuesta.Error)
