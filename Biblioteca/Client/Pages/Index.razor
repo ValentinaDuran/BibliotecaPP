@@ -140,4 +140,32 @@
            prestamo.Curso.Nivel.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
            prestamo.Curso.Turno.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
     }
+
+     private async Task Borrar(Biblioteca.BD.Data.Entidades.Prestamo prestamoborrar)
+    {
+        var respuesta = await http.Delete($"api/PrestamoController/{prestamoborrar.PrestamoId}");
+        if (respuesta.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
+    }
+
+    private async Task MostrarDialogBorrar(Biblioteca.BD.Data.Entidades.Prestamo prestamo)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Prestamo", prestamo);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmPrestamo>("Confirmar Borrado", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await Borrar(prestamo);
+        }
+    }
 }
