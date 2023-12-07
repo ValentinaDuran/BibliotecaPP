@@ -65,6 +65,9 @@
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
                          <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                        <MudTd>
+                            <MudIconButton Icon="@Icons.Material.Filled.Check" Title="Editar" @onclick="() => EliminarReservasConvertidas()" />
+                        </MudTd>
                         }
                     </RowTemplate>
                </MudTable>
@@ -168,4 +171,80 @@
             await Borrar(prestamo);
         }
     }
+    private async Task EliminarReservasConvertidas()// el que hice para que se elimine cuando es marcado como devuelto
+    {
+        try
+        {
+            var respuestaReservas = await http.Get<List<Biblioteca.BD.Data.Entidades.Reserva>>("api/ReservaController");
+
+            if (!respuestaReservas.Error && respuestaReservas.Respuesta.Any(r => r.Pasar))
+            {
+                var reservasParaEliminar = respuestaReservas.Respuesta.Where(r => r.Pasar).ToList();
+
+                foreach (var reserva in reservasParaEliminar)
+                {
+                    // Lógica para eliminar la reserva utilizando un endpoint DELETE específico
+                    var response = await http.Delete($"api/ReservaController/{reserva.ReservaId}");
+                    if (response.Error)
+                    {
+                        // Manejo de errores si la eliminación falla
+                        // Puedes agregar logs o mensajes de error según tu necesidad
+                    }
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            // Manejo de excepciones
+        }
+    }
+
+    // private async Task EliminarPrestamoYReservas(Biblioteca.BD.Data.Entidades.Prestamo prestamo)
+    // {
+    //     try
+    //     {
+    //         // Lógica para eliminar las reservas asociadas al préstamo
+    //         var reservasAEliminar = await ObtenerReservasParaEliminar(prestamo);
+    //         foreach (var reserva in reservasAEliminar)
+    //         {
+    //             var response = await http.Delete($"api/ReservaController/{reserva.ReservaId}");
+    //             if (response.Error)
+    //             {
+    //                 // Manejo de errores si la eliminación falla
+    //                 // Puedes agregar logs o mensajes de error según tu necesidad
+    //             }
+    //         }
+
+    //         // Lógica para eliminar el préstamo
+    //         var responsePrestamo = await http.Delete($"api/PrestamoController/{prestamo.PrestamoId}");
+    //         if (responsePrestamo.Error)
+    //         {
+    //             // Manejo de errores si la eliminación del préstamo falla
+    //             // Puedes agregar logs o mensajes de error según tu necesidad
+    //         }
+
+    //         // Snackbar para mostrar que se borró el préstamo y redireccionar a "/"
+    //         SnackbarService.Add("Prestamo y Reservas eliminados", Severity.Success);
+    //         NavigationManager.NavigateTo("/");
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         // Manejo de excepciones
+    //     }
+    // }
+
+    // private async Task<List<Biblioteca.BD.Data.Entidades.Reserva>> ObtenerReservasParaEliminar(Biblioteca.BD.Data.Entidades.Prestamo prestamo)
+    // {
+    //     var respuestaReservas = await http.Get<List<Biblioteca.BD.Data.Entidades.Reserva>>("api/ReservaController");
+
+    //     if (!respuestaReservas.Error)
+    //     {
+    //         return respuestaReservas.Respuesta
+    //             .Where(r => r.Pasar && r.PrestamoId == prestamo.PrestamoId)
+    //             .ToList();
+    //     }
+    //     return new List<Biblioteca.BD.Data.Entidades.Reserva>();
+    // }
+
 }
