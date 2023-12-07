@@ -84,22 +84,46 @@ namespace Biblioteca.Server.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        [HttpDelete("{id:int}/{tipo}")]
+        public async Task<ActionResult> Delete(int id, string tipo)
         {
-            var prestamo = context.Prestamos.Where(x => x.PrestamoId == id).FirstOrDefault();
-
-            if (prestamo == null)
+            try
             {
-                return NotFound($"El Tipo Documento {id} no fue encontrado");
-            }
-            if (prestamo != null)
-            {
-                prestamo.Activo = false;
-                context.SaveChanges();
+                if (tipo.ToLower() == "prestamo")
+                {
+                    var prestamo = await context.Prestamos.FirstOrDefaultAsync(p => p.PrestamoId == id);
 
+                    if (prestamo == null)
+                    {
+                        return NotFound($"El préstamo con ID {id} no fue encontrado.");
+                    }
+
+                    prestamo.Activo = false;
+                }
+                else if (tipo.ToLower() == "reserva")
+                {
+                    var reserva = await context.Reservas.FirstOrDefaultAsync(r => r.ReservaId == id);
+
+                    if (reserva == null)
+                    {
+                        return NotFound($"La reserva con ID {id} no fue encontrada.");
+                    }
+
+                    reserva.Activo = false;
+                }
+                else
+                {
+                    return BadRequest("Tipo de entidad no válido.");
+                }
+
+                await context.SaveChangesAsync();
+
+                return Ok();
             }
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al procesar la solicitud: {ex.Message}");
+            }
         }
 
         [HttpPut("{id:int}")]
