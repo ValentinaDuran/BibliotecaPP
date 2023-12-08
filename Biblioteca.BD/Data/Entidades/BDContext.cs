@@ -88,7 +88,19 @@ namespace Biblioteca.BD.Data.Entidades
                 .HasOne(d => d.Reserva)
                 .WithMany()
                 .HasForeignKey(d => d.ReservaId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
+         
+        
+            modelBuilder.Entity<Inventario>()
+                .HasOne(i => i.Tipo)               // Un inventario tiene un solo Tipo
+                .WithMany()                        // Un Tipo puede estar relacionado con muchos Inventarios
+                .HasForeignKey(i => i.TipoId)      // Clave foránea en Inventario
+                .IsRequired();                     // TipoId es requerido en Inventario
+            modelBuilder.Entity<Inventario>()
+                .HasMany(i => i.MaterialesEnMalEstado)
+                .WithOne(m => m.Inventario)
+                .HasForeignKey(m => m.InventarioId);
+
 
 
 

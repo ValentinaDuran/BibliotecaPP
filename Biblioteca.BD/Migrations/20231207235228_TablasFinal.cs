@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.BD.Migrations
 {
     /// <inheritdoc />
-    public partial class TablasRelacionadas : Migration
+    public partial class TablasFinal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,23 +25,6 @@ namespace Biblioteca.BD.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cursos", x => x.CursoId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MaterialesMalEstado",
-                columns: table => new
-                {
-                    MaterialMalEstadoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MaterialId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TituloNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AutorMarca = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MaterialesMalEstado", x => x.MaterialMalEstadoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,12 +78,33 @@ namespace Biblioteca.BD.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MaterialesMalEstado",
+                columns: table => new
+                {
+                    MaterialMalEstadoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Activo = table.Column<bool>(type: "bit", nullable: false),
+                    InventarioId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MaterialesMalEstado", x => x.MaterialMalEstadoId);
+                    table.ForeignKey(
+                        name: "FK_MaterialesMalEstado_Inventarios_InventarioId",
+                        column: x => x.InventarioId,
+                        principalTable: "Inventarios",
+                        principalColumn: "InventarioId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Prestamos",
                 columns: table => new
                 {
                     PrestamoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Activo = table.Column<bool>(type: "bit", nullable: false),
+                    EsDeudor = table.Column<bool>(type: "bit", nullable: false),
                     FechaEntrega = table.Column<DateTime>(type: "date", nullable: false),
                     DevolucionReal = table.Column<DateTime>(type: "datetime", nullable: true),
                     FechaDevolucion = table.Column<DateTime>(type: "date", nullable: false),
@@ -141,6 +145,7 @@ namespace Biblioteca.BD.Migrations
                     ReservaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Pasar = table.Column<bool>(type: "bit", nullable: false),
+                    EsDeudor = table.Column<bool>(type: "bit", nullable: false),
                     Activo = table.Column<bool>(type: "bit", nullable: false),
                     FechaEntrega = table.Column<DateTime>(type: "date", nullable: false),
                     FechaDevolucion = table.Column<DateTime>(type: "date", nullable: false),
@@ -180,7 +185,9 @@ namespace Biblioteca.BD.Migrations
                 name: "Deudores",
                 columns: table => new
                 {
-                    DeudorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DeudorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EsDeudor = table.Column<bool>(type: "bit", nullable: false),
                     PrestamoId = table.Column<int>(type: "int", nullable: false),
                     ReservaId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -215,6 +222,11 @@ namespace Biblioteca.BD.Migrations
                 name: "IX_Inventarios_TipoId",
                 table: "Inventarios",
                 column: "TipoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MaterialesMalEstado_InventarioId",
+                table: "MaterialesMalEstado",
+                column: "InventarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prestamos_CursoId",

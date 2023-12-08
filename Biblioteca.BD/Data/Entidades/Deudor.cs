@@ -11,8 +11,9 @@ namespace Biblioteca.BD.Data.Entidades
     {
         //Clave primaria
         [Key]
-        public string DeudorId { get; set; }
+        public int DeudorId { get; set; }
 
+        public bool EsDeudor { get; set; }
         //Clave foranea
         public int PrestamoId { get; set; }
         public Prestamo Prestamo { get; set; }

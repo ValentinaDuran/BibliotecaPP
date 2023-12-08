@@ -23,6 +23,7 @@ namespace Biblioteca.BD.Data.Entidades
 
 
         public bool Activo { get; set; } = true;// marca si es devuelto ocultar visualmente
+        public bool EsDeudor { get; set; } //usar cuando se marca cuando se adeuda un prestamo
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]

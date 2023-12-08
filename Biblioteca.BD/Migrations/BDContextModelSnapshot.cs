@@ -53,8 +53,14 @@ namespace Biblioteca.BD.Migrations
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Deudor", b =>
                 {
-                    b.Property<string>("DeudorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DeudorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeudorId"));
+
+                    b.Property<bool>("EsDeudor")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PrestamoId")
                         .HasColumnType("int");
@@ -116,26 +122,15 @@ namespace Biblioteca.BD.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialMalEstadoId"));
 
-                    b.Property<string>("AutorMarca")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Estado")
+                    b.Property<bool>("Activo")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MaterialId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TituloNombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("InventarioId")
+                        .HasColumnType("int");
 
                     b.HasKey("MaterialMalEstadoId");
+
+                    b.HasIndex("InventarioId");
 
                     b.ToTable("MaterialesMalEstado");
                 });
@@ -156,6 +151,9 @@ namespace Biblioteca.BD.Migrations
 
                     b.Property<DateTime?>("DevolucionReal")
                         .HasColumnType("datetime");
+
+                    b.Property<bool>("EsDeudor")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaDevolucion")
                         .HasColumnType("date");
@@ -224,6 +222,9 @@ namespace Biblioteca.BD.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<bool?>("Devuelto")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("EsDeudor")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaDevolucion")
@@ -309,6 +310,17 @@ namespace Biblioteca.BD.Migrations
                     b.Navigation("Tipo");
                 });
 
+            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.MaterialMalEstado", b =>
+                {
+                    b.HasOne("Biblioteca.BD.Data.Entidades.Inventario", "Inventario")
+                        .WithMany("MaterialesEnMalEstado")
+                        .HasForeignKey("InventarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inventario");
+                });
+
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Prestamo", b =>
                 {
                     b.HasOne("Biblioteca.BD.Data.Entidades.Curso", "Curso")
@@ -361,6 +373,11 @@ namespace Biblioteca.BD.Migrations
                     b.Navigation("Inventario");
 
                     b.Navigation("Prestatario");
+                });
+
+            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Inventario", b =>
+                {
+                    b.Navigation("MaterialesEnMalEstado");
                 });
 #pragma warning restore 612, 618
         }

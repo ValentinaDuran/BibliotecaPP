@@ -13,20 +13,16 @@ namespace Biblioteca.BD.Data.Entidades
         [Key]
         public int MaterialMalEstadoId { get; set; }
 
-        #region Atributos
-        public string MaterialId { get; set; }
-        [Required(ErrorMessage = "Campo obligatorio.")]
-        public string TituloNombre { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio.")]
-        public string AutorMarca { get; set; }
-        public string Tipo { get; set; }
-        public bool Estado { get; set; }
+        #region Atributos
+        public bool Activo { get; set; }
+
         #endregion
 
-        //Clave foranea
-        //public int Id_Inventario { get; set; }
-
         
+        // Clave foranea para referenciar el Inventario al que pertenece
+        public int InventarioId { get; set; }
+        public Inventario Inventario { get; set; }
+
     }
 }

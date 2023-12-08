@@ -29,6 +29,9 @@ namespace Biblioteca.BD.Data.Entidades
         [Required(ErrorMessage = "Campo obligatorio.")]
         public int TipoId { get; set; }
         public Tipo? Tipo { get; set; }
+
+        // Relación uno a muchos con MaterialMalEstado
+        public ICollection<MaterialMalEstado> MaterialesEnMalEstado { get; set; }
         #endregion
 
     }
