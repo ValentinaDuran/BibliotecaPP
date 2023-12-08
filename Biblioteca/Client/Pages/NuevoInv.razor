@@ -3,18 +3,21 @@
 @using Biblioteca.BD.Data.Entidades
 @inject IHttpService http
 @using MudBlazor
+@using static MudBlazor.CategoryTypes
 @inject IDialogService DialogService
+@inject ISnackbar SnackbarService
+@inject NavigationManager NavManager
 
 <div class="centered-content">
     <NavMenu></NavMenu>
-    <MudCard MaxWidth="800px" class="mx-auto my-auto">
+    <MudCard MaxWidth="1200px" class="mx-auto my-auto">
         <MudCardContent>
             <div style="display: flex; justify-content: center;">
                 <MudText Typo="Typo.h3" class="centered-content"><b>Inventario</b></MudText>
             </div>
 
             <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField Label="Buscar" Adornment="Adornment.Start"  AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
             @if (inventarios == null)
@@ -27,14 +30,14 @@
                     Agregar Material
                 </MudButton>
 
-                <MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                <MudTable @ref="@_table" Items="@inventarios" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
                     <HeaderContent>
                         <MudTh>Codigo</MudTh>
                         <MudTh>Título/Nombre</MudTh>
                         <MudTh>Autor/Marca</MudTh>
                         <MudTh>Observación</MudTh>
                         <MudTh>Tipo</MudTh>
-                        <MudTh></MudTh>
+                        <MudTh>Acciones</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
@@ -44,11 +47,17 @@
                             <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
                             <MudTd DataLabel="Observación">@context.Observacion</MudTd>
                             <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
+                            <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Pasar" @onclick="() => Pasar(context)" />
+                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Build" Title="Pasar" @onclick="() => Pasar(context)" />
+                            </MudTd>
+                          
                         }
                     </RowTemplate>
+                     <PagerContent>
+        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
+    </PagerContent>
                 </MudTable>
             }
         </MudCardContent>
@@ -56,6 +65,7 @@
 </div>
 
 @code {
+    private MudTable<Inventario> _table;
     Inventario borrarinventario;
     Inventario newInventario = new Inventario();
     List<Inventario> inventarios;
@@ -70,6 +80,11 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<InventarioFormDialog>("Agregar material", options);
+    }
+
+    private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
     }
 
     private Inventario inventarioSeleccionado;
@@ -101,6 +116,8 @@
     private async Task Borrar(Inventario inventarioborrar)
     {
         var respuesta = await http.Delete($"api/InventarioController/{inventarioborrar.InventarioId}");
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Material Eliminado", Severity.Success);
         if (respuesta.Error)
         {
             var body = "Error";
@@ -110,8 +127,12 @@
 
         private async Task Pasar(Inventario inventario)
     {
+
         var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/pasar/{inventario.InventarioId}", null);
         var desactivo = await http.Delete($"api/InventarioController/{inventario.InventarioId}");
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Material Eliminado", Severity.Info);
+        await Task.Delay(1700);
         if (respuestaInventario.Error)
         {
             var body = "Error";

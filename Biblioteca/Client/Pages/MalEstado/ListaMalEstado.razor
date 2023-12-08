@@ -4,13 +4,15 @@
 @inject IHttpService http
 @using MudBlazor
 @inject IDialogService DialogService
+@inject ISnackbar SnackbarService
+@inject NavigationManager NavManager
 
 <div class="centered-content">
     <NavMenu></NavMenu>
     <MudCard MaxWidth="800px" class="mx-auto my-auto">
         <MudCardContent>
             <div style="display: flex; justify-content: center;">
-                <MudText Typo="Typo.h3" class="centered-content"><b>Inventario</b></MudText>
+                <MudText Typo="Typo.h3" class="centered-content"><b>Materiales fuera de servicio</b></MudText>
             </div>
 
             <div style="margin-bottom: 16px;">
@@ -27,14 +29,14 @@
                     Agregar Material
                 </MudButton>
 
-                <MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                <MudTable @ref="@_table" Items="@inventarios" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
                     <HeaderContent>
                         <MudTh>Codigo</MudTh>
                         <MudTh>Título/Nombre</MudTh>
                         <MudTh>Autor/Marca</MudTh>
                         <MudTh>Observación</MudTh>
                         <MudTh>Tipo</MudTh>
-                        <MudTh></MudTh>
+                        <MudTh>Acciones</MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
@@ -44,9 +46,15 @@
                             <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
                             <MudTd DataLabel="Observación">@context.Observacion</MudTd>
                             <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
-                            <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Pasar" @onclick="() => Pasar(context)" />
+                            <MudTd>
+                       <MudChip Text="green" Variant="Variant.Filled" Color="Color.Success" @onclick="() => Pasar(context)">Arreglado</MudChip>
+                       </MudTd>
+                           
                         }
                     </RowTemplate>
+                            <PagerContent>
+        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
+    </PagerContent>
                 </MudTable>
             }
         </MudCardContent>
@@ -54,6 +62,7 @@
 </div>
 
 @code {
+     private MudTable<Inventario> _table;
     Inventario borrarinventario;
     Inventario newInventario = new Inventario();
     List<Inventario> inventarios;
@@ -63,6 +72,11 @@
 
     bool isOpen = false;
     string buscarTermino = "";
+
+     private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
 
     void OpenDialog()
     {
@@ -99,6 +113,7 @@
     private async Task Borrar(Inventario inventarioborrar)
     { 
         var respuesta = await http.Delete($"api/InventarioController/{inventarioborrar.InventarioId}");
+       
         if (respuesta.Error)
         {
             var body = "Error";
@@ -108,6 +123,9 @@
 
         private async Task Pasar(Inventario inventario)
     {
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Material en servicio", Severity.Success);
+        await Task.Delay(1700);
         var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/buenestado/{inventario.InventarioId}", null);
         if (respuestaInventario.Error)
         {

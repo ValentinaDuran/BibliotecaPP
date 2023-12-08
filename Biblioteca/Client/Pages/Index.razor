@@ -27,7 +27,7 @@
                     Agregar Prestamo
                 </MudButton>
 
-                <MudTable  Items="@prestamos" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
+                <MudTable @ref="@_table" Items="@prestamos" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
                     <HeaderContent>
                         <MudTh style="white-space: nowrap;">Prestatario</MudTh>
                         <MudTh style="white-space: nowrap;">Material</MudTh>
@@ -69,6 +69,10 @@
   <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />                        </MudTd>
                         }
                     </RowTemplate>
+
+                                        <PagerContent>
+        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
+    </PagerContent>
                </MudTable>
             
         </MudCardContent>
@@ -76,10 +80,17 @@
 </div>
 
 @code {
+    private MudTable<Biblioteca.BD.Data.Entidades.Prestamo> _table;
      List<Biblioteca.BD.Data.Entidades.Prestamo> prestamos;
      bool fixed_header = true;
      bool fixed_footer = true;
      string buscarTermino = "";
+
+
+      private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
 
         protected override async Task OnInitializedAsync()
     {

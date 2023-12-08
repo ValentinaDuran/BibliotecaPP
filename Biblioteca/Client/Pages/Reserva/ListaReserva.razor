@@ -24,7 +24,7 @@
                     Agregar Reserva
                 </MudButton>
 
-                <MudTable  Items="@reservas" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
+                <MudTable  @ref="@_table"  Items="@reservas" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
                     <HeaderContent>
                         <MudTh style="white-space: nowrap;">Prestatario</MudTh>
                         <MudTh style="white-space: nowrap;">Material</MudTh>
@@ -69,6 +69,9 @@
                         }
 
                     </RowTemplate>
+                                        <PagerContent>
+        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
+    </PagerContent>
                </MudTable>
             
         </MudCardContent>
@@ -77,6 +80,7 @@
 </div>
 
 @code {
+     private MudTable<Reserva> _table;
     List<Reserva> reservas;
     bool fixed_header = true;
     bool fixed_footer = true;
@@ -85,7 +89,10 @@
     bool filter = true;
     string buscarTermino = "";
 
-
+     private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
     void OpenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
