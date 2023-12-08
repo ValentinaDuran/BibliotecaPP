@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.BD.Migrations
 {
     /// <inheritdoc />
-    public partial class TablasFinal : Migration
+    public partial class BDFinal : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,19 @@ namespace Biblioteca.BD.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cursos", x => x.CursoId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MaterialesMalEstado",
+                columns: table => new
+                {
+                    MaterialMalEstadoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Activo = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MaterialesMalEstado", x => x.MaterialMalEstadoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,36 +77,23 @@ namespace Biblioteca.BD.Migrations
                     TituloNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AutorMarca = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Observacion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TipoId = table.Column<int>(type: "int", nullable: false)
+                    TipoId = table.Column<int>(type: "int", nullable: false),
+                    MaterialMalEstadoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Inventarios", x => x.InventarioId);
                     table.ForeignKey(
+                        name: "FK_Inventarios_MaterialesMalEstado_MaterialMalEstadoId",
+                        column: x => x.MaterialMalEstadoId,
+                        principalTable: "MaterialesMalEstado",
+                        principalColumn: "MaterialMalEstadoId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Inventarios_Tipos_TipoId",
                         column: x => x.TipoId,
                         principalTable: "Tipos",
                         principalColumn: "TipoId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MaterialesMalEstado",
-                columns: table => new
-                {
-                    MaterialMalEstadoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Activo = table.Column<bool>(type: "bit", nullable: false),
-                    InventarioId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MaterialesMalEstado", x => x.MaterialMalEstadoId);
-                    table.ForeignKey(
-                        name: "FK_MaterialesMalEstado_Inventarios_InventarioId",
-                        column: x => x.InventarioId,
-                        principalTable: "Inventarios",
-                        principalColumn: "InventarioId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -219,14 +219,14 @@ namespace Biblioteca.BD.Migrations
                 column: "ReservaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Inventarios_MaterialMalEstadoId",
+                table: "Inventarios",
+                column: "MaterialMalEstadoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Inventarios_TipoId",
                 table: "Inventarios",
                 column: "TipoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MaterialesMalEstado_InventarioId",
-                table: "MaterialesMalEstado",
-                column: "InventarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prestamos_CursoId",
@@ -266,9 +266,6 @@ namespace Biblioteca.BD.Migrations
                 name: "Deudores");
 
             migrationBuilder.DropTable(
-                name: "MaterialesMalEstado");
-
-            migrationBuilder.DropTable(
                 name: "Prestamos");
 
             migrationBuilder.DropTable(
@@ -282,6 +279,9 @@ namespace Biblioteca.BD.Migrations
 
             migrationBuilder.DropTable(
                 name: "Prestatarios");
+
+            migrationBuilder.DropTable(
+                name: "MaterialesMalEstado");
 
             migrationBuilder.DropTable(
                 name: "Tipos");

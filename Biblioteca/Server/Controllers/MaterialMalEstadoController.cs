@@ -18,7 +18,7 @@ namespace Biblioteca.Server.Controllers
         public async Task<ActionResult<List<MaterialMalEstado>>> Get()
         {
             return await context.MaterialesMalEstado
-                          .Include(i => i.Inventario)
+                          //.Include(i => i.Inventario)
                           .Where(i => i.Activo == false)
                           .ToListAsync();
 
