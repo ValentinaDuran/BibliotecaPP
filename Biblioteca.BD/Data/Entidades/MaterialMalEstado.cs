@@ -12,16 +12,13 @@ namespace Biblioteca.BD.Data.Entidades
         //Clave primaria
         [Key]
         public int MaterialMalEstadoId { get; set; }
-
-
-        #region Atributos
+        public bool Pasar { get; set; }
         public bool Activo { get; set; }
 
-        #endregion
 
 
         // Clave foranea para referenciar el Inventario al que pertenece
-        public ICollection<Inventario> Inventarios { get; set; }
+        //public ICollection<Inventario> Inventarios { get; set; }
 
     }
 }

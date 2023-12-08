@@ -96,10 +96,7 @@ namespace Biblioteca.BD.Data.Entidades
                 .WithMany()                        // Un Tipo puede estar relacionado con muchos Inventarios
                 .HasForeignKey(i => i.TipoId)      // Clave foránea en Inventario
                 .IsRequired();                     // TipoId es requerido en Inventario
-            modelBuilder.Entity<MaterialMalEstado>()
-                .HasMany(m => m.Inventarios) // Indicar que MaterialMalEstado tiene muchos Inventarios
-                .WithOne(i => i.MaterialMalEstado) // Indicar que Inventario pertenece a un único MaterialMalEstado
-                .HasForeignKey(i => i.MaterialMalEstadoId); // Establecer la clave foránea en la tabla de Inventario
+
 
 
 
