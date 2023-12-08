@@ -1,5 +1,150 @@
-﻿<h3>ListaMalEstado</h3>
+﻿@page "/malestado-list"
+@using Biblioteca.Client.Services
+@using Biblioteca.BD.Data.Entidades
+@inject IHttpService http
+@using MudBlazor
+@inject IDialogService DialogService
+
+<div class="centered-content">
+    <NavMenu></NavMenu>
+    <MudCard MaxWidth="800px" class="mx-auto my-auto">
+        <MudCardContent>
+            <div style="display: flex; justify-content: center;">
+                <MudText Typo="Typo.h3" class="centered-content"><b>Inventario</b></MudText>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+            </div>
+
+            @if (inventarios == null)
+            {
+                <div>Cargando...</div>
+            }
+            else
+            {
+                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" >
+                    Agregar Material
+                </MudButton>
+
+                <MudTable Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                    <HeaderContent>
+                        <MudTh>Codigo</MudTh>
+                        <MudTh>Título/Nombre</MudTh>
+                        <MudTh>Autor/Marca</MudTh>
+                        <MudTh>Observación</MudTh>
+                        <MudTh>Tipo</MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
+                        {
+                            <MudTd DataLabel="Codigo">@context.Codigo</MudTd>
+                            <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
+                            <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
+                            <MudTd DataLabel="Observación">@context.Observacion</MudTd>
+                            <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
+                            <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Pasar" @onclick="() => Pasar(context)" />
+                        }
+                    </RowTemplate>
+                </MudTable>
+            }
+        </MudCardContent>
+    </MudCard>
+</div>
 
 @code {
+    Inventario borrarinventario;
+    Inventario newInventario = new Inventario();
+    List<Inventario> inventarios;
+    private Inventario editedInventario = new Inventario();
+    bool fixed_header = true;
+    bool fixed_footer = true;
 
+    bool isOpen = false;
+    string buscarTermino = "";
+
+    void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<InventarioFormDialog>("Agregar material", options);
+    }
+
+    private Inventario inventarioSeleccionado;
+
+    void EditarInventario(Inventario inventario)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("InventarioSeleccionadoId", inventario.InventarioId);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<InventarioEditarDialog>("Editar Inventario", parameters, options);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        await Leer();
+    }
+
+ private async Task Leer()
+{
+    var respuesta = await http.Get<List<Inventario>>("api/InventarioController/pasar-true");
+    if (!respuesta.Error)
+    {
+        inventarios = respuesta.Respuesta;
+    }
+}
+
+    private async Task Borrar(Inventario inventarioborrar)
+    { 
+        var respuesta = await http.Delete($"api/InventarioController/{inventarioborrar.InventarioId}");
+        if (respuesta.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
+    }
+
+        private async Task Pasar(Inventario inventario)
+    {
+        var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/buenestado/{inventario.InventarioId}", null);
+        if (respuestaInventario.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
+    }
+
+    private async Task MostrarDialogBorrar(Inventario inventario)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Inventario", inventario);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmDialog>("Confirmar Borrado", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await Borrar(inventario);
+        }
+    }
+
+    bool MatchesSearchTerm(Inventario inventario)
+    {
+        if (string.IsNullOrWhiteSpace(buscarTermino))
+        {
+            return true;
+        }
+
+        return inventario.Codigo.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.TituloNombre.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.AutorMarca.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.Observacion.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
+               inventario.Tipo.TipoMat.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
+    }
 }

@@ -26,7 +26,15 @@ namespace Biblioteca.Server.Controllers
 
         }
 
-        
+        [HttpGet("pasar-true")]
+        public async Task<ActionResult<List<Inventario>>> GetPasarTrue()
+        {
+            return await context.Inventarios
+                .Include(i => i.Tipo)
+                .Where(i => i.Pasar)
+                .ToListAsync();
+        }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Inventario>> Get(int id)
         {
@@ -92,6 +100,55 @@ namespace Biblioteca.Server.Controllers
                 return NotFound("No existe el inventario");
             }
 
+            inventario.Activo = true;
+
+            try
+            {
+                context.Inventarios.Update(inventario);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
+            }
+        }
+
+        [HttpPut("pasar/{id:int}")]
+        public ActionResult Pasar(int id)
+        {
+            var inventario = context.Inventarios.SingleOrDefault(e => e.InventarioId == id);
+
+            if (inventario == null)
+            {
+                return NotFound("No existe el inventario");
+            }
+
+            inventario.Pasar = true;
+
+            try
+            {
+                context.Inventarios.Update(inventario);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
+            }
+        }
+
+        [HttpPut("buenestado/{id:int}")]
+        public ActionResult CambiarBuenEstado(int id)
+        {
+            var inventario = context.Inventarios.SingleOrDefault(e => e.InventarioId == id);
+
+            if (inventario == null)
+            {
+                return NotFound("No existe el inventario");
+            }
+
+            inventario.Pasar = false;
             inventario.Activo = true;
 
             try

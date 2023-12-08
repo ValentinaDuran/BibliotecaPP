@@ -46,6 +46,7 @@
                             <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Pasar" @onclick="() => Pasar(context)" />
                         }
                     </RowTemplate>
                 </MudTable>
@@ -101,6 +102,17 @@
     {
         var respuesta = await http.Delete($"api/InventarioController/{inventarioborrar.InventarioId}");
         if (respuesta.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
+    }
+
+        private async Task Pasar(Inventario inventario)
+    {
+        var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/pasar/{inventario.InventarioId}", null);
+        var desactivo = await http.Delete($"api/InventarioController/{inventario.InventarioId}");
+        if (respuestaInventario.Error)
         {
             var body = "Error";
         }

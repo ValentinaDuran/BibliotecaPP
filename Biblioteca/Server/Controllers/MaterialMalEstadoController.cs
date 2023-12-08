@@ -20,6 +20,7 @@ namespace Biblioteca.Server.Controllers
             return await context.MaterialesMalEstado
                           //.Include(i => i.Inventario)
                           .Where(i => i.Activo == false)
+                          .Where(i=> i.Pasar == true)
                           .ToListAsync();
 
         }
