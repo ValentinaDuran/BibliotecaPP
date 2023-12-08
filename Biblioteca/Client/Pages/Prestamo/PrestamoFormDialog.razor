@@ -114,6 +114,8 @@
     }
      private async void Submit()
     {
+
+
          if (newPrestamo.InventarioId == null
         || newPrestamo.PrestatarioId == null
         || newPrestamo.CursoId == null
@@ -137,6 +139,14 @@
         var httpRespuesta = await http.Post<Prestamo>("api/PrestamoController", newPrestamo);
         if (!httpRespuesta.Error)
         {
+             var desactivarRespuesta = await http.Delete($"api/InventarioController/{newPrestamo.InventarioId}");
+        if (desactivarRespuesta.Error)
+        {
+            // Manejar el error si la desactivación falla
+        }
+
+        isOpen = false;
+        NavManager.NavigateTo("/", forceLoad: true);
 
             isOpen = false;
             NavManager.NavigateTo("/", forceLoad: true);

@@ -64,10 +64,9 @@
                         <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion.ToString("d")</MudTd>
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
-                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                       
                         <MudTd>
-                            <MudIconButton Icon="@Icons.Material.Filled.Check" Title="Editar" @onclick="() => EliminarReservasConvertidas()" />
-                        </MudTd>
+  <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />                        </MudTd>
                         }
                     </RowTemplate>
                </MudTable>
@@ -151,6 +150,7 @@
         {
             var body = "Error";
         }
+
         await Leer();
     }
 
