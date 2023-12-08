@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.BD.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20231207235228_TablasFinal")]
-    partial class TablasFinal
+    [Migration("20231208182950_BDFinal")]
+    partial class BDFinal
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,6 +99,9 @@ namespace Biblioteca.BD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MaterialMalEstadoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Observacion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -111,6 +114,8 @@ namespace Biblioteca.BD.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("InventarioId");
+
+                    b.HasIndex("MaterialMalEstadoId");
 
                     b.HasIndex("TipoId");
 
@@ -128,12 +133,7 @@ namespace Biblioteca.BD.Migrations
                     b.Property<bool>("Activo")
                         .HasColumnType("bit");
 
-                    b.Property<int>("InventarioId")
-                        .HasColumnType("int");
-
                     b.HasKey("MaterialMalEstadoId");
-
-                    b.HasIndex("InventarioId");
 
                     b.ToTable("MaterialesMalEstado");
                 });
@@ -304,24 +304,21 @@ namespace Biblioteca.BD.Migrations
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Inventario", b =>
                 {
+                    b.HasOne("Biblioteca.BD.Data.Entidades.MaterialMalEstado", "MaterialMalEstado")
+                        .WithMany("Inventarios")
+                        .HasForeignKey("MaterialMalEstadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Biblioteca.BD.Data.Entidades.Tipo", "Tipo")
                         .WithMany()
                         .HasForeignKey("TipoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("MaterialMalEstado");
+
                     b.Navigation("Tipo");
-                });
-
-            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.MaterialMalEstado", b =>
-                {
-                    b.HasOne("Biblioteca.BD.Data.Entidades.Inventario", "Inventario")
-                        .WithMany("MaterialesEnMalEstado")
-                        .HasForeignKey("InventarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Inventario");
                 });
 
             modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Prestamo", b =>
@@ -378,9 +375,9 @@ namespace Biblioteca.BD.Migrations
                     b.Navigation("Prestatario");
                 });
 
-            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.Inventario", b =>
+            modelBuilder.Entity("Biblioteca.BD.Data.Entidades.MaterialMalEstado", b =>
                 {
-                    b.Navigation("MaterialesEnMalEstado");
+                    b.Navigation("Inventarios");
                 });
 #pragma warning restore 612, 618
         }

@@ -30,8 +30,9 @@ namespace Biblioteca.BD.Data.Entidades
         public int TipoId { get; set; }
         public Tipo? Tipo { get; set; }
 
-        // Relación uno a muchos con MaterialMalEstado
-        public ICollection<MaterialMalEstado> MaterialesEnMalEstado { get; set; }
+        public int MaterialMalEstadoId { get; set; }
+        public MaterialMalEstado? MaterialMalEstado { get; set; }
+
         #endregion
 
     }

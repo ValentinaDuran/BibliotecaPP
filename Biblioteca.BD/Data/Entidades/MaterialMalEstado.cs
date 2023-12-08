@@ -19,10 +19,9 @@ namespace Biblioteca.BD.Data.Entidades
 
         #endregion
 
-        
+
         // Clave foranea para referenciar el Inventario al que pertenece
-        public int InventarioId { get; set; }
-        public Inventario Inventario { get; set; }
+        public ICollection<Inventario> Inventarios { get; set; }
 
     }
 }

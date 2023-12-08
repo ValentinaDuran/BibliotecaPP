@@ -6,7 +6,7 @@ namespace Biblioteca.Server.Controllers
 {
     [ApiController]
     [Route("api/InventarioController")]
-    public class InventarioController : ControllerBase
+    public class InventarioController : ControllerBase 
     {
         private readonly BDContext context;
 
@@ -20,13 +20,13 @@ namespace Biblioteca.Server.Controllers
         {
             return await context.Inventarios
                       .Include(i => i.Tipo)
-                      .Where(i => i.Activo == true)
+                      .Where(i =>i.Activo == true)
                       .ToListAsync();
 
 
         }
 
-
+        
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Inventario>> Get(int id)
         {
@@ -115,13 +115,24 @@ namespace Biblioteca.Server.Controllers
                 return NotFound("No existe el inventario");
             }
 
+            // Verifica si ya existe un inventario con el mismo código
+            var codigoExists = context.Inventarios.Any(i => i.Codigo == inventario.Codigo && i.InventarioId != id);
+
+            if (codigoExists)
+            {
+                ModelState.AddModelError("Codigo", "El código de inventario ya existe. Debe ser único.");
+                return BadRequest(ModelState);
+            }
+
             inventarioExistente.Codigo = inventario.Codigo;
             inventarioExistente.TituloNombre = inventario.TituloNombre;
             inventarioExistente.AutorMarca = inventario.AutorMarca;
             inventarioExistente.Observacion = inventario.Observacion;
             inventarioExistente.TipoId = inventario.TipoId;
             inventarioExistente.Tipo = inventario.Tipo;
-            inventarioExistente.Activo = inventario.Activo;
+            inventarioExistente.MaterialMalEstado = inventario.MaterialMalEstado;
+
+            // Actualiza otras propiedades según sea necesario
 
             try
             {
@@ -134,5 +145,6 @@ namespace Biblioteca.Server.Controllers
                 return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
             }
         }
+
     }
 }
