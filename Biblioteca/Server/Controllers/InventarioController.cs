@@ -130,7 +130,7 @@ namespace Biblioteca.Server.Controllers
             inventarioExistente.Observacion = inventario.Observacion;
             inventarioExistente.TipoId = inventario.TipoId;
             inventarioExistente.Tipo = inventario.Tipo;
-            inventarioExistente.MaterialMalEstado = inventario.MaterialMalEstado;
+
 
             // Actualiza otras propiedades según sea necesario
 
