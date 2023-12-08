@@ -143,16 +143,31 @@
            prestamo.Curso.Turno.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
     }
 
-     private async Task Borrar(Biblioteca.BD.Data.Entidades.Prestamo prestamoborrar)
+   private async Task Borrar(Biblioteca.BD.Data.Entidades.Prestamo prestamoborrar)
+{
+    // Llamada a la API para eliminar el préstamo
+    var respuestaPrestamo = await http.Delete($"api/PrestamoController/{prestamoborrar.PrestamoId}");
+
+    if (!respuestaPrestamo.Error)
     {
-        var respuesta = await http.Delete($"api/PrestamoController/{prestamoborrar.PrestamoId}");
-        if (respuesta.Error)
+        // Llamada al método Activar del controlador de inventario para cambiar el estado a activo
+        var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/activar/{prestamoborrar.Inventario.InventarioId}", null);
+
+        if (respuestaInventario.Error)
         {
-            var body = "Error";
+            // Manejar el error en la activación del inventario si es necesario
+            var errorInventario = respuestaInventario.Error;
         }
 
+        // Vuelve a cargar la lista de préstamos después de la eliminación y activación del inventario
         await Leer();
     }
+    else
+    {
+        // Manejar el error en la eliminación del préstamo si es necesario
+        var errorPrestamo = respuestaPrestamo.Error;
+    }
+}
 
     private async Task MostrarDialogBorrar(Biblioteca.BD.Data.Entidades.Prestamo prestamo)
     {

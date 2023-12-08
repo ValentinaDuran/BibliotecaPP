@@ -17,7 +17,7 @@ namespace Biblioteca.BD.Data.Entidades
         [Required(ErrorMessage = "Campo obligatorio.")]
         public string Codigo { get; set; }
         public bool Activo { get; set; } = true;//mostrar y ocultar visualmente 
-        public bool Pasar { get; set; }
+        public bool Pasar { get; set; } 
         [Required(ErrorMessage = "Campo obligatorio.")]
         public string TituloNombre { get; set; }
 

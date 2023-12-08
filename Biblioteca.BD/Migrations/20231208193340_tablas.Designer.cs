@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.BD.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20231208192947_BDFinal")]
-    partial class BDFinal
+    [Migration("20231208193340_tablas")]
+    partial class tablas
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

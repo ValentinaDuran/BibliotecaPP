@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteca.BD.Migrations
 {
     /// <inheritdoc />
-    public partial class BDFinal : Migration
+    public partial class tablas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

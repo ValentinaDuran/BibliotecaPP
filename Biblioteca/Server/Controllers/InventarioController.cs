@@ -82,6 +82,30 @@ namespace Biblioteca.Server.Controllers
             }
         }
 
+        [HttpPut("activar/{id:int}")]
+        public ActionResult Activar(int id)
+        {
+            var inventario = context.Inventarios.SingleOrDefault(e => e.InventarioId == id);
+
+            if (inventario == null)
+            {
+                return NotFound("No existe el inventario");
+            }
+
+            inventario.Activo = true;
+
+            try
+            {
+                context.Inventarios.Update(inventario);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
+            }
+        }
+
         [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
