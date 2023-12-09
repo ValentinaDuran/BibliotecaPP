@@ -62,11 +62,14 @@
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
                         <MudTd DataLabel="Acciones">
-                        <MudChipSet MultiSelection="true" Filter="filter">
-                            <MudChip Text="green" Variant="Variant.Filled" Color="Color.Success" @onclick="() => MarcarPrestamo(context)">Prestado</MudChip>
-                            </MudChipSet>
+                         <MudIconButton Icon="@Icons.Material.Filled.DoubleArrow" Title="Prestar" @onclick="() => MostrarDialogReserva(context)" />      
+                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />      
+
                             </MudTd>
+                           
                         }
+
+                        
 
                     </RowTemplate>
                                         <PagerContent>
@@ -113,6 +116,59 @@
         NavManager.NavigateTo("/reserva-list", forceLoad: true);
 
     }
+
+        private async Task MostrarDialogReserva(Reserva reserva)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Reserva", reserva);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmReserva>("Advertencia", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await MarcarPrestamo(reserva);
+        }
+    }
+
+
+
+        private async Task Borrar(Reserva reservaborrar)
+    {
+        var respuesta = await http.Delete($"api/ReservaController/{reservaborrar.ReservaId}");
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Reserva Eliminada", Severity.Success);
+        if (respuesta.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
+    }
+
+            private async Task MostrarDialogBorrar(Reserva reserva)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Reserva", reserva);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmReserva>("Advertencia", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await Borrar(reserva);
+        }
+    }
+
+
+
     protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();

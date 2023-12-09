@@ -47,10 +47,14 @@
                             <MudTd DataLabel="Observación">@context.Observacion</MudTd>
                             <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
                             <MudTd>
-                       <MudChip Text="green" Variant="Variant.Filled" Color="Color.Success" @onclick="() => Pasar(context)">Arreglado</MudChip>
                        </MudTd>
-                           
+                           <MudTd>
+
+                         <MudIconButton Icon="@Icons.Material.Filled.Done" Title="Listo" @onclick="() => MostrarDialogPasar(context)" />      
+                           </MudTd>
                         }
+
+                       
                     </RowTemplate>
                             <PagerContent>
         <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
@@ -84,16 +88,6 @@
         DialogService.Show<InventarioFormDialog>("Agregar material", options);
     }
 
-    private Inventario inventarioSeleccionado;
-
-    void EditarInventario(Inventario inventario)
-    {
-        var parameters = new DialogParameters();
-        parameters.Add("InventarioSeleccionadoId", inventario.InventarioId);
-
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<InventarioEditarDialog>("Editar Inventario", parameters, options);
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,16 +104,6 @@
     }
 }
 
-    private async Task Borrar(Inventario inventarioborrar)
-    { 
-        var respuesta = await http.Delete($"api/InventarioController/{inventarioborrar.InventarioId}");
-       
-        if (respuesta.Error)
-        {
-            var body = "Error";
-        }
-        await Leer();
-    }
 
         private async Task Pasar(Inventario inventario)
     {
@@ -134,13 +118,13 @@
         await Leer();
     }
 
-    private async Task MostrarDialogBorrar(Inventario inventario)
+        private async Task MostrarDialogPasar(Inventario inventario)
     {
         var parameters = new DialogParameters();
         parameters.Add("Inventario", inventario);
 
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        var result = await DialogService.Show<ConfirmDialog>("Confirmar Borrado", parameters, options).Result;
+        var result = await DialogService.Show<ConfirmBuenEstado>("Advertencia", parameters, options).Result;
 
         if (result.Cancelled)
         {
@@ -148,9 +132,11 @@
         }
         else if (result.Data is bool confirmado && confirmado)
         {
-            await Borrar(inventario);
+            await Pasar(inventario);
         }
     }
+
+
 
     bool MatchesSearchTerm(Inventario inventario)
     {

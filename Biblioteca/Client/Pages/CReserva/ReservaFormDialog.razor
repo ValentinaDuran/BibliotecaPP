@@ -126,7 +126,11 @@
         return;
       
         }
-
+         var desactivarRespuesta = await http.Delete($"api/InventarioController/{newReserva.InventarioId}");
+        if (desactivarRespuesta.Error)
+        {
+            // Manejar el error si la desactivación falla
+        }
          SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
         SnackbarService.Add("Prestamo registrado", Severity.Success);
         // Cambiar el valor de Pasar

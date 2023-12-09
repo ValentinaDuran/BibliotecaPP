@@ -39,11 +39,11 @@
 </MudDialog>
 
 @code {
-    private List<Inventario> inventarios;
+    private List<Biblioteca.BD.Data.Entidades.Inventario> inventarios;
     private string selectedTipo;
-    private Inventario inventarioSeleccionado = new Inventario();
+    private Biblioteca.BD.Data.Entidades.Inventario inventarioSeleccionado = new Biblioteca.BD.Data.Entidades.Inventario();
     private bool isOpen = true;
-    [Parameter] public Inventario InventarioSeleccionado { get; set; }
+    [Parameter] public Biblioteca.BD.Data.Entidades.Inventario InventarioSeleccionado { get; set; }
     private Timer dataRefreshTimer;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
@@ -71,7 +71,7 @@
  private async Task CargarInventarios()
 {
     // Accede a la propiedad inventarios de la clase
-    var respuesta = await http.Get<List<Inventario>>("api/InventarioController");
+    var respuesta = await http.Get<List<Biblioteca.BD.Data.Entidades.Inventario>>("api/InventarioController");
     if (!respuesta.Error)
     {
         inventarios = respuesta.Respuesta;
@@ -119,7 +119,7 @@
 
     private async Task ObtenerInventarioPorId(int inventarioId)
 {
-    var respuesta = await http.Get<Inventario>($"api/InventarioController/{inventarioId}");
+    var respuesta = await http.Get<Biblioteca.BD.Data.Entidades.Inventario>($"api/InventarioController/{inventarioId}");
     if (respuesta.Error)
     {
        

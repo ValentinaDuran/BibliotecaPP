@@ -1,4 +1,5 @@
 ﻿@page "/inventario-list"
+@using Biblioteca.Client.Pages.CInventario
 @using Biblioteca.Client.Services
 @using Biblioteca.BD.Data.Entidades
 @inject IHttpService http
@@ -50,7 +51,7 @@
                             <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
                              <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Build" Title="Pasar" @onclick="() => Pasar(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Build" Title="Pasar" @onclick="() => MostrarDialogPasar(context)" />
                             </MudTd>
                           
                         }
@@ -131,13 +132,31 @@
         var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/pasar/{inventario.InventarioId}", null);
         var desactivo = await http.Delete($"api/InventarioController/{inventario.InventarioId}");
         SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
-        SnackbarService.Add("Material Eliminado", Severity.Info);
+        SnackbarService.Add("Material fuera de servicio", Severity.Info);
         await Task.Delay(1700);
         if (respuestaInventario.Error)
         {
             var body = "Error";
         }
         await Leer();
+    }
+
+     private async Task MostrarDialogPasar(Inventario inventario)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Inventario", inventario);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmMalEstado>("Advertencia", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await Pasar(inventario);
+        }
     }
 
     private async Task MostrarDialogBorrar(Inventario inventario)
