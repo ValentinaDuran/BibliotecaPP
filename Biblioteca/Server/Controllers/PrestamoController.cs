@@ -26,11 +26,26 @@ namespace Biblioteca.Server.Controllers
                 .Include(i => i.Prestatario)
                 .Include(i => i.Curso)
                 .Where(a => a.Activo == true)
+                .Where (d => d.EsDeudor == false)
                 .ToListAsync();
             return prestamos;
 
 
         }
+
+        [HttpGet("deudor-true")]
+        public async Task<ActionResult<List<Prestamo>>> GetPasarTrue()
+        {
+            return await context.Prestamos
+                .Include(i => i.Inventario)
+                .ThenInclude(t => t.Tipo)
+                .Include(i => i.Prestatario)
+                .Include(i => i.Curso)
+                .Where(d => d.EsDeudor == true)
+                .Where(a => a.Activo == true)
+                .ToListAsync();
+        }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Prestamo>> Get(int id)
         {
@@ -138,30 +153,30 @@ namespace Biblioteca.Server.Controllers
                 return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
             }
         }
-        //[HttpGet("VerificarPrestamosVencidosYConvertirEnDeudores")]
-        //public async Task<ActionResult> VerificarPrestamosVencidosYConvertirEnDeudores()
-        //{
-        //    try
-        //    {
-        //        var prestamosVencidos = await context.Prestamos
-        //            .Where(p => p.FechaDevolucion < DateTime.Now && p.Activo)
-        //            .ToListAsync();
 
-        //        //foreach (var prestamo in prestamosVencidos)
-        //        //{
-        //        //    prestamo.Activo = Deudor.DeudorId;
-        //        //    context.Prestamos.Update(prestamo);
-        //        //}
+        [HttpPut("deudor/{id:int}")]
+        public ActionResult Activar(int id)
+        {
+            var prestamo = context.Prestamos.SingleOrDefault(e => e.PrestamoId == id);
 
-        //        await context.SaveChangesAsync();
+            if (prestamo == null)
+            {
+                return NotFound("No existe el prestamo");
+            }
 
-        //        return Ok("Se han actualizado los préstamos vencidos a estado de deudor correctamente.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest($"Error al verificar y actualizar préstamos vencidos: {ex.Message}");
-        //    }
-        //}
+            prestamo.EsDeudor = true;
+
+            try
+            {
+                context.Prestamos.Update(prestamo);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
+            }
+        }
 
 
     }

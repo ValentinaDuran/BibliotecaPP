@@ -35,7 +35,7 @@
                         <MudTh>Título/Nombre</MudTh>
                         <MudTh>Autor/Marca</MudTh>
                         <MudTh>Observación</MudTh>
-                        <MudTh>Tipo</MudTh>
+                        <MudTh>Tipo</MudTh>        
                         <MudTh>Acciones</MudTh>
                     </HeaderContent>
                     <RowTemplate>
@@ -46,15 +46,11 @@
                             <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
                             <MudTd DataLabel="Observación">@context.Observacion</MudTd>
                             <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
-                            <MudTd>
-                       </MudTd>
+
                            <MudTd>
-
-                         <MudIconButton Icon="@Icons.Material.Filled.Done" Title="Listo" @onclick="() => MostrarDialogPasar(context)" />      
+                         <MudIconButton Icon="@Icons.Material.Filled.Replay" Title="Listo" @onclick="() => MostrarDialogPasar(context)" />      
                            </MudTd>
-                        }
-
-                       
+                        }                  
                     </RowTemplate>
                             <PagerContent>
         <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Biblioteca.BD.Data.Entidades
 @using Biblioteca.Client.Pages.CPrestamo
+@using Biblioteca.Client.Pages.Deudores
 @using Biblioteca.Client.Services
 @inject IHttpService http
 @using MudBlazor
@@ -13,41 +14,42 @@
 </style>
 
 <NavMenu></NavMenu>
-<div class="centered-content " >
-    <MudCard MaxWidth="2500px" class="mx-auto my-auto">
-       
+<div class="centered-content ">
+    <MudCard MaxWidth="3000px" class="mx-auto my-auto">
+
         <MudCardContent>
             <div style="display: flex;
     justify-content: center;">
-                <MudText  Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
+                <MudText Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
             </div>
-             <div style="margin-bottom: 16px;">
-                <MudTextField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search"  Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+            <div style="margin-bottom: 16px;">
+                <MudTextField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
-            
-                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-                    Agregar Prestamo
-                </MudButton>
 
-                <MudTable @ref="@_table" Items="@prestamos" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
-                    <HeaderContent>
-                        <MudTh style="white-space: nowrap;">Prestatario</MudTh>
-                        <MudTh style="white-space: nowrap;">Material</MudTh>
-                        <MudTh style="white-space: nowrap;">Curso</MudTh>
-                        <MudTh style="white-space: nowrap;">Fecha de entrega</MudTh>
-                        <MudTh style="white-space: nowrap;">Hora de entrega</MudTh>
-                        <MudTh>Fecha de devolucion</MudTh>
-                        <MudTh>Hora de devolucion</MudTh>
-                           <MudTh>Observacion</MudTh>
-                            <MudTh>Acciones</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                          @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
-                        {
+            <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                Agregar Prestamo
+            </MudButton>
+
+            <MudTable @ref="@_table" Items="@prestamos" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
+                <HeaderContent>
+                    <MudTh style="white-space: nowrap;">Prestatario</MudTh>
+                    <MudTh style="white-space: nowrap;">Material</MudTh>
+                    <MudTh style="white-space: nowrap;">Curso</MudTh>
+                    <MudTh style="white-space: nowrap;">Fecha de entrega</MudTh>
+                    <MudTh style="white-space: nowrap;">Hora de entrega</MudTh>
+                    <MudTh>Fecha de devolucion</MudTh>
+                    <MudTh>Hora de devolucion</MudTh>
+                    <MudTh>Observacion</MudTh>
+                    <MudTh>Acciones</MudTh>
+                     <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
+                    {
                         <MudTd DataLabel="Prestatario" class="ampliar-columna">@context.Prestatario.NombreApellido</MudTd>
                         <MudTd DataLabel="material" Style="font-size:13px">
                             <b>Codigo:</b>@context.Inventario.Codigo
-                            <b>Material:</b> @context.Inventario.TituloNombre 
+                            <b>Material:</b> @context.Inventario.TituloNombre
                             <b>Autor/Marca:</b> @context.Inventario.AutorMarca
 
                         </MudTd>
@@ -56,51 +58,89 @@
                             @context.Curso.Año
                             <b>Division:</b>
                             @context.Curso.Division <br />
-                            <b>Nivel:</b> @context.Curso.Nivel 
+                            <b>Nivel:</b> @context.Curso.Nivel
                             <b>Turno:</b> @context.Curso.Turno
 
                         </MudTd>
 
                         <MudTd DataLabel="Fecha de entrega">@context.FechaEntrega.ToString("d")</MudTd>
-                        <MudTd DataLabel="Hora de entrega">@context.HoraEntrega.ToString(@"hh\:mm")</MudTd>                       
+                        <MudTd DataLabel="Hora de entrega">@context.HoraEntrega.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Fecha de Devolución">@context.FechaDevolucion.ToString("d")</MudTd>
                         <MudTd DataLabel="Hora de Devolución">@context.HoraDevolucion.ToString(@"hh\:mm")</MudTd>
                         <MudTd DataLabel="Observacion">@context.Observacion</MudTd>
-                       
                         <MudTd>
-  <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />                        </MudTd>
-                        }
-                    </RowTemplate>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                        </MudTd>   
+                        
+                        <MudTd>
 
-                                        <PagerContent>
-        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
-    </PagerContent>
-               </MudTable>
-            
+                            <MudIconButton Icon="@Icons.Material.Filled.Report" Title="Deudor" @onclick="() => MostrarDialogDeudor(context)" />
+                        </MudTd>
+                    }
+                </RowTemplate>
+
+                <PagerContent>
+                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
+                </PagerContent>
+            </MudTable>
+
         </MudCardContent>
     </MudCard>
 </div>
 
 @code {
     private MudTable<Prestamo> _table;
-     List<Prestamo> prestamos;
-     bool fixed_header = true;
-     bool fixed_footer = true;
-     string buscarTermino = "";
+    List<Prestamo> prestamos;
+    bool fixed_header = true;
+    bool fixed_footer = true;
+    string buscarTermino = "";
 
 
-      private void PageChanged(int i)
+    private void PageChanged(int i)
     {
         _table.NavigateTo(i - 1);
     }
 
-        protected override async Task OnInitializedAsync()
+
+        private async Task PasarDeudor(Prestamo prestamo)
+    {
+
+        var respuestaInventario = await http.Put<Prestamo>($"api/PrestamoController/deudor/{prestamo.PrestamoId}", null);
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Deudor registrado", Severity.Info);
+        await Task.Delay(1700);
+        if (respuestaInventario.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
+    }
+
+        private async Task MostrarDialogDeudor(Prestamo prestamo)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Prestamo", prestamo);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmDeudor>("Deudor", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await PasarDeudor(prestamo);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();
         await Leer();
     }
     bool isOpen = false;
-       void OpenDialog()
+    void OpenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<PrestamoFormDialog>("Agregar Prestamo", options);
@@ -111,30 +151,30 @@
     {
         var respuesta = await http.Get<List<Prestamo>>("api/PrestamoController");
         var respuestaReservas = await http.Get<List<Reserva>>("api/ReservaController");
-       if (!respuesta.Error)
-    {
-        prestamos = respuesta.Respuesta;
-
-        if (!respuestaReservas.Error && respuestaReservas.Respuesta.Any(r => r.Pasar))
+        if (!respuesta.Error)
         {
-            var reservasParaAgregar = respuestaReservas.Respuesta
-                .Where(r => r.Pasar)
-                .Select(r => new Prestamo
-                {
-                    // Mapear las propiedades necesarias de Reserva a Prestamo
-                    Prestatario = r.Prestatario,
-                    Inventario = r.Inventario,
-                    Curso = r.Curso,
-                    FechaEntrega = r.FechaEntrega,
-                    HoraEntrega = r.HoraEntrega,
-                    FechaDevolucion = r.FechaDevolucion,
-                    HoraDevolucion = r.HoraDevolucion,
-                    // ... mapear otras propiedades según sea necesario
-                });
+            prestamos = respuesta.Respuesta;
 
-            prestamos.AddRange(reservasParaAgregar);
+            if (!respuestaReservas.Error && respuestaReservas.Respuesta.Any(r => r.Pasar))
+            {
+                var reservasParaAgregar = respuestaReservas.Respuesta
+                    .Where(r => r.Pasar)
+                    .Select(r => new Prestamo
+                        {
+                    // Mapear las propiedades necesarias de Reserva a Prestamo
+                            Prestatario = r.Prestatario,
+                            Inventario = r.Inventario,
+                            Curso = r.Curso,
+                            FechaEntrega = r.FechaEntrega,
+                            HoraEntrega = r.HoraEntrega,
+                            FechaDevolucion = r.FechaDevolucion,
+                            HoraDevolucion = r.HoraDevolucion,
+                    // ... mapear otras propiedades según sea necesario
+                        });
+
+                prestamos.AddRange(reservasParaAgregar);
+            }
         }
-    }
     }
 
     bool MatchesSearchTerm(Prestamo prestamo)
@@ -156,28 +196,28 @@
            prestamo.Curso.Turno.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
     }
 
-   private async Task Borrar(Prestamo prestamoborrar)
-{
-    var respuestaPrestamo = await http.Delete($"api/PrestamoController/{prestamoborrar.PrestamoId}");
-
-    if (!respuestaPrestamo.Error)
+    private async Task Borrar(Prestamo prestamoborrar)
     {
-        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
-        SnackbarService.Add("Prestamo Eliminado", Severity.Success);
-        var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/activar/{prestamoborrar.Inventario.InventarioId}", null);
+        var respuestaPrestamo = await http.Delete($"api/PrestamoController/{prestamoborrar.PrestamoId}");
 
-        if (respuestaInventario.Error)
+        if (!respuestaPrestamo.Error)
         {
-            var errorInventario = respuestaInventario.Error;
-        }
+            SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+            SnackbarService.Add("Prestamo Eliminado", Severity.Success);
+            var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/activar/{prestamoborrar.Inventario.InventarioId}", null);
 
-        await Leer();
+            if (respuestaInventario.Error)
+            {
+                var errorInventario = respuestaInventario.Error;
+            }
+
+            await Leer();
+        }
+        else
+        {
+            var errorPrestamo = respuestaPrestamo.Error;
+        }
     }
-    else
-    {
-        var errorPrestamo = respuestaPrestamo.Error;
-    }
-}
 
     private async Task MostrarDialogBorrar(Prestamo prestamo)
     {

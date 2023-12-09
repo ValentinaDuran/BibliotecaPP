@@ -18,7 +18,7 @@
             </div>
 
             <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" Adornment="Adornment.Start"  AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
             @if (inventarios == null)
@@ -27,7 +27,7 @@
             }
             else
             {
-                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" >
+                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
                     Agregar Material
                 </MudButton>
 
@@ -43,23 +43,23 @@
                     <RowTemplate>
                         @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
                         {
-                            <MudTd DataLabel="Codigo">@context.Codigo</MudTd>
-                            <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
-                            <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
-                            <MudTd DataLabel="Observación">@context.Observacion</MudTd>
-                            <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
-                            <MudTd>
+                        <MudTd DataLabel="Codigo">@context.Codigo</MudTd>
+                        <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
+                        <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
+                        <MudTd DataLabel="Observación">@context.Observacion</MudTd>
+                        <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
+                        <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
-                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Build" Title="Pasar" @onclick="() => MostrarDialogPasar(context)" />
-                            </MudTd>
-                          
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Build" Title="Mal estado" @onclick="() => MostrarDialogPasar(context)" />
+                        </MudTd>
+
                         }
-                    </RowTemplate>
-                     <PagerContent>
-        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
-    </PagerContent>
-                </MudTable>
+                </RowTemplate>
+                <PagerContent>
+                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
+                </PagerContent>
+            </MudTable>
             }
         </MudCardContent>
     </MudCard>
@@ -126,7 +126,7 @@
         await Leer();
     }
 
-        private async Task Pasar(Inventario inventario)
+    private async Task Pasar(Inventario inventario)
     {
 
         var respuestaInventario = await http.Put<Inventario>($"api/InventarioController/pasar/{inventario.InventarioId}", null);
@@ -141,7 +141,7 @@
         await Leer();
     }
 
-     private async Task MostrarDialogPasar(Inventario inventario)
+    private async Task MostrarDialogPasar(Inventario inventario)
     {
         var parameters = new DialogParameters();
         parameters.Add("Inventario", inventario);
