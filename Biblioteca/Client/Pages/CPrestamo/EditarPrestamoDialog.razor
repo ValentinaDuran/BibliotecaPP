@@ -1,0 +1,88 @@
+﻿
+@page "/editarprestamo"
+@inject IDialogService DialogService
+@inject ISnackbar SnackbarService
+@using Biblioteca.BD.Data.Entidades
+@using Biblioteca.Client.Services
+@inject IHttpService http
+@inject NavigationManager NavManager
+
+<MudDialog iOpen="isOpen">
+    <DialogContent>
+        <MudForm>
+            <MudGrid>
+
+  
+<MudTextField T="DateTime"  @bind-Value="@prestamoSeleccionado.FechaDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Format="yyyy-MM-dd" Label="Fecha de devolucion"  InputType="InputType.Date"/>      
+    
+ 
+
+
+
+
+</MudGrid>
+</MudForm>
+</DialogContent>
+ <DialogActions>
+        
+        <MudButton Color="Color.Primary" OnClick="GuardarCambios">Agregar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public int PrestamoSeleccionadoId { get; set; }
+    private List<Prestatario> prestatarios;
+    private bool isOpen = false;
+    private Prestamo prestamoSeleccionado = new Prestamo();
+    private List<Curso> cursos;
+    private List<Inventario> inventarios;
+    private List<Prestamo> prestamos;
+    private Inventario selectedInventarios;
+    private Curso selectedCursos;
+    private Prestamo newPrestamo = new Prestamo();
+    protected override async Task OnInitializedAsync()
+    {
+
+        await ObtenerPrestamoPorId(PrestamoSeleccionadoId);
+
+    }
+
+  
+   
+     private async void GuardarCambios()
+    {
+       var respuesta = await http.Put($"api/PrestamoController/{PrestamoSeleccionadoId}", prestamoSeleccionado);
+       if (!respuesta.Error)
+        {
+            MudDialog.Close();
+            NavManager.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            var body = respuesta.HttpResponseMessage;
+        }
+    }
+
+       private async Task ObtenerPrestamoPorId(int prestamoId)
+{
+    var respuesta = await http.Get<Prestamo>($"api/PrestamoController/{prestamoId}");
+    if (respuesta.Error)
+    {
+       
+    }
+    else
+    {
+        prestamoSeleccionado = respuesta.Respuesta;
+         
+        
+    }
+}
+
+
+
+    
+   
+    
+}

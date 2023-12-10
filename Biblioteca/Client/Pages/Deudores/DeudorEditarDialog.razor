@@ -13,7 +13,7 @@
             <MudGrid>
 
   
-<MudTextField T="TimeSpan"  @bind-Value="@prestamoSeleccionado.HoraDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de devolucion" InputType="InputType.Time"/>          
+<MudTextField T="DateTime"  @bind-Value="@prestamoSeleccionado.FechaDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Format="yyyy-MM-dd" Label="Fecha de devolucion"  InputType="InputType.Date"/>      
     
  
 

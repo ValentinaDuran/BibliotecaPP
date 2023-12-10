@@ -74,7 +74,14 @@
                         
                         <MudTd>
 
-                            <MudIconButton Icon="@Icons.Material.Filled.Report" Title="Deudor" @onclick="() => EditarDeudor(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Report" Title="Deudor" @onclick="() => MostrarDialogDeudor(context)" />
+                        </MudTd>
+
+
+                            
+                        <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarPrestamo(context)" />
+
                         </MudTd>
                     }
                 </RowTemplate>
@@ -134,13 +141,13 @@
         }
     }
 
-       void EditarDeudor(Prestamo prestamo)
+       void EditarPrestamo(Prestamo prestamo)
     {
         var parameters = new DialogParameters();
-        parameters.Add("DeudorSeleccionadoId", prestamo.PrestamoId);
+        parameters.Add("PrestamoSeleccionadoId", prestamo.PrestamoId);
 
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<DeudorEditarDialog>("Editar deudor", parameters, options);
+        DialogService.Show<EditarPrestamoDialog>("Editar fecha de devolucion", parameters, options);
     }
 
 
