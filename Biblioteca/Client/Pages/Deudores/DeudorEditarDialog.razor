@@ -1,0 +1,149 @@
+﻿
+@page "/editardeudor"
+@inject IDialogService DialogService
+@inject ISnackbar SnackbarService
+@using Biblioteca.BD.Data.Entidades
+@using Biblioteca.Client.Services
+@inject IHttpService http
+@inject NavigationManager NavManager
+
+<MudDialog iOpen="isOpen">
+    <DialogContent>
+        <MudForm>
+            <MudGrid>
+
+  
+<MudTextField T="TimeSpan"  @bind-Value="@prestamoSeleccionado.HoraDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de devolucion" InputType="InputType.Time"/>          
+    
+ 
+
+
+
+
+</MudGrid>
+</MudForm>
+</DialogContent>
+ <DialogActions>
+        
+        <MudButton Color="Color.Primary" OnClick="GuardarCambios">Agregar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public int DeudorSeleccionadoId { get; set; }
+    private List<Prestatario> prestatarios;
+    private bool isOpen = false;
+    private Prestamo prestamoSeleccionado = new Prestamo();
+    private List<Curso> cursos;
+    private List<Inventario> inventarios;
+    private List<Prestamo> prestamos;
+    private Inventario selectedInventarios;
+    private Curso selectedCursos;
+    private Prestamo newPrestamo = new Prestamo();
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarPrestamo();
+        await CargarCursos();
+        await CargarPrestatario();
+        await ObtenerDeudorPorId(DeudorSeleccionadoId);
+
+    }
+
+    private async Task CargarPrestamo()
+    {
+        var respuesta = await http.Get<List<Prestamo>>("api/PrestamoController");
+        if (!respuesta.Error)
+        {
+            prestamos = respuesta.Respuesta;
+        }
+        else
+        {
+            Console.WriteLine($"Error al cargar prestamo: {respuesta.Error}");
+        }
+    }
+   
+     private async void GuardarCambios()
+    {
+       var respuesta = await http.Put($"api/PrestamoController/{DeudorSeleccionadoId}", prestamoSeleccionado);
+       if (!respuesta.Error)
+        {
+            MudDialog.Close();
+            NavManager.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            var body = respuesta.HttpResponseMessage;
+        }
+    }
+
+       private async Task ObtenerDeudorPorId(int prestamoId)
+{
+    var respuesta = await http.Get<Prestamo>($"api/PrestamoController/{prestamoId}");
+    if (respuesta.Error)
+    {
+       
+    }
+    else
+    {
+        prestamoSeleccionado = respuesta.Respuesta;
+         
+        
+    }
+}
+
+       private async Task CargarCursos()
+    {
+        var respuesta = await http.Get<List<Curso>>("api/CursoController");
+        if (!respuesta.Error)
+        {
+            cursos = respuesta.Respuesta;
+        }
+        else
+        {
+            Console.WriteLine($"Error al cargar inventarios: {respuesta.Error}");
+        }
+    }
+
+        private async Task CargarPrestatario()
+    {
+        var respuesta = await http.Get<List<Prestatario>>("api/PrestatariosController");
+        if (!respuesta.Error)
+        {
+            prestatarios = respuesta.Respuesta;
+        }
+        else
+        {
+            Console.WriteLine($"Error al cargar prestamos: {respuesta.Error}");
+        }
+    }
+private string MostrarCurso(Curso curso)
+{
+    return curso != null
+        ? $"{curso.Año} - {curso.Division ?? string.Empty} - {curso.Turno ?? string.Empty}- {curso.Nivel ?? string.Empty}"
+        : string.Empty;
+}
+
+private string MostrarInventario(Inventario inventario)
+{
+    if (inventario == null)
+        return string.Empty;
+
+    return $"{inventario.Tipo?.TipoMat} - {inventario.Codigo} - {inventario.TituloNombre} - {inventario.AutorMarca}";
+}
+
+
+private string MostrarPrestatario(Prestatario prestatario)
+{
+    if (prestatario == null)
+        return string.Empty;
+
+    return $"{prestatario.NombreApellido}";
+}
+
+
+    
+   
+    
+}

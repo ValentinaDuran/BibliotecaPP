@@ -74,7 +74,7 @@
                         
                         <MudTd>
 
-                            <MudIconButton Icon="@Icons.Material.Filled.Report" Title="Deudor" @onclick="() => MostrarDialogDeudor(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Report" Title="Deudor" @onclick="() => EditarDeudor(context)" />
                         </MudTd>
                     }
                 </RowTemplate>
@@ -133,6 +133,16 @@
             await PasarDeudor(prestamo);
         }
     }
+
+       void EditarDeudor(Prestamo prestamo)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("DeudorSeleccionadoId", prestamo.PrestamoId);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<DeudorEditarDialog>("Editar deudor", parameters, options);
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
