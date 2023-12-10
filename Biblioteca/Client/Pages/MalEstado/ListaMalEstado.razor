@@ -25,9 +25,6 @@
             }
             else
             {
-                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" >
-                    Agregar Material
-                </MudButton>
 
                 <MudTable @ref="@_table" Items="@inventarios" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
                     <HeaderContent>

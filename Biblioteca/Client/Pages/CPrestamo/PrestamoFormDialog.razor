@@ -14,6 +14,10 @@
 
     <MudItem xs="12">
 <MudSelect T="int" @bind-Value="newPrestamo.PrestatarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" For="@(() => newPrestamo.PrestatarioId)">
+     <MudSelectItem Value="0">
+        Profesor
+    </MudSelectItem>
+    
     @if (prestatarios != null)
     {
                         @foreach (var prestatario in prestatarios)
@@ -29,6 +33,9 @@
 
     <MudItem xs="12"> 
 <MudSelect @bind-Value="newPrestamo.InventarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ViewCompact" Label="Seleccionar Material" Placeholder="Seleccione un Inventario">
+    <MudSelectItem Value="0">
+        Material
+    </MudSelectItem>
     @if (inventarios != null)
     {
         @foreach (var inventario in inventarios)
@@ -46,7 +53,10 @@
            
 
    <MudSelect @bind-Value="newPrestamo.CursoId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Cases"   Label="Seleccione un Curso">
-    @if (cursos != null)
+     <MudSelectItem Value="0">
+        Cursos
+    </MudSelectItem>
+       @if (cursos != null)
     {
         @foreach (var curso in cursos)
         {
@@ -77,21 +87,19 @@
 </MudForm>
 </DialogContent>
  <DialogActions>
-        
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
-
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     private List<Prestatario> prestatarios;
     private bool isOpen = false;
     private List<Curso> cursos;
     private List<Inventario> inventarios;
     private List<Prestamo> prestamos;
-    private Inventario selectedInventarios;
-    private Curso selectedCursos;
     private Prestamo newPrestamo = new Prestamo();
     protected override async Task OnInitializedAsync()
     {
@@ -112,13 +120,16 @@
             Console.WriteLine($"Error al cargar inventarios: {respuesta.Error}");
         }
     }
+
+   
+
      private async void Submit()
     {
 
 
-         if (newPrestamo.InventarioId == null
-        || newPrestamo.PrestatarioId == null
-        || newPrestamo.CursoId == null
+         if (newPrestamo.InventarioId == null || newPrestamo.InventarioId == 0
+        || newPrestamo.PrestatarioId == null || newPrestamo.PrestatarioId == 0
+        || newPrestamo.CursoId == null || newPrestamo.CursoId == 0
         || newPrestamo.FechaEntrega == default(DateTime)
         || newPrestamo.FechaDevolucion == default(DateTime)
          || newPrestamo.HoraEntrega == default(TimeSpan)
@@ -157,7 +168,7 @@
         }
     }
 
-
+     void Cancel() => MudDialog.Cancel();
 
        private async Task CargarCursos()
     {

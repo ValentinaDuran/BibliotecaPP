@@ -9,21 +9,35 @@
         <MudForm>
             <MudGrid>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="newInventario.TituloNombre" Label="Título/Nombre" For="@(() => newInventario.TituloNombre)" />
+                    <MudTextField @bind-Value="newInventario.TituloNombre"Label="Título/Nombre" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.TypeSpecimen"  For="@(() => newInventario.TituloNombre)" />
                 </MudItem>
+                
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="newInventario.AutorMarca" Label="Autor/marca" For="@(() => newInventario.AutorMarca)" />
+                    <MudTextField @bind-Value="newInventario.AutorMarca" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Assignment" Label="Autor/marca" For="@(() => newInventario.AutorMarca)" />
                 </MudItem>
+
+                
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="newInventario.Observacion" Label="Observación" />
+                    <MudTextField @bind-Value="newInventario.Observacion"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Comment"Label="Observación" />
                 </MudItem>
+
+                
+
                 <MudItem xs="6">
-                    <MudSelect T="int" @bind-Value="newInventario.TipoId" Label="Tipo" For="@(() => newInventario.TipoId)">
-                        @foreach (var tipo in tipos)
-                        {
-                            <MudSelectItem Value="@tipo.TipoId">@tipo.TipoMat</MudSelectItem>
-                        }
-                    </MudSelect>
+   <MudSelect @bind-Value="newInventario.TipoId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Cases"   Label="Seleccione un tipo">
+     <MudSelectItem Value="0">
+        Tipo
+    </MudSelectItem>
+       @if (tipos != null)
+    {
+        @foreach (var tipo in tipos)
+        {
+            <MudSelectItem Value="@tipo.TipoId">
+                @MostrarTipo(tipo)
+            </MudSelectItem>
+        }
+    }
+</MudSelect>
                 </MudItem>
                 <MudItem xs="6">
                     <MudTextField @bind-Value="newInventario.Codigo" Label="Codigo" For="@(() => newInventario.Codigo)" />
@@ -32,8 +46,9 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
+        
         <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -41,13 +56,13 @@
     private bool isOpen = false;
     private Inventario model = new Inventario();
     private List<Inventario> inventarios;
-
+    private List<Tipo> tipos;
 
 
     protected override void OnInitialized()
     {
 
- 
+        CargarTipos();
     }
 
 
@@ -63,17 +78,7 @@
     {
         Observacion = "Sin observación"
     };
-    static List<Tipo> tipos = new List<Tipo>
-    {
-        new Tipo{ TipoId= 1,TipoMat= "Libro"},
-        new Tipo{ TipoId= 2,TipoMat= "Mapa"},
-        new Tipo{ TipoId= 3,TipoMat= "ÚtilGeometria"},
-        new Tipo{ TipoId= 4,TipoMat= "Computadora"},
-        new Tipo{ TipoId= 5,TipoMat= "Proyector"},
-        new Tipo{ TipoId= 6,TipoMat= "Revista"},
-        new Tipo{ TipoId= 7,TipoMat= "Ludoteca"},
-        new Tipo{ TipoId= 8,TipoMat= "InstrumentoMusical"},
-    };
+   
 
     private async void Submit()
     {
@@ -118,10 +123,32 @@
         }
     }
 
+      private async Task CargarTipos()
+    {
+        var respuesta = await http.Get<List<Tipo>>("api/TipoController");
+        if (!respuesta.Error)
+        {
+            tipos = respuesta.Respuesta;
+        }
+        else
+        {
+            Console.WriteLine($"Error al cargar tipo: {respuesta.Error}");
+        }
+    }
+
     void Cancel() => MudDialog.Cancel();
 
       void OpenDialog()
     {
         isOpen = true;
     }
+
+    
+private string MostrarTipo(Tipo tipo)
+{
+    if (tipo == null)
+        return string.Empty;
+
+    return $"{tipo.TipoMat}";
+}
 }

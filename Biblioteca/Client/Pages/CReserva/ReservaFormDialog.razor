@@ -12,6 +12,9 @@
             <MudGrid>
    <MudItem xs="12">
 <MudSelect T="int" @bind-Value="newReserva.PrestatarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" For="@(() => newReserva.PrestatarioId)">
+     <MudSelectItem Value="0">
+        Prestatario
+    </MudSelectItem>
     @if (prestatarios != null)
     {
                         @foreach (var prestatario in prestatarios)
@@ -27,6 +30,9 @@
 
     <MudItem xs="12"> 
 <MudSelect @bind-Value="newReserva.InventarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ViewCompact" Label="Seleccionar Material" Placeholder="Seleccione un Inventario">
+     <MudSelectItem Value="0">
+        Material
+    </MudSelectItem>
     @if (inventarios != null)
     {
         @foreach (var inventario in inventarios)
@@ -44,7 +50,10 @@
            
 
    <MudSelect @bind-Value="newReserva.CursoId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Cases"   Label="Seleccione un Curso">
-    @if (cursos != null)
+     <MudSelectItem Value="0">
+        Curso
+    </MudSelectItem>
+       @if (cursos != null)
     {
         @foreach (var curso in cursos)
         {
@@ -77,19 +86,18 @@
  <DialogActions>
         
         <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
+         <MudButton OnClick="Cancel">Cancelar</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
-
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     private List<Prestatario> prestatarios;
     private bool isOpen = false;
     private List<Curso> cursos;
     private List<Inventario> inventarios;
     private List<Prestamo> prestamos;
-    private Inventario selectedInventarios;
-    private Curso selectedCursos;
     private Reserva newReserva = new Reserva();
     protected override async Task OnInitializedAsync()
     {
@@ -112,9 +120,9 @@
     }
      private async void Submit()
     {
-         if (newReserva.InventarioId == null
-        || newReserva.PrestatarioId == null
-        || newReserva.CursoId == null
+         if (newReserva.InventarioId == null || newReserva.InventarioId == 0
+        || newReserva.PrestatarioId == null || newReserva.PrestatarioId == 0
+        || newReserva.CursoId == null || newReserva.CursoId == 0
         || newReserva.FechaEntrega == default(DateTime)
         || newReserva.FechaDevolucion == default(DateTime)
          || newReserva.HoraEntrega == default(TimeSpan)
@@ -149,7 +157,7 @@
         }
     }
 
-
+     void Cancel() => MudDialog.Cancel();
 
        private async Task CargarCursos()
     {

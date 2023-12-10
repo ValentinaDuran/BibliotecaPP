@@ -23,14 +23,14 @@ namespace Biblioteca.BD.Data.Entidades
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha de Entrega")]
-        public DateTime FechaEntrega { get; set; }
+        public DateTime FechaEntrega { get; set; } = DateTime.Today;
 
 
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha de Devolución")]
-        public DateTime FechaDevolucion { get; set; }
+        public DateTime FechaDevolucion { get; set; } = DateTime.Today;
 
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Time)]

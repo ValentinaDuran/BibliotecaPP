@@ -28,9 +28,9 @@ namespace Biblioteca.BD.Data.Entidades
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha de Entrega")]
-        public DateTime FechaEntrega { get; set; }
+        public DateTime FechaEntrega { get; set; } = DateTime.Today;
 
-        
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha y Hora de Devolución")]
@@ -40,7 +40,7 @@ namespace Biblioteca.BD.Data.Entidades
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha de Devolución")]
-        public DateTime FechaDevolucion { get; set; }
+        public DateTime FechaDevolucion { get; set; } = DateTime.Today;
 
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Time)] 
@@ -66,7 +66,7 @@ namespace Biblioteca.BD.Data.Entidades
 
         //Relacion con Prestatario
         [Required(ErrorMessage = "Campo obligatorio.")]
-        public int PrestatarioId { get; set; }
+        public int PrestatarioId { get; set; } 
         public Prestatario? Prestatario { get; set; }
 
         //Relacion con Curso
