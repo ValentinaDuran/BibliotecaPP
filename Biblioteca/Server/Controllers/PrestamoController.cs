@@ -133,9 +133,9 @@ namespace Biblioteca.Server.Controllers
             }
 
 
-            prestamoExistente.CursoId = prestamo.CursoId;
-            prestamoExistente.PrestatarioId = prestamo.PrestatarioId;
-            prestamoExistente.InventarioId = prestamo.InventarioId;
+            //prestamoExistente.CursoId = prestamo.CursoId;
+            //prestamoExistente.PrestatarioId = prestamo.PrestatarioId;
+            //prestamoExistente.InventarioId = prestamo.InventarioId;
             prestamoExistente.Activo = prestamo.Activo;
             prestamoExistente.FechaDevolucion = prestamo.FechaDevolucion;
 
