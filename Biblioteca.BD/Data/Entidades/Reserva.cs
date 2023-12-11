@@ -17,7 +17,6 @@ namespace Biblioteca.BD.Data.Entidades
         #region Atributos
 
         public bool Pasar { get; set; }//al cambiar de estado pasa visualmente los datos a prestamo
-        public bool EsDeudor { get; set; }
         public bool Activo { get; set; } = true;//marca si es devuelto ocultar visualmente 
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Date)]
@@ -42,9 +41,6 @@ namespace Biblioteca.BD.Data.Entidades
         [DisplayFormat(DataFormatString = "{0:HH:mm}", ApplyFormatInEditMode = true)]
         [Display(Name = "Hora de Devolución")]
         public TimeSpan HoraDevolucion { get; set; }
-
-        
-
 
         public string? Observacion { get; set; }
 

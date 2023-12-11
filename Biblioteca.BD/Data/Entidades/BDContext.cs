@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,7 +32,6 @@ namespace Biblioteca.BD.Data.Entidades
                 .Property(p => p.FechaDevolucion)
                 .HasColumnType("date");
 
-        
             modelBuilder.Entity<Prestamo>()
                 .Property(p => p.HoraEntrega)
                 .HasColumnType("time");
@@ -55,37 +55,19 @@ namespace Biblioteca.BD.Data.Entidades
             modelBuilder.Entity<Reserva>()
                 .Property(p => p.HoraDevolucion)
                 .HasColumnType("time");
-
-
-
-
-            //Model de deudor
-            //modelBuilder.Entity<Deudor>()
-            //    .HasOne(d => d.Prestamo)
-            //    .WithMany()
-            //    .HasForeignKey(d => d.PrestamoId)
-            //    .OnDelete(DeleteBehavior.Restrict); 
-
-            //modelBuilder.Entity<Deudor>()
-            //    .HasOne(d => d.Reserva)
-            //    .WithMany()
-            //    .HasForeignKey(d => d.ReservaId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-         
         
             modelBuilder.Entity<Inventario>()
-                .HasOne(i => i.Tipo)               // Un inventario tiene un solo Tipo
-                .WithMany()                        // Un Tipo puede estar relacionado con muchos Inventarios
-                .HasForeignKey(i => i.TipoId)      // Clave foránea en Inventario
-                .IsRequired();                     // TipoId es requerido en Inventario
-
-
-
-
+                .HasOne(i => i.Tipo)               
+                .WithMany()                        
+                .HasForeignKey(i => i.TipoId)      
+                .IsRequired();                     
 
         }
-
-
     }
     
 }
+//modelBuilder.Entity<Inventario>()
+//    .HasOne(i => i.Tipo)               // Un inventario tiene un solo Tipo
+//    .WithMany()                        // Un Tipo puede estar relacionado con muchos Inventarios
+//    .HasForeignKey(i => i.TipoId)      // Clave foránea en Inventario
+//    .IsRequired();                     // TipoId es requerido en Inventario
