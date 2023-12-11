@@ -85,6 +85,10 @@ namespace Biblioteca.Server.Controllers
                 {
                     return BadRequest("La fecha de entrega debe ser igual o posterior a la fecha actual.");
                 }
+                if (prestamo.FechaDevolucion.Date < prestamo.FechaEntrega.Date)
+                {
+                    return BadRequest("La fecha de devolución debe ser igual o posterior a la fecha actual.");
+                }
 
 
                 // Añade el objeto Inventario al contexto y guarda los cambios

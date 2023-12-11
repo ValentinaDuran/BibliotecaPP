@@ -16,6 +16,7 @@ namespace Biblioteca.BD.Data.Entidades
         //Atributos
         #region Atributos
         [Required(ErrorMessage = "Campo obligatorio.")]
+        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "El campo NombreApellido solo puede contener letras y espacios.")]
         public string NombreApellido { get; set; }
 
 

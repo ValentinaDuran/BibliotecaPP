@@ -60,6 +60,10 @@ namespace Biblioteca.Server.Controllers
                 {
                     return BadRequest("La fecha de entrega debe ser igual o posterior a la fecha actual.");
                 }
+                if (reserva.FechaDevolucion.Date < reserva.FechaEntrega.Date)
+                {
+                    return BadRequest("La fecha de devolución debe ser igual o posterior a la fecha actual.");
+                }
 
 
                 // Añade el objeto al contexto y guarda los cambios

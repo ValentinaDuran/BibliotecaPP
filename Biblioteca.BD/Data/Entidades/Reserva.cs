@@ -43,12 +43,8 @@ namespace Biblioteca.BD.Data.Entidades
         [Display(Name = "Hora de Devolución")]
         public TimeSpan HoraDevolucion { get; set; }
 
-        public bool? Devuelto { get; set; }//habilitar el campo DevoluciónReal
+        
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Fecha y Hora de Devolución")]
-        public DateTime? DevolucionReal { get; set; }
 
         public string? Observacion { get; set; }
 
@@ -71,11 +67,7 @@ namespace Biblioteca.BD.Data.Entidades
         public int CursoId { get; set; }
         public Curso? Curso { get; set; }
 
-        //Relacion con Tipo de material
 
-        //[ForeignKey(nameof(TipoId))]
-        //public Tipo? Tipo { get; set; }
-        //public int TipoId { get; set; }
         #endregion
 
     }

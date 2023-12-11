@@ -59,8 +59,7 @@ namespace Biblioteca.BD.Data.Entidades
         public enum TipoDivision
         {
             A,
-            B,
-            C
+            B
 
         }
         [Required(ErrorMessage = "Campo obligatorio.")]

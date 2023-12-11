@@ -31,11 +31,6 @@ namespace Biblioteca.BD.Data.Entidades
         public DateTime FechaEntrega { get; set; } = DateTime.Today;
 
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Fecha y Hora de Devolución")]
-        public DateTime? DevolucionReal { get; set; }
-
         [Required(ErrorMessage = "Campo obligatorio.")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
@@ -74,11 +69,7 @@ namespace Biblioteca.BD.Data.Entidades
         public int CursoId { get; set; }
         public Curso? Curso { get; set; }
 
-        //Relacion con Tipo de material
 
-        //[ForeignKey(nameof(TipoId))]
-        //public Tipo? Tipo { get; set; }
-        //public int TipoId { get; set; }
 
         #endregion
 

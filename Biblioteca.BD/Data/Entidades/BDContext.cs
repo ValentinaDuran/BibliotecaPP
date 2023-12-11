@@ -11,9 +11,7 @@ namespace Biblioteca.BD.Data.Entidades
     public class BDContext : DbContext
     {
         public DbSet <Curso> Cursos { get; set; }
-        public DbSet<Deudor> Deudores { get; set; }
         public DbSet<Inventario> Inventarios { get; set; }
-        public DbSet<MaterialMalEstado> MaterialesMalEstado { get; set; }
         public DbSet<Prestamo> Prestamos { get; set; }
         public DbSet<Prestatario> Prestatarios { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
@@ -41,17 +39,7 @@ namespace Biblioteca.BD.Data.Entidades
             modelBuilder.Entity<Prestamo>()
                 .Property(p => p.HoraDevolucion)
                 .HasColumnType("time");
-            modelBuilder.Entity<Prestamo>()
-                .Property(p => p.DevolucionReal)
-                .HasColumnType("datetime");
 
-            //modelBuilder.Entity<Prestamo>()
-            //    .HasOne(p => p.Tipo)
-            //    .WithMany()
-            //    .HasForeignKey(p => p.TipoId)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //Model de reservas
             modelBuilder.Entity<Reserva>()
                 .Property(p => p.FechaEntrega)
                 .HasColumnType("date");
@@ -67,28 +55,22 @@ namespace Biblioteca.BD.Data.Entidades
             modelBuilder.Entity<Reserva>()
                 .Property(p => p.HoraDevolucion)
                 .HasColumnType("time");
-            modelBuilder.Entity<Reserva>()
-                .Property(p => p.DevolucionReal)
-                .HasColumnType("datetime");
 
-            //modelBuilder.Entity<Reserva>()
-            //    .HasOne(p => p.Tipo)
-            //    .WithMany()
-            //    .HasForeignKey(p => p.TipoId)
-            //    .OnDelete(DeleteBehavior.Restrict);
+
+
 
             //Model de deudor
-            modelBuilder.Entity<Deudor>()
-                .HasOne(d => d.Prestamo)
-                .WithMany()
-                .HasForeignKey(d => d.PrestamoId)
-                .OnDelete(DeleteBehavior.Restrict); 
+            //modelBuilder.Entity<Deudor>()
+            //    .HasOne(d => d.Prestamo)
+            //    .WithMany()
+            //    .HasForeignKey(d => d.PrestamoId)
+            //    .OnDelete(DeleteBehavior.Restrict); 
 
-            modelBuilder.Entity<Deudor>()
-                .HasOne(d => d.Reserva)
-                .WithMany()
-                .HasForeignKey(d => d.ReservaId)
-                .OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Deudor>()
+            //    .HasOne(d => d.Reserva)
+            //    .WithMany()
+            //    .HasForeignKey(d => d.ReservaId)
+            //    .OnDelete(DeleteBehavior.Restrict);
          
         
             modelBuilder.Entity<Inventario>()
