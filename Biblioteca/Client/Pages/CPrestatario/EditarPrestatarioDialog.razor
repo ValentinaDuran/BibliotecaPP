@@ -1,0 +1,72 @@
+﻿
+@page "/editarprestatario"
+@inject IDialogService DialogService
+@inject ISnackbar SnackbarService
+@using Biblioteca.BD.Data.Entidades
+@using Biblioteca.Client.Services
+@inject IHttpService http
+@inject NavigationManager NavManager
+
+<MudDialog iOpen="isOpen">
+    <DialogContent>
+        <MudForm>
+            <MudGrid>
+ 
+<MudTextField  @bind-Value="@PrestatarioSeleccionado.NombreApellido" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Prestatario"  />      
+    
+</MudGrid>
+</MudForm>
+</DialogContent>
+ <DialogActions>
+        
+        <MudButton Color="Color.Primary" OnClick="GuardarCambios">Cambiar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+     
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public int PrestatarioSeleccionadoId { get; set; }
+    private List<Prestatario> prestatarios;
+    private bool isOpen = false;
+    private Prestatario PrestatarioSeleccionado = new Prestatario();
+    protected override async Task OnInitializedAsync()
+    {
+
+        await ObtenerPrestarioPorId(PrestatarioSeleccionadoId);
+
+    }
+
+  
+   
+     private async void GuardarCambios()
+    {
+       var respuesta = await http.Put($"api/PrestatariosController/{PrestatarioSeleccionadoId}", PrestatarioSeleccionado);
+       if (!respuesta.Error)
+        {
+            MudDialog.Close();
+        }
+        else
+        {
+            var body = respuesta.HttpResponseMessage;
+        }
+    }
+
+           private async Task ObtenerPrestarioPorId(int prestatarioId)
+{
+    var respuesta = await http.Get<Prestatario>($"api/PrestatariosController/{prestatarioId}");
+    if (respuesta.Error)
+    {
+       
+    }
+    else
+    {
+        PrestatarioSeleccionado = respuesta.Respuesta;
+         
+        
+    }
+}
+   
+    
+}

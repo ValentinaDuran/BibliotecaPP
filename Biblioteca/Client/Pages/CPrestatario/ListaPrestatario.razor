@@ -1,0 +1,88 @@
+﻿@page "/prestatario-list"
+@using Biblioteca.Client.Pages.CInventario
+@using Biblioteca.Client.Services
+@using Biblioteca.BD.Data.Entidades
+@inject IHttpService http
+@using MudBlazor
+@using static MudBlazor.CategoryTypes
+@inject IDialogService DialogService
+@inject ISnackbar SnackbarService
+@inject NavigationManager NavManager
+
+
+<div class="centered-content">
+    <NavMenu></NavMenu>
+    <MudCard MaxWidth="1200px" class="mx-auto my-auto">
+        <MudCardContent>
+            <div style="display: flex; justify-content: center;">
+                <MudText Typo="Typo.h3" class="centered-content"><b>Inventario</b></MudText>
+            </div>
+
+           @* <div style="margin-bottom: 16px;">
+                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+            </div>*@
+
+            @if (prestatarios == null)
+            {
+                <div>Cargando...</div>
+            }
+            else
+            {
+                @*<MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                    Agregar Material
+                </MudButton>*@
+
+                <MudTable Items="@prestatarios" FixedHeader="@fixed_header"  FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                    <HeaderContent>
+                        <MudTh>Id</MudTh>
+                        <MudTh>Nombre y apellido</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                       
+                        <MudTd DataLabel="Id">@context.PrestatarioId</MudTd>
+                        <MudTd DataLabel="Nombre y apellido">@context.NombreApellido</MudTd>
+                        <MudTd>
+                            <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarPrestatario(context)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" />   
+                        </MudTd>
+
+                        
+                </RowTemplate>
+                <PagerContent>
+@*                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
+*@                </PagerContent>
+            </MudTable>
+            }
+        </MudCardContent>
+    </MudCard>
+</div>
+
+
+@code {
+     bool fixed_header = true;
+    bool fixed_footer = true;
+     List<Prestatario> prestatarios;
+       protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        await Leer();
+    }
+
+     private async Task Leer()
+    {
+        var respuesta = await http.Get<List<Prestatario>>("api/PrestatariosController");
+        if (!respuesta.Error)
+        {
+            prestatarios = respuesta.Respuesta;
+        }
+    }
+
+        void EditarPrestatario(Prestatario prestatario)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("PrestatarioSeleccionadoId", prestatario.PrestatarioId);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<EditarPrestatarioDialog>("Editar prestatario", parameters, options);
+    }
+}
