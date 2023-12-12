@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.BD.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20231212004634_BDFINAL")]
+    [Migration("20231212031226_BDFINAL")]
     partial class BDFINAL
     {
         /// <inheritdoc />
