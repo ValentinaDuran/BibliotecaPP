@@ -71,7 +71,7 @@ namespace Biblioteca.Server.Controllers
             }
 
 
-            prestatarioExistente.PrestatarioId = prestatario.PrestatarioId;
+            prestatarioExistente.NombreApellido = prestatario.NombreApellido;
 
 
 
