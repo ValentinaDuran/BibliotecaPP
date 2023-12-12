@@ -125,7 +125,6 @@ namespace Biblioteca.BD.Migrations
                     ReservaId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Pasar = table.Column<bool>(type: "bit", nullable: false),
-                    EsDeudor = table.Column<bool>(type: "bit", nullable: false),
                     Activo = table.Column<bool>(type: "bit", nullable: false),
                     FechaEntrega = table.Column<DateTime>(type: "date", nullable: false),
                     FechaDevolucion = table.Column<DateTime>(type: "date", nullable: false),

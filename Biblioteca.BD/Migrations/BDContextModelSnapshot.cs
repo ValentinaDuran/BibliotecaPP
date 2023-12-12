@@ -171,9 +171,6 @@ namespace Biblioteca.BD.Migrations
                     b.Property<int>("CursoId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("EsDeudor")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("FechaDevolucion")
                         .HasColumnType("date");
 
