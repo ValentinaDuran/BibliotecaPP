@@ -21,6 +21,21 @@ namespace Biblioteca.Server.Controllers
 
 
         }
+
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Prestatario>> Get(int id)
+        {
+            var prestatario = await context.Prestatarios
+                .Where(o => o.PrestatarioId == id)
+                .FirstOrDefaultAsync();
+            if (prestatario == null)
+            {
+                return NotFound($"No existe ese material en el prestatario de Id={id}");
+            }
+            return prestatario;
+        }
+
         //AGREGA UN NUEVO PRESTATARIO
         [HttpPost]
         public async Task<ActionResult<int>> Post(Prestatario prestatario)
