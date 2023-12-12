@@ -70,6 +70,40 @@ namespace Biblioteca.Server.Controllers
                 return BadRequest("Error: " + ex.Message);
             }
         }
+        [HttpPut("{id:int}")]
+        public ActionResult Put(int id, [FromBody] Prestatario prestatario)
+        {
+            if (id != prestatario.PrestatarioId)
+            {
+                return BadRequest("IDs no coinciden");
+            }
+
+            var prestatarioExistente = context.Prestatarios.SingleOrDefault(e => e.PrestatarioId == id);
+
+            if (prestatarioExistente == null)
+            {
+                return NotFound("No existe el inventario");
+            }
+
+
+            prestatarioExistente.NombreApellido = prestatario.NombreApellido;
+
+
+
+            // Actualiza otras propiedades según sea necesario
+
+            try
+            {
+                context.Prestatarios.Update(prestatarioExistente);
+                context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest($"Los datos no han sido actualizados por: {e.Message}");
+            }
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
