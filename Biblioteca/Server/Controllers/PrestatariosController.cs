@@ -1,6 +1,7 @@
 ﻿using Biblioteca.BD.Data.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Biblioteca.Server.Controllers
 {
@@ -51,6 +52,7 @@ namespace Biblioteca.Server.Controllers
                     ModelState.AddModelError(nameof(Prestatario.NombreApellido), "El campo NombreApellido es obligatorio.");
                     return BadRequest(ModelState);
                 }
+
 
 
                 // Añade el objeto al contexto y guarda los cambios

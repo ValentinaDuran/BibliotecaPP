@@ -1,6 +1,7 @@
 ﻿using Biblioteca.BD.Data.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Biblioteca.Server.Controllers
 {
@@ -69,6 +70,13 @@ namespace Biblioteca.Server.Controllers
                     ModelState.AddModelError("Codigo", "El código ya existe. Debe ser único.");
                     return BadRequest(ModelState);
                 }
+                // Validación para caracteres especiales excluyendo la "ñ"
+                if (!Regex.IsMatch(inventario.Codigo, @"^[a-zA-Z0-9ñÑ]+$"))
+                {
+                    ModelState.AddModelError("Codigo", "El código no puede contener caracteres especiales, excepto la letra 'ñ'.");
+                    return BadRequest(ModelState);
+                }
+
 
                 // No es necesario recuperar y establecer la propiedad Tipo. Simplemente confía en TipoId.
                 // Solo verifica si el TipoId proporcionado realmente existe en la base de datos.
@@ -77,6 +85,9 @@ namespace Biblioteca.Server.Controllers
                 {
                     return NotFound($"El tipo con ID {inventario.TipoId} no fue encontrado.");
                 }
+                var caracterEsp= await context.Inventarios.AnyAsync();
+                    
+
 
                 // Añade el objeto Inventario al contexto y guarda los cambios
                 context.Inventarios.Add(inventario);
@@ -202,6 +213,13 @@ namespace Biblioteca.Server.Controllers
             if (codigoExists)
             {
                 ModelState.AddModelError("Codigo", "El código de inventario ya existe. Debe ser único.");
+                return BadRequest(ModelState);
+            }
+
+            // Validación para caracteres especiales excluyendo la "ñ"
+            if (!Regex.IsMatch(inventario.Codigo, @"^[a-zA-Z0-9ñÑ]+$"))
+            {
+                ModelState.AddModelError("Codigo", "El código no puede contener caracteres especiales, excepto la letra 'ñ'.");
                 return BadRequest(ModelState);
             }
 
