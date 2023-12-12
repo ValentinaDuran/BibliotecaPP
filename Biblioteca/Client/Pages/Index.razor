@@ -23,14 +23,14 @@
                 <MudText Typo="Typo.h3" class="centered-content"> <b>Prestamos</b></MudText>
             </div>
             <div style="margin-bottom: 16px;">
-                <MudTextField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField T="string" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
             <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
                 Agregar Prestamo
             </MudButton>
 
-            <MudTable @ref="@_table" Items="@prestamos" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
+            <MudTable Items="@prestamos" FixedHeader="@fixed_header"  FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
                 <HeaderContent>
                     <MudTh style="white-space: nowrap;">Prestatario</MudTh>
                     <MudTh style="white-space: nowrap;">Material</MudTh>
@@ -41,6 +41,8 @@
                     <MudTh>Hora de devolucion</MudTh>
                     <MudTh>Observacion</MudTh>
                     <MudTh>Acciones</MudTh>
+                     <MudTh></MudTh>
+                     <MudTh></MudTh>
                      <MudTh></MudTh>
                 </HeaderContent>
                 <RowTemplate>
@@ -75,20 +77,14 @@
                         <MudTd>
 
                             <MudIconButton Icon="@Icons.Material.Filled.Report" Title="Deudor" @onclick="() => MostrarDialogDeudor(context)" />
-                        </MudTd>
-
-
-                            
+                        </MudTd>                        
                         <MudTd>
                         <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarPrestamo(context)" />
 
                         </MudTd>
                     }
-                </RowTemplate>
+                </RowTemplate> 
 
-                <PagerContent>
-                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
-                </PagerContent>
             </MudTable>
 
         </MudCardContent>

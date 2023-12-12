@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.BD.Migrations
 {
     [DbContext(typeof(BDContext))]
-    [Migration("20231211215119_BDFINAL")]
-    partial class BDFINAL
+    [Migration("20231212004539_tablas")]
+    partial class tablas
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,9 +173,6 @@ namespace Biblioteca.BD.Migrations
 
                     b.Property<int>("CursoId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("EsDeudor")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("FechaDevolucion")
                         .HasColumnType("date");

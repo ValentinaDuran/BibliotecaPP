@@ -12,13 +12,13 @@
         <MudForm>
         <MudGrid>
          <MudItem xs="6">
-        <MudTextField @bind-Value="inventarioSeleccionado.Codigo" Label="Codigo" />
-        </MudItem>
         <MudTextField @bind-Value="inventarioSeleccionado.TituloNombre" Label="Título/Nombre" />
-         <MudItem xs="6">
-        <MudTextField @bind-Value="inventarioSeleccionado.AutorMarca" Label="Autor/Marca" />
         </MudItem>
+        <MudTextField @bind-Value="inventarioSeleccionado.AutorMarca" Label="Autor/Marca" />
+         <MudItem xs="6">
         <MudTextField @bind-Value="inventarioSeleccionado.Observacion" Label="Observación" />
+        </MudItem>
+       
          <MudItem xs="6">
       <MudSelect T="string" @bind-Value="selectedTipo" Label="Tipo">
     @foreach (var tipo in tipos)
@@ -27,7 +27,9 @@
     }
 </MudSelect>
 </MudItem>
-       
+       <MudItem>
+            <MudTextField T="string" Counter="5" MaxLength="5" Immediate="true" @bind-Value="inventarioSeleccionado.Codigo" Label="Codigo"  Variant="Variant.Text"/>
+       </MudItem>
         </MudGrid>
         </MudForm>
     </DialogContent>

@@ -40,7 +40,7 @@
 </MudSelect>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudTextField @bind-Value="newInventario.Codigo" Label="Codigo" For="@(() => newInventario.Codigo)" />
+                    <MudTextField T="string" Counter="5" MaxLength="5" Immediate="true" @bind-Value="newInventario.Codigo" Label="Codigo" For="@(() => newInventario.Codigo)" />
                 </MudItem>
             </MudGrid>
         </MudForm>
@@ -68,21 +68,23 @@
 
     private void EditarInventario(Inventario inventario)
     {
-        
+
         isOpen = true;
     }
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-     private Inventario newInventario = new Inventario
+    private Inventario newInventario = new Inventario
     {
         Observacion = "Sin observación"
     };
-   
+
 
     private async void Submit()
     {
+        
 
+       
         var respuesta = await http.Get<List<Inventario>>("api/InventarioController");
         if (!respuesta.Error)
         {
@@ -110,6 +112,9 @@
       
         }
 
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Material registrado", Severity.Success);
+         await Task.Delay(1700);
         var httpRespuesta = await http.Post<Inventario>("api/InventarioController", newInventario);
         if (!httpRespuesta.Error)
         {

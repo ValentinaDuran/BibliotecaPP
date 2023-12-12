@@ -16,7 +16,7 @@
             </div>
 
             <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField T="string" Immediate="true" Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
             @if (inventarios == null)
@@ -26,7 +26,7 @@
             else
             {
 
-                <MudTable @ref="@_table" Items="@inventarios" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                <MudTable  Items="@inventarios" FixedHeader="@fixed_header"  FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
                     <HeaderContent>
                         <MudTh>Codigo</MudTh>
                         <MudTh>Título/Nombre</MudTh>
@@ -49,9 +49,6 @@
                            </MudTd>
                         }                  
                     </RowTemplate>
-                            <PagerContent>
-        <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)"Class="pa-4 d-flex justify-content-center"/>
-    </PagerContent>
                 </MudTable>
             }
         </MudCardContent>

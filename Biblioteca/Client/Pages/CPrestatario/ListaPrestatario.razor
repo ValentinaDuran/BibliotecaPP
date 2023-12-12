@@ -15,12 +15,12 @@
     <MudCard MaxWidth="1200px" class="mx-auto my-auto">
         <MudCardContent>
             <div style="display: flex; justify-content: center;">
-                <MudText Typo="Typo.h3" class="centered-content"><b>Inventario</b></MudText>
+                <MudText Typo="Typo.h3" class="centered-content"><b>Prestatario</b></MudText>
             </div>
 
-           @* <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
-            </div>*@
+            <div style="margin-bottom: 16px;">
+                <MudTextField T="string" Immediate="true" Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+            </div>
 
             @if (prestatarios == null)
             {
@@ -28,29 +28,33 @@
             }
             else
             {
-                @*<MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-                    Agregar Material
-                </MudButton>*@
+                <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                    Agregar Prestatario
+                </MudButton>
 
-                <MudTable Items="@prestatarios" FixedHeader="@fixed_header"  FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                <MudTable  Items="@prestatarios" FixedHeader="@fixed_header"  FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
                     <HeaderContent>
                         <MudTh>Id</MudTh>
                         <MudTh>Nombre y apellido</MudTh>
+                         <MudTh>Acciones</MudTh>
+                         <MudTh></MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                       
+                  @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
+                        {
                         <MudTd DataLabel="Id">@context.PrestatarioId</MudTd>
                         <MudTd DataLabel="Nombre y apellido">@context.NombreApellido</MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarPrestatario(context)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" />   
                         </MudTd>
 
+                        <MudTd>
+
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />   
+                        </MudTd>
+                        }
                         
                 </RowTemplate>
-                <PagerContent>
-@*                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
-*@                </PagerContent>
             </MudTable>
             }
         </MudCardContent>
@@ -59,16 +63,28 @@
 
 
 @code {
-     bool fixed_header = true;
+        private MudTable<Prestatario> _table;
+    bool fixed_header = true;
     bool fixed_footer = true;
-     List<Prestatario> prestatarios;
-       protected override async Task OnInitializedAsync()
+    List<Prestatario> prestatarios;
+    bool isOpen = false;
+    string buscarTermino = "";
+    protected override async Task OnInitializedAsync()
     {
         base.OnInitializedAsync();
         await Leer();
     }
+    void OpenDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<PrestatarioFormDialog>("Agregar prestatario", options);
+    }
+        private void PageChanged(int i)
+    {
+        _table.NavigateTo(i - 1);
+    }
 
-     private async Task Leer()
+    private async Task Leer()
     {
         var respuesta = await http.Get<List<Prestatario>>("api/PrestatariosController");
         if (!respuesta.Error)
@@ -77,12 +93,53 @@
         }
     }
 
-        void EditarPrestatario(Prestatario prestatario)
+    void EditarPrestatario(Prestatario prestatario)
     {
         var parameters = new DialogParameters();
         parameters.Add("PrestatarioSeleccionadoId", prestatario.PrestatarioId);
 
         var options = new DialogOptions { CloseOnEscapeKey = true };
         DialogService.Show<EditarPrestatarioDialog>("Editar prestatario", parameters, options);
+    }
+
+    private async Task Borrar(Prestatario prestatarioborrar)
+    {
+        var respuesta = await http.Delete($"api/PrestatariosController/{prestatarioborrar.PrestatarioId}");
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Prestatario Eliminado", Severity.Success);
+        if (respuesta.Error)
+        {
+            var body = "Error";
+        }
+        await Leer();
+    }
+
+    private async Task MostrarDialogBorrar(Prestatario prestatario)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Prestatario", prestatario);
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var result = await DialogService.Show<ConfirmPrestatario>("Confirmar Borrado", parameters, options).Result;
+
+        if (result.Cancelled)
+        {
+            // Acción cancelada
+        }
+        else if (result.Data is bool confirmado && confirmado)
+        {
+            await Borrar(prestatario);
+        }
+    }
+
+    bool MatchesSearchTerm(Prestatario prestatario)
+    {
+        if (string.IsNullOrWhiteSpace(buscarTermino))
+        {
+            return true;
+        }
+
+        return prestatario.NombreApellido.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
+
     }
 }

@@ -1,0 +1,99 @@
+﻿@using Biblioteca.BD.Data.Entidades
+@using Biblioteca.Client.Services
+@inject IHttpService http
+@inject NavigationManager NavManager
+@using MudBlazor
+@using System.Text.RegularExpressions
+@inject ISnackbar SnackbarService
+<MudDialog iOpen="isOpen">
+    <DialogContent>
+        <MudForm>
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="newPrestatario.NombreApellido"Label="Nombre y apellido" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.TypeSpecimen"  For="@(() => newPrestatario.NombreApellido)" />
+                </MudItem>
+                
+             
+
+    
+              
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private bool isOpen = false;
+    private List<Inventario> inventarios;
+    private List<Tipo> tipos;
+      private Prestatario newPrestatario = new Prestatario();
+
+    protected override void OnInitialized()
+    {
+
+      
+    }
+
+
+    private void EditarInventario(Inventario inventario)
+    {
+        
+        isOpen = true;
+    }
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+
+
+    private async void Submit()
+    {
+
+
+        if (string.IsNullOrWhiteSpace(newPrestatario.NombreApellido)
+            )
+        {
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Por favor, completa todos los campos.", Severity.Error);
+        return;
+      
+        }
+
+        var regex = new Regex(@"^[A-Za-z0-9 ñÑ]+$"); // Puedes ajustar la expresión regular según tus necesidades
+
+if (!regex.IsMatch(newPrestatario.NombreApellido))
+{
+    SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+    SnackbarService.Add("El nombre y apellido no deben contener caracteres especiales", Severity.Error);
+    return;
+}
+SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Prestatario registrado", Severity.Success);
+        await Task.Delay(1700);
+        var httpRespuesta = await http.Post<Prestatario>("api/PrestatariosController", newPrestatario);
+        if (!httpRespuesta.Error)
+        {
+            
+            MudDialog.Close();
+            NavManager.NavigateTo("/prestatario-list", forceLoad: true);
+        }
+        else
+        {
+            var body = httpRespuesta.HttpResponseMessage;
+        }
+    }
+
+ 
+
+    void Cancel() => MudDialog.Cancel();
+
+      void OpenDialog()
+    {
+        isOpen = true;
+    }
+
+}

@@ -98,7 +98,10 @@
     private List<Curso> cursos;
     private List<Inventario> inventarios;
     private List<Prestamo> prestamos;
-    private Reserva newReserva = new Reserva();
+    private Reserva newReserva = new Reserva
+    {
+        Observacion = "Sin observación"
+    };
     protected override async Task OnInitializedAsync()
     {
         await CargarInventarios();

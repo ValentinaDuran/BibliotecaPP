@@ -11,14 +11,14 @@
 
 <div class="centered-content">
     <NavMenu></NavMenu>
-    <MudCard MaxWidth="1200px" class="mx-auto my-auto">
+    <MudCard MaxWidth="3000px"  class="mx-auto my-auto">
         <MudCardContent>
             <div style="display: flex; justify-content: center;">
                 <MudText Typo="Typo.h3" class="centered-content"><b>Inventario</b></MudText>
             </div>
 
             <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField T="string" Immediate="true" Label="Buscar" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
             @if (inventarios == null)
@@ -31,7 +31,7 @@
                     Agregar Material
                 </MudButton>
 
-                <MudTable @ref="@_table" Items="@inventarios" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "400px" : "")">
+                <MudTable  Items="@inventarios" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")"  HorizontalScrollbar="false">
                     <HeaderContent>
                         <MudTh>Codigo</MudTh>
                         <MudTh>Título/Nombre</MudTh>
@@ -39,26 +39,33 @@
                         <MudTh>Observación</MudTh>
                         <MudTh>Tipo</MudTh>
                         <MudTh>Acciones</MudTh>
+                        <MudTh></MudTh>
+                        <MudTh></MudTh>
+                        <MudTh></MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         @if (string.IsNullOrWhiteSpace(buscarTermino) || MatchesSearchTerm(context))
                         {
                         <MudTd DataLabel="Codigo">@context.Codigo</MudTd>
-                        <MudTd DataLabel="Título/Nombre">@context.TituloNombre</MudTd>
+                        <MudTd> @context.TituloNombre</MudTd>
                         <MudTd DataLabel="Autor/Marca">@context.AutorMarca</MudTd>
                         <MudTd DataLabel="Observación">@context.Observacion</MudTd>
                         <MudTd DataLabel="Tipo">@context.Tipo.TipoMat</MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Create" Title="Editar" @onclick="() => EditarInventario(context)" />
+                        </MudTd>
+                        <MudTd>
+
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Title="Borrar" @onclick="() => MostrarDialogBorrar(context)" />
+                        </MudTd>
+
+                        <MudTd>
+
                             <MudIconButton Icon="@Icons.Material.Filled.Build" Title="Mal estado" @onclick="() => MostrarDialogPasar(context)" />
                         </MudTd>
 
                         }
                 </RowTemplate>
-                <PagerContent>
-                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
-                </PagerContent>
             </MudTable>
             }
         </MudCardContent>
@@ -103,6 +110,7 @@
     {
         base.OnInitializedAsync();
         await Leer();
+        UpdateFilteredInventarios();
     }
 
     private async Task Leer()
@@ -176,7 +184,7 @@
             await Borrar(inventario);
         }
     }
-
+     private List<Inventario> filteredInventarios;
     bool MatchesSearchTerm(Inventario inventario)
     {
         if (string.IsNullOrWhiteSpace(buscarTermino))
@@ -190,4 +198,16 @@
                inventario.Observacion.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase) ||
                inventario.Tipo.TipoMat.Contains(buscarTermino, StringComparison.OrdinalIgnoreCase);
     }
+
+   private void UpdateFilteredInventarios()
+    {
+        filteredInventarios = inventarios.Where(MatchesSearchTerm).ToList();
+    }
+
+    void HandleSearchTermChange()
+    {
+        UpdateFilteredInventarios();
+        
+    }
+
 }

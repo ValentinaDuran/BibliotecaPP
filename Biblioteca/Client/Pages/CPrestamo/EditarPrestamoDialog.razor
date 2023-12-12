@@ -53,7 +53,19 @@
    
      private async void GuardarCambios()
     {
+          if (prestamoSeleccionado.FechaDevolucion.Date < newPrestamo.FechaEntrega.Date)
+    {
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("La fecha de devolución no puede ser anterior a la fecha de entrega.", Severity.Error);
+        return;
+    }
+
+    SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("Fecha de devolucion editada", Severity.Success);
+        await Task.Delay(1700);
        var respuesta = await http.Put($"api/PrestamoController/{PrestamoSeleccionadoId}", prestamoSeleccionado);
+
+
        if (!respuesta.Error)
         {
             MudDialog.Close();

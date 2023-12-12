@@ -19,74 +19,77 @@
     </MudSelectItem>
     
     @if (prestatarios != null)
-    {
-                        @foreach (var prestatario in prestatarios)
                         {
-                            <MudSelectItem Value="@prestatario.PrestatarioId">
-                                @MostrarPrestatario(prestatario)
-                            </MudSelectItem>
+                            @foreach (var prestatario in prestatarios)
+                            {
+                                <MudSelectItem Value="@prestatario.PrestatarioId">
+                                    @MostrarPrestatario(prestatario)
+                                </MudSelectItem>
+                            }
+
                         }
-    }
                     </MudSelect>    
                 </MudItem>
 
 
-    <MudItem xs="12"> 
-<MudSelect @bind-Value="newPrestamo.InventarioId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ViewCompact" Label="Seleccionar Material" Placeholder="Seleccione un Inventario">
-    <MudSelectItem Value="0">
-        Material
-    </MudSelectItem>
-    @if (inventarios != null)
-    {
-        @foreach (var inventario in inventarios)
-        {
-            <MudSelectItem Value="@inventario.InventarioId">
-                @MostrarInventario(inventario)
-            </MudSelectItem>
-        }
-    }
-</MudSelect>
+                <MudItem xs="12"> 
+                    <MudSelect @bind-Value="newPrestamo.InventarioId"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.ViewCompact" Label="Seleccionar Material" Placeholder="Seleccione un Inventario">
+                        <MudSelectItem Value="0">
+                            Material
+                        </MudSelectItem>
+                        @if (inventarios != null)
+                        {
+                            @foreach (var inventario in inventarios)
+                            {
+                                <MudSelectItem Value="@inventario.InventarioId">
+                                    @MostrarInventario(inventario)
+                                </MudSelectItem>
+                            }
 
-        </MudItem>
+                        }
+                    </MudSelect>
+
+                </MudItem>
 
                 <MudItem xs="12">
-           
-
-   <MudSelect @bind-Value="newPrestamo.CursoId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Cases"   Label="Seleccione un Curso">
-     <MudSelectItem Value="0">
-        Cursos
-    </MudSelectItem>
-       @if (cursos != null)
-    {
-        @foreach (var curso in cursos)
-        {
-            <MudSelectItem Value="@curso.CursoId">
-                @MostrarCurso(curso)
-            </MudSelectItem>
-        }
-    }
-</MudSelect>
-
-        </MudItem>
-        <MudItem xs="6" >      
-           <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de entrega"  InputType="InputType.Date"/>
-           </MudItem>
-        <MudItem xs="6" >      
-<MudTextField T="TimeSpan"  @bind-Value="@newPrestamo.HoraEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de entrega" InputType="InputType.Time"/>           </MudItem>
-        <MudItem xs="6" >      
-<MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de devolucion"  InputType="InputType.Date"/>           </MudItem>
-        <MudItem xs="6" >      
-<MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de devolucion" InputType="InputType.Time"/>           </MudItem>
-        <MudItem xs= "12">
-        <MudTextField py-8  Label="Observacion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.EditNote" @bind-Value="newPrestamo.Observacion" />
-        </MudItem>
 
 
+                    <MudSelect @bind-Value="newPrestamo.CursoId" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Rounded.Cases"   Label="Seleccione un Curso">
+                        <MudSelectItem Value="0">
+                            Cursos
+                        </MudSelectItem>
+                        @if (cursos != null)
+                        {
+                            @foreach (var curso in cursos)
+                            {
+                                <MudSelectItem Value="@curso.CursoId">
+                                    @MostrarCurso(curso)
+                                </MudSelectItem>
+                            }
 
-</MudGrid>
-</MudForm>
-</DialogContent>
- <DialogActions>
+                        }
+                    </MudSelect>
+
+                </MudItem>
+                <MudItem xs="6" >      
+                    <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de entrega"  InputType="InputType.Date"/>
+                </MudItem>
+                <MudItem xs="6" >      
+                    <MudTextField T="TimeSpan"  @bind-Value="@newPrestamo.HoraEntrega" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de entrega" InputType="InputType.Time"/>           </MudItem>
+                <MudItem xs="6" >      
+                    <MudTextField T="DateTime" @bind-Value="@newPrestamo.FechaDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.DateRange" Format="yyyy-MM-dd" Label="Fecha de devolucion"  InputType="InputType.Date"/>           </MudItem>
+                <MudItem xs="6" >      
+                    <MudTextField T="TimeSpan" @bind-Value="@newPrestamo.HoraDevolucion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.AccessTime"  Label="Hora de devolucion" InputType="InputType.Time"/>           </MudItem>
+                <MudItem xs= "12">
+                    <MudTextField py-8  Label="Observacion" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.EditNote" @bind-Value="newPrestamo.Observacion" />
+                </MudItem>
+
+
+
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">Agregar</MudButton>
     </DialogActions>
@@ -100,7 +103,10 @@
     private List<Curso> cursos;
     private List<Inventario> inventarios;
     private List<Prestamo> prestamos;
-    private Prestamo newPrestamo = new Prestamo();
+    private Prestamo newPrestamo = new Prestamo
+        {
+            Observacion = "Sin observación"
+        };
     protected override async Task OnInitializedAsync()
     {
         await CargarInventarios();

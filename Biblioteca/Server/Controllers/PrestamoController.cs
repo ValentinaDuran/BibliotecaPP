@@ -32,7 +32,7 @@ namespace Biblioteca.Server.Controllers
 
 
         }
-
+        //trae los datos a la tabla deudor
         [HttpGet("deudor-true")]
         public async Task<ActionResult<List<Prestamo>>> GetPasarTrue()
         {

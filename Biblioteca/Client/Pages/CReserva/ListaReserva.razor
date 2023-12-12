@@ -17,14 +17,14 @@
                 <MudText Typo="Typo.h3" class="centered-content"> <b>Reservas</b></MudText>
             </div>
             <div style="margin-bottom: 16px;">
-                <MudTextField Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField T="string" Immediate="true" Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
             <MudButton Class="mb-5" @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
                 Agregar Reserva
             </MudButton>
 
-            <MudTable @ref="@_table" Items="@reservas" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
+            <MudTable  Items="@reservas" FixedHeader="@fixed_header" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
                 <HeaderContent>
                     <MudTh style="white-space: nowrap;">Prestatario</MudTh>
                     <MudTh style="white-space: nowrap;">Material</MudTh>
@@ -75,9 +75,6 @@
 
 
                 </RowTemplate>
-                <PagerContent>
-                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
-                </PagerContent>
             </MudTable>
 
         </MudCardContent>

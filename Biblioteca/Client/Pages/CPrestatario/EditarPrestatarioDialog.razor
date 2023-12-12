@@ -4,6 +4,7 @@
 @inject ISnackbar SnackbarService
 @using Biblioteca.BD.Data.Entidades
 @using Biblioteca.Client.Services
+@using System.Text.RegularExpressions
 @inject IHttpService http
 @inject NavigationManager NavManager
 
@@ -42,10 +43,25 @@
    
      private async void GuardarCambios()
     {
+        
+        var regex = new Regex(@"^[A-Za-z0-9 ñÑ]+$"); // Puedes ajustar la expresión regular según tus necesidades
+
+if (!regex.IsMatch(PrestatarioSeleccionado.NombreApellido))
+{
+    SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+    SnackbarService.Add("El nombre y apellido no deben contener caracteres especiales", Severity.Error);
+    return;
+}
+   
+
+        SnackbarService.Configuration.PositionClass = Defaults.Classes.Position.BottomLeft;
+        SnackbarService.Add("pretatario editado", Severity.Success);
        var respuesta = await http.Put($"api/PrestatariosController/{PrestatarioSeleccionadoId}", PrestatarioSeleccionado);
+       await Task.Delay(1700);
        if (!respuesta.Error)
         {
             MudDialog.Close();
+            NavManager.NavigateTo("/prestatario-list", forceLoad: true);
         }
         else
         {

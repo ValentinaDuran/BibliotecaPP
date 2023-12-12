@@ -22,12 +22,10 @@
                 <MudText Typo="Typo.h3" class="centered-content"> <b>Deudores</b></MudText>
             </div>
             <div style="margin-bottom: 16px;">
-                <MudTextField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
+                <MudTextField T="string" Immediate="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.TwoTone.Search" Label="Buscar" @bind-Value="@buscarTermino" Variant="Variant.Outlined" />
             </div>
 
-
-
-            <MudTable @ref="@_table" Items="@prestamos" FixedHeader="@fixed_header" RowsPerPage="4" FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
+            <MudTable  Items="@prestamos" FixedHeader="@fixed_header"  FixedFooter="@fixed_footer" Height="@(fixed_header || fixed_footer ? "600px" : "")" HorizontalScrollbar="false">
                 <HeaderContent>
                     <MudTh style="white-space: nowrap;">Prestatario</MudTh>
                     <MudTh style="white-space: nowrap;">Material</MudTh>
@@ -72,9 +70,6 @@
                     }
                 </RowTemplate>
 
-                <PagerContent>
-                    <MudPagination SelectedChanged="PageChanged" Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4 d-flex justify-content-center" />
-                </PagerContent>
             </MudTable>
 
         </MudCardContent>
